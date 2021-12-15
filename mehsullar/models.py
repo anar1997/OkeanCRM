@@ -1,0 +1,40 @@
+from django.db import models
+
+from account.models import Musteri
+
+# Create your models here.
+class Kateqoriyalar(models.Model):
+    kateqoriya=models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.kateqoriya
+class Anbar(models.Model):
+    ad=models.CharField(max_length=100)
+    
+    qeydler=models.TextField(blank=True, null=True)
+    def __str__(self) -> str:
+        return self.ad
+class Mehsullar(models.Model):
+    mehsulun_adi=models.CharField(max_length=300)
+    kateqoriya=models.ForeignKey(Kateqoriyalar, on_delete=models.CASCADE, related_name="mehsul_kateqoriya")
+    anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_mehsul")
+    qiymet=models.FloatField()
+    def __str__(self) -> str:
+        return self.mehsulun_adi
+class Muqavile(models.Model):
+    musteri=models.ForeignKey(Musteri, on_delete=models.CASCADE)
+    mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE)
+    elektron_imza=models.ImageField(upload_to="media/")
+
+    def __str__(self) -> str:
+        return f"muqavile {self.musteri} - {self.mehsul}"
+
+class Dates(models.Model):
+    muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='muqavile_tarixi', on_delete=models.CASCADE)
+    tarix = models.DateField(default=False, blank=True, null=True)
+    qiymet = models.FloatField(null=True, blank=True)
+    ilkin_odenis=models.FloatField()
+    available = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return f"{self.tarix} - {self.muqavile}"

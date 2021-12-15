@@ -29,30 +29,23 @@ class UserVezifeler(models.Model):
         return f'{self.user}-{self.vezife}'
 
 class Musteri(models.Model):
-    ad = models.CharField(max_length=50)
-    soyad = models.CharField(max_length=50)
-    ata_adi = models.CharField(max_length=50)
-    sv_image = models.ImageFIeld(upload_to="media/")
+    asa = models.CharField(max_length=200)
+    # soyad = models.CharField(max_length=50)
+    # ata_adi = models.CharField(max_length=50)
+    sv_image = models.ImageField(upload_to="media/")
     tel1 = models.CharField(max_length=50)
     tel2 = models.CharField(max_length=50)
     tel3 = models.CharField(max_length=50)
     tel4 = models.CharField(max_length=50)
     unvan = models.CharField(max_length=150)
+    musteri_qeydi = models.TextField()
 
-class Mehsullar(models.Model):
-    mehsulun_adi=models.CharField(max_length=300)
+      
 
-class Kateqoriyalar(models.Model):
-    kateqoriya=models.CharField(max_length=300)
+# class NagdQiymet(models.Model):
+#     qiymet = models.FLoatField()
+#     mehsul_qiymeti=models.OneToOneField(Mehsullar, on_delete=models.CASCADE, related_name="mehsul_qiymeti")
+# class Kredit(models.Model):
+#     qiymet = models.FLoatField()
+#     ilkin_odenis = models.FLoatField(min=100.0)
 
-class MehsulKateqoriya(models.Model):
-    mehsul=models.OneToOneField(Mehsullar, on_delete=models.CASCADE, related_name="mehsul")
-    kateqoriya=models.OneToOneField(Kateqoriyalar, on_delete=models.CASCADE, related_name="kateqoriya")
-
-class NagdQiymet(models.Model):
-    qiymet = models.FLoatField()
-    mehsul_qiymeti=models.OneToOneField(Mehsullar, on_delete=models.CASCADE, related_name="mehsul_qiymeti")
-class Kredit(models.Model):
-    qiymet = models.FLoatField()
-    ilkin_odenis = models.FLoatField(min=100.0)
-    
