@@ -16,17 +16,22 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+class Merkezler(models.Model):
+    merkez=models.CharField(max_length=100)
+    def __str__(self) -> str:
+        return self.merkez
 
 class Vezifeler(models.Model):
     vezife_adi = models.CharField(max_length=50)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_vezife")
+    merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_vezife")
     def __str__(self):
         return self.vezife_adi
-
-class UserVezifeler(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user")
-    vezife = models.OneToOneField(Vezifeler, on_delete=models.CASCADE, related_name="vezife")
-    def __str__(self):
-        return f'{self.user}-{self.vezife}'
+# class UserVezifeler(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user")
+#     vezife = models.OneToOneField(Vezifeler, on_delete=models.CASCADE, related_name="vezife")
+#     def __str__(self):
+#         return f'{self.user}-{self.vezife}'
 
 class Musteri(models.Model):
     asa = models.CharField(max_length=200)

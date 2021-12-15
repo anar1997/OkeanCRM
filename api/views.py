@@ -1,8 +1,8 @@
 from django.db.models.query import QuerySet
 from rest_framework import generics, serializers
-from  .serializers import AnbarSerializer, KateqoriyalarSerializer, DatesSerializer, MehsullarSerializer, MuqavileSerializer, UserSerializer, MusteriSerializer
+from  .serializers import AnbarSerializer, KateqoriyalarSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer
 from mehsullar.models import Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar
-from account.models import User, Musteri, UserVezifeler, Vezifeler
+from account.models import User, Musteri,  Vezifeler, Merkezler
 # user get post put delete
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset=User.objects.all()
@@ -60,6 +60,22 @@ class MehsullarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class KateqoriyalarListCreateAPIView(generics.ListCreateAPIView):
     queryset=Kateqoriyalar.objects.all()
     serializer_class=KateqoriyalarSerializer
-class KateqoriyalarDetailAPIView(generics.ListCreateAPIView):
+class KateqoriyalarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Kateqoriyalar.objects.all()
     serializer_class=KateqoriyalarSerializer
+
+#  merkezler put delete post get
+class MerkezlerListCreateAPIView(generics.ListCreateAPIView):
+    queryset=Merkezler.objects.all()
+    serializer_class=MerkezlerSerializer
+
+class MerkezlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Merkezler.objects.all()
+    serializer_class=MerkezlerSerializer
+#  vezifeler put delete post get
+class VezifelerListCreateAPIView(generics.ListCreateAPIView):
+    queryset=Vezifeler.objects.all()
+    serializer_class=VezifelerSerializer
+class VezifelerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Vezifeler.objects.all()
+    serializer_class=VezifelerSerializer

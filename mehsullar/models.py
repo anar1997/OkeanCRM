@@ -1,6 +1,6 @@
 from django.db import models
 
-from account.models import Musteri
+from account.models import Musteri, User
 
 # Create your models here.
 class Kateqoriyalar(models.Model):
@@ -22,9 +22,12 @@ class Mehsullar(models.Model):
     def __str__(self) -> str:
         return self.mehsulun_adi
 class Muqavile(models.Model):
-    musteri=models.ForeignKey(Musteri, on_delete=models.CASCADE)
-    mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE)
+    dealer=models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer")
+    canvesser=models.ForeignKey(User, on_delete=models.CASCADE, related_name="canvesser")
+    musteri=models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name="musteri_muqavile")
+    mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="mehsul_muqavile")
     elektron_imza=models.ImageField(upload_to="media/")
+
 
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
