@@ -1,6 +1,6 @@
 from django.db import models
 
-from account.models import Musteri, User
+from account.models import Merkezler, Musteri, User
 
 # Create your models here.
 class Kateqoriyalar(models.Model):
@@ -10,10 +10,17 @@ class Kateqoriyalar(models.Model):
         return self.kateqoriya
 class Anbar(models.Model):
     ad=models.CharField(max_length=100)
+    merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_anbar")
     
-    qeydler=models.TextField(blank=True, null=True)
     def __str__(self) -> str:
         return self.ad
+
+class Qeydler(models.Model):
+    basliq=models.CharField(max_length=100)
+    qeyd=models.TextField()
+    anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_qeyd")
+    def __str__(self) -> str:
+        return self.basliq
 class Mehsullar(models.Model):
     mehsulun_adi=models.CharField(max_length=300)
     kateqoriya=models.ForeignKey(Kateqoriyalar, on_delete=models.CASCADE, related_name="mehsul_kateqoriya")

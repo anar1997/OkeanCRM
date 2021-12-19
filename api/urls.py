@@ -19,6 +19,8 @@ urlpatterns=[
     path('merkezler/<int:pk>', views.MerkezlerDetailAPIView.as_view(), name="merkezler_detail"),
     path('vezifeler/', views.VezifelerListCreateAPIView.as_view(), name="vezifeler"),
     path('vezifeler/<int:pk>', views.VezifelerDetailAPIView.as_view(), name="vezifeler_detail"),
+    path('qeydler/', views.QeydlerListCreateAPIView.as_view(), name="qeydler"),
+    path('qeydler/<int:pk>', views.QeydlerDetailAPIView.as_view(), name="qeydler_detail"),
     
 ]
 

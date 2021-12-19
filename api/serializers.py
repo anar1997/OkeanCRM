@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from mehsullar.models import Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar
+from mehsullar.models import Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, Qeydler
 from account.models import Musteri, User, Vezifeler, Merkezler
 
 class MuqavileSerializer(serializers.ModelSerializer):
@@ -48,4 +48,9 @@ class MerkezlerSerializer(serializers.ModelSerializer):
 class VezifelerSerializer(serializers.ModelSerializer):
     class Meta:
         model=Vezifeler
+        fields="__all__"
+
+class QeydlerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Qeydler
         fields="__all__"
