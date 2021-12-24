@@ -1,9 +1,9 @@
 from django.db.models import query
 from django.db.models.query import QuerySet
 from rest_framework import generics, serializers
-from  .serializers import AnbarSerializer, KateqoriyalarSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, QeydlerSerializer
-from mehsullar.models import Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, Qeydler
-from account.models import User, Musteri,  Vezifeler, Merkezler
+from  .serializers import AnbarSerializer, KateqoriyalarSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
+from mehsullar.models import Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, AnbarQeydler
+from account.models import MusteriQeydler, User, Musteri,  Vezifeler, Merkezler
 # user get post put delete
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset=User.objects.all()
@@ -81,9 +81,18 @@ class VezifelerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Vezifeler.objects.all()
     serializer_class=VezifelerSerializer
 
-class QeydlerListCreateAPIView(generics.ListCreateAPIView):
-    queryset=Qeydler.objects.all()
-    serializer_class=QeydlerSerializer
-class QeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset=Qeydler.objects.all()
-    serializer_class=QeydlerSerializer
+class AnbarQeydlerListCreateAPIView(generics.ListCreateAPIView):
+    queryset=AnbarQeydler.objects.all()
+    serializer_class=AnbarQeydlerSerializer
+class AnbarQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=AnbarQeydler.objects.all()
+    serializer_class=AnbarQeydlerSerializer
+
+# musteriqeydlerin put delete post get
+
+class MusteriQeydlerListCreateAPIView(generics.ListCreateAPIView):
+    queryset=MusteriQeydler.objects.all()
+    serializer_class=MusteriQeydlerSerializer
+class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=MusteriQeydler.objects.all()
+    serializer_class=MusteriQeydlerSerializer

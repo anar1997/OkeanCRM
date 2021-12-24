@@ -19,8 +19,10 @@ urlpatterns=[
     path('merkezler/<int:pk>', views.MerkezlerDetailAPIView.as_view(), name="merkezler_detail"),
     path('vezifeler/', views.VezifelerListCreateAPIView.as_view(), name="vezifeler"),
     path('vezifeler/<int:pk>', views.VezifelerDetailAPIView.as_view(), name="vezifeler_detail"),
-    path('qeydler/', views.QeydlerListCreateAPIView.as_view(), name="qeydler"),
-    path('qeydler/<int:pk>', views.QeydlerDetailAPIView.as_view(), name="qeydler_detail"),
+    path('anbar-qeydler/', views.AnbarQeydlerListCreateAPIView.as_view(), name="anbar_qeydler"),
+    path('anbar-qeydler/<int:pk>', views.AnbarQeydlerDetailAPIView.as_view(), name="anbar_qeydler_detail"),
+    path('musteri-qeydler/', views.MusteriQeydlerListCreateAPIView.as_view(), name="musteri_qeydler"),
+    path('musteri-qeydler/<int:pk>', views.MusteriQeydlerDetailAPIView.as_view(), name="musteri_qeydler_detail"),
     
 ]
 

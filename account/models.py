@@ -43,7 +43,11 @@ class Musteri(models.Model):
     tel3 = models.CharField(max_length=50)
     tel4 = models.CharField(max_length=50)
     unvan = models.CharField(max_length=150)
-    musteri_qeydi = models.TextField()
+
+class MusteriQeydler(models.Model):
+    basliq=models.CharField(max_length=100)
+    qeyd=models.TextField()
+    musteri=models.ForeignKey(Musteri,on_delete=models.CASCADE, related_name="musteri_qeydler")
 
       
 

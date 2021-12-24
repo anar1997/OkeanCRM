@@ -15,7 +15,7 @@ class Anbar(models.Model):
     def __str__(self) -> str:
         return self.ad
 
-class Qeydler(models.Model):
+class AnbarQeydler(models.Model):
     basliq=models.CharField(max_length=100)
     qeyd=models.TextField()
     anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_qeyd")
