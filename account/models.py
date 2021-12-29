@@ -5,9 +5,32 @@ from django.utils.translation import ugettext_lazy as _
 from .managers import CustomUserManager
 
 
+class Shirket(models.Model):
+    shirket_adi=models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return self.shirket_adi
+
+class Merkezler(models.Model):
+    merkez=models.CharField(max_length=100)
+    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_merkezi")
+    def __str__(self) -> str:
+        return self.merkez
+
+
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
+    asa=models.CharField(max_length=200)
+    maas=models.FloatField()
+    dogum_tarixi=models.DateField()
+    ishe_baslama_tarixi=models.DateField()
+    tel1=models.CharField(max_length=200)
+    tel2=models.CharField(max_length=200)
+    sv_image=models.ImageField(upload_to="media/")
+    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, default="", related_name="ishci")
+    ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, default="", related_name="ishci")
+
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -16,15 +39,14 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-class Merkezler(models.Model):
-    merkez=models.CharField(max_length=100)
-    def __str__(self) -> str:
-        return self.merkez
+
+
 
 class Vezifeler(models.Model):
     vezife_adi = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_vezife")
     merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_vezife")
+    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
     def __str__(self):
         return self.vezife_adi
 # class UserVezifeler(models.Model):
