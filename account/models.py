@@ -18,19 +18,27 @@ class Merkezler(models.Model):
         return self.merkez
 
 
+class Shobe(models.Model):
+    shobe_adi=models.CharField(max_length=200)
+    merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="shobe")
+    def __str__(self) -> str:
+        return self.shobe_adi
+
+
+
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
     asa=models.CharField(max_length=200)
-    maas=models.FloatField()
-    dogum_tarixi=models.DateField()
-    ishe_baslama_tarixi=models.DateField()
+    maas=models.FloatField(default=0)
+    dogum_tarixi=models.DateField(null=True, blank=True)
+    ishe_baslama_tarixi=models.DateField(null=True, blank=True)
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
     sv_image=models.ImageField(upload_to="media/")
-    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, default="", related_name="ishci")
-    ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, default="", related_name="ishci")
-
+    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, null=True, related_name="ishci")
+    ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="ishci")
+    shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="ishci")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -45,7 +53,7 @@ class User(AbstractUser):
 class Vezifeler(models.Model):
     vezife_adi = models.CharField(max_length=50)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_vezife")
-    merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_vezife")
+    shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="shobe_vezife")
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
     def __str__(self):
         return self.vezife_adi

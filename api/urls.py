@@ -23,6 +23,12 @@ urlpatterns=[
     path('anbar-qeydler/<int:pk>', views.AnbarQeydlerDetailAPIView.as_view(), name="anbar_qeydler_detail"),
     path('musteri-qeydler/', views.MusteriQeydlerListCreateAPIView.as_view(), name="musteri_qeydler"),
     path('musteri-qeydler/<int:pk>', views.MusteriQeydlerDetailAPIView.as_view(), name="musteri_qeydler_detail"),
+    path('shirket/', views.ShirketListCreateAPIView.as_view(), name="shirket"),
+    path('shirket/<int:pk>', views.ShirketDetailAPIView.as_view(), name="shirket_detail"),
+    path('shobe/', views.ShobeListCreateAPIView.as_view(), name="shobe"),
+    path('shobe/<int:pk>', views.ShobeDetailAPIView.as_view(), name="shobe_detail"),
+    path('emeliyyat/', views.EmeliyyatListCreateAPIView.as_view(), name="emeliyyat"),
+    path('emeliyyat/<int:pk>', views.EmeliyyatDetailAPIView.as_view(), name="emeliyyat_detail"),
     
 ]
 

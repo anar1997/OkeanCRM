@@ -1,9 +1,9 @@
 from django.db.models import query
 from django.db.models.query import QuerySet
 from rest_framework import generics, serializers
-from  .serializers import AnbarSerializer, KateqoriyalarSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
-from mehsullar.models import Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, AnbarQeydler
-from account.models import MusteriQeydler, User, Musteri,  Vezifeler, Merkezler
+from  .serializers import AnbarSerializer, EmeliyyatSerializer, KateqoriyalarSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
+from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, AnbarQeydler
+from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
 # user get post put delete
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset=User.objects.all()
@@ -96,3 +96,31 @@ class MusteriQeydlerListCreateAPIView(generics.ListCreateAPIView):
 class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=MusteriQeydler.objects.all()
     serializer_class=MusteriQeydlerSerializer
+
+# shirket put delete post get
+
+class ShirketListCreateAPIView(generics.ListCreateAPIView):
+    queryset=Shirket.objects.all()
+    serializer_class=ShirketSerializer
+class ShirketDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Shirket.objects.all()
+    serializer_class=ShirketSerializer
+
+# shobe put delete post get
+
+class ShobeListCreateAPIView(generics.ListCreateAPIView):
+    queryset=Shobe.objects.all()
+    serializer_class=ShobeSerializer
+
+class ShobeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Shobe.objects.all()
+    serializer_class=ShobeSerializer
+
+# emeliyyat put delete post get
+
+class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
+    queryset=Emeliyyat.objects.all()
+    serializer_class=EmeliyyatSerializer
+class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Emeliyyat.objects.all()
+    serializer_class=EmeliyyatSerializer
