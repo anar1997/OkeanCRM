@@ -77,7 +77,29 @@ class AnbarQeydlerSerializer(serializers.ModelSerializer):
         model=AnbarQeydler
         fields="__all__"
 
+class ShobeSerializer(serializers.ModelSerializer):
+    merkez=MerkezlerSerializer(read_only=True)
+    merkez_id=serializers.PrimaryKeyRelatedField(
+        queryset=Merkezler.objects.all(), source='merkez', write_only=True
+    )
+    class Meta:
+        model=Shobe
+        fields="__all__"
+
 class UserSerializer(serializers.ModelSerializer):
+    shirket=ShirketSerializer(read_only=True)
+    ofis=MerkezlerSerializer(read_only=True)
+    shobe=ShobeSerializer(read_only=True)
+    shirket_id=serializers.PrimaryKeyRelatedField(
+        queryset=Shirket.objects.all(), source='shirket', write_only=True
+    )
+    ofis_id=serializers.PrimaryKeyRelatedField(
+        queryset=Merkezler.objects.all(), source='ofis', write_only=True
+    )
+    shobe_id=serializers.PrimaryKeyRelatedField(
+        queryset=Shobe.objects.all(), source='shobe',
+        write_only=True
+    )
     class Meta:
         model=User
         fields="__all__"
@@ -108,12 +130,16 @@ class MuqavileSerializer(serializers.ModelSerializer):
     shirket_id=serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True
     )
-    
+
     class Meta:
         model=Muqavile
         fields="__all__"
 
 class DatesSerializer(serializers.ModelSerializer):
+    muqavile=MuqavileSerializer(read_only=True)
+    muqavile_id=serializers.PrimaryKeyRelatedField(
+        queryset=Muqavile.objects.all(), source='muqavile', write_only=True
+    )
     class Meta:
         model=Dates
         fields="__all__"
