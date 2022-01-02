@@ -4,12 +4,12 @@ from django.db.models.fields.related import ForeignKey
 from account.models import Merkezler, Musteri, User, Shirket
 
 # Create your models here.
-class Kateqoriyalar(models.Model):
-    kateqoriya=models.CharField(max_length=300)
-    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="kateqoriya")
+# class Kateqoriyalar(models.Model):
+#     kateqoriya=models.CharField(max_length=300)
+#     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="kateqoriya")
 
-    def __str__(self):
-        return self.kateqoriya
+#     def __str__(self):
+#         return self.kateqoriya
 class Anbar(models.Model):
     ad=models.CharField(max_length=100)
     merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_anbar")
@@ -25,7 +25,7 @@ class AnbarQeydler(models.Model):
         return self.basliq
 class Mehsullar(models.Model):
     mehsulun_adi=models.CharField(max_length=300)
-    kateqoriya=models.ForeignKey(Kateqoriyalar, on_delete=models.CASCADE, related_name="mehsul_kateqoriya")
+    # kateqoriya=models.ForeignKey(Kateqoriyalar, on_delete=models.CASCADE, related_name="mehsul_kateqoriya")
     anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_mehsul")
     qiymet=models.FloatField()
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="mehsul")

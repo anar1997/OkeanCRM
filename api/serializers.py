@@ -1,6 +1,6 @@
 from django.db.models import fields, query
 from rest_framework import serializers
-from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, AnbarQeydler
+from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler
 
 
@@ -69,12 +69,46 @@ class EmeliyyatSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class AnbarQeydlerSerializer(serializers.ModelSerializer):
-    
+    anbar=AnbarSerializer(read_only=True)
+    anbar_id=serializers.PrimaryKeyRelatedField(
+        queryset=Anbar.objects.all(), source='anbar', write_only=True
+    )
     class Meta:
         model=AnbarQeydler
         fields="__all__"
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields="__all__"
+
+class MusteriSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Musteri
+        fields="__all__"
+
 class MuqavileSerializer(serializers.ModelSerializer):
+    dealer=UserSerializer(read_only=True)
+    canvesser=UserSerializer(read_only=True)
+    musteri=MusteriSerializer(read_only=True)
+    mehsul=MehsullarSerializer(read_only=True)
+    shirket=ShirketSerializer(read_only=True)
+    dealer_id=serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='dealer', write_only=True
+    )
+    canvesser_id=serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='canvesser', write_only=True
+    )
+    musteri_id=serializers.PrimaryKeyRelatedField(
+        queryset=Musteri.objects.all(), source='muster', write_only=True
+    )
+    mehsul_id=serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True
+    )
+    shirket_id=serializers.PrimaryKeyRelatedField(
+        queryset=Shirket.objects.all(), source='shirket', write_only=True
+    )
+    
     class Meta:
         model=Muqavile
         fields="__all__"
@@ -84,23 +118,16 @@ class DatesSerializer(serializers.ModelSerializer):
         model=Dates
         fields="__all__"
 
-class KateqoriyalarSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Kateqoriyalar
-        fields="__all__"
+# class KateqoriyalarSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=Kateqoriyalar
+#         fields="__all__"
 
 
 
 
-class MusteriSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Musteri
-        fields="__all__"
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=User
-        fields="__all__"
+
 
 
 
