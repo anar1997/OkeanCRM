@@ -20,6 +20,7 @@ class MerkezlerSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 
+
 class AnbarSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
     merkez=MerkezlerSerializer(read_only=True)
@@ -33,6 +34,29 @@ class AnbarSerializer(serializers.ModelSerializer):
         model=Anbar
         fields="__all__"
 
+class MehsullarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Mehsullar
+        fields="__all__"
+
+class EmeliyyatSerializer(serializers.ModelSerializer):
+    gonderen = AnbarSerializer(read_only=True)
+    qebul_eden = AnbarSerializer(read_only=True)
+    gonderilen_mehsul = MehsullarSerializer(read_only=True)
+
+    gonderen_id = serializers.PrimaryKeyRelatedField(
+        queryset=Anbar.objects.all(), source = "gonderen", write_only=True
+    )
+    qebul_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=Anbar.objects.all(), source = "qebul_eden", write_only=True
+    )
+
+    gonderilen_mehsul_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source = "gonderilen_mehsul", write_only=True
+    )
+    class Meta:
+        model=Emeliyyat
+        fields="__all__"
 
 class AnbarQeydlerSerializer(serializers.ModelSerializer):
     
@@ -55,10 +79,7 @@ class KateqoriyalarSerializer(serializers.ModelSerializer):
         model=Kateqoriyalar
         fields="__all__"
 
-class MehsullarSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Mehsullar
-        fields="__all__"
+
 
 
 class MusteriSerializer(serializers.ModelSerializer):
@@ -91,9 +112,4 @@ class MusteriQeydlerSerializer(serializers.ModelSerializer):
 class ShobeSerializer(serializers.ModelSerializer):
     class Meta:
         model=Shobe
-        fields="__all__"
-
-class EmeliyyatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Emeliyyat
         fields="__all__"
