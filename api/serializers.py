@@ -1,4 +1,4 @@
-from django.db.models import fields
+from django.db.models import fields, query
 from rest_framework import serializers
 from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, AnbarQeydler
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler
@@ -35,6 +35,16 @@ class AnbarSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 class MehsullarSerializer(serializers.ModelSerializer):
+    anbar=AnbarSerializer(read_only=True)
+    shirket=ShirketSerializer(read_only=True)
+    anbar_id=serializers.PrimaryKeyRelatedField(
+        queryset=Anbar.objects.all(), source='anbar', 
+        write_only=True
+    )
+    shirket_id=serializers.PrimaryKeyRelatedField(
+        queryset=Shirket.objects.all(), source='shirket',
+        write_only=True
+    )
     class Meta:
         model=Mehsullar
         fields="__all__"
