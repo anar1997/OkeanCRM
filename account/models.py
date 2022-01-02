@@ -72,7 +72,7 @@ class Musteri(models.Model):
     tel2 = models.CharField(max_length=50)
     tel3 = models.CharField(max_length=50)
     tel4 = models.CharField(max_length=50)
-    unvan = models.CharField(max_length=150)
+    unvan = models.TextField()
 
 class MusteriQeydler(models.Model):
     basliq=models.CharField(max_length=100)

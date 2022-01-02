@@ -3,6 +3,43 @@ from rest_framework import serializers
 from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Kateqoriyalar, Mehsullar, AnbarQeydler
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler
 
+
+class ShirketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Shirket
+        fields="__all__"
+
+
+class MerkezlerSerializer(serializers.ModelSerializer):
+    shirket = ShirketSerializer(read_only=True)
+    shirket_id = serializers.PrimaryKeyRelatedField(
+        queryset = Shirket.objects.all(), source='shirket', write_only=True
+    )
+    class Meta:
+        model=Merkezler
+        fields="__all__"
+
+
+class AnbarSerializer(serializers.ModelSerializer):
+    shirket = ShirketSerializer(read_only=True)
+    merkez=MerkezlerSerializer(read_only=True)
+    shirket_id = serializers.PrimaryKeyRelatedField(
+        queryset = Shirket.objects.all(), source='shirket', write_only=True
+    )
+    merkez_id = serializers.PrimaryKeyRelatedField(
+        queryset = Merkezler.objects.all(), source='merkez', write_only=True
+    )
+    class Meta:
+        model=Anbar
+        fields="__all__"
+
+
+class AnbarQeydlerSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model=AnbarQeydler
+        fields="__all__"
+
 class MuqavileSerializer(serializers.ModelSerializer):
     class Meta:
         model=Muqavile
@@ -11,11 +48,6 @@ class MuqavileSerializer(serializers.ModelSerializer):
 class DatesSerializer(serializers.ModelSerializer):
     class Meta:
         model=Dates
-        fields="__all__"
-
-class AnbarSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Anbar
         fields="__all__"
 
 class KateqoriyalarSerializer(serializers.ModelSerializer):
@@ -40,30 +72,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields="__all__"
 
 
-class MerkezlerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Merkezler
-        fields="__all__"
+
 
 class VezifelerSerializer(serializers.ModelSerializer):
     class Meta:
         model=Vezifeler
         fields="__all__"
 
-class AnbarQeydlerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=AnbarQeydler
-        fields="__all__"
+
 
 class MusteriQeydlerSerializer(serializers.ModelSerializer):
     class Meta:
         model=MusteriQeydler
         fields="__all__"
 
-class ShirketSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Shirket
-        fields="__all__"
+
 
 class ShobeSerializer(serializers.ModelSerializer):
     class Meta:

@@ -43,10 +43,10 @@ class DatesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 class AnbarListCreateAPIView(generics.ListCreateAPIView):
     queryset=Anbar.objects.all()
-    seializer_class=AnbarSerializer
+    serializer_class=AnbarSerializer
 class AnbarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Anbar.objects.all()
-    seializer_class=AnbarSerializer
+    serializer_class=AnbarSerializer
 
 #  mehsullar put get post delete
 
