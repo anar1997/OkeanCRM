@@ -3,6 +3,9 @@ from django.urls.resolvers import URLPattern
 from api import views
 
 urlpatterns=[
+    path('users/', views.UserListCreateAPIView.as_view(), name="users"),
+    path('users/<int:pk>', views.UserDetailAPIView.as_view(), name="user_detail"),
+
     path('musteriler/', views.MusteriListCreateAPIView.as_view(), name="musteriler"),
     path('musteriler/<int:pk>', views.MusteriDetailAPIView.as_view(), name="musteri_detail"),
     path('muqavile/', views.MuqavileListCreateAPIView.as_view(), name="muqavile"),

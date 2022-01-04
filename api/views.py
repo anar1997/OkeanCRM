@@ -4,6 +4,7 @@ from rest_framework import generics, serializers
 from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
 from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
+
 # user get post put delete
 class UserListCreateAPIView(generics.ListCreateAPIView):
     queryset=User.objects.all()

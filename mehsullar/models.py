@@ -23,19 +23,47 @@ class AnbarQeydler(models.Model):
     anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_qeyd")
     def __str__(self) -> str:
         return self.basliq
+
 class Mehsullar(models.Model):
     mehsulun_adi=models.CharField(max_length=300)
     # kateqoriya=models.ForeignKey(Kateqoriyalar, on_delete=models.CASCADE, related_name="mehsul_kateqoriya")
     anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_mehsul")
     qiymet=models.FloatField()
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="mehsul")
+    say = models.IntegerField(default=0)
+
     def __str__(self) -> str:
         return self.mehsulun_adi
+
+
+class Stock(models.Model):
+    warehouse = models.ForeignKey(Anbar, null=True, on_delete=models.CASCADE)
+    
+    quantity = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = [["warehouse"]]
+        ordering = ("pk",)
+
+    def increase_stock(self, quantity: int, commit: bool = True):
+        """Return given quantity of product to a stock."""
+        self.quantity += quantity
+        if commit:
+            self.save(update_fields=["quantity"])
+
+    def decrease_stock(self, quantity: int, commit: bool = True):
+        self.quantity -= quantity
+        if commit:
+            self.save(update_fields=["quantity"])
 
 class Emeliyyat(models.Model):
     gonderen=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="gonderen")
     qebul_eden=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="qebul_eden")
     gonderilen_mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="gonderilen_mehsul")
+    gonderen_qeyd=models.TextField()
+
+    def __str__(self) -> str:
+        return self.qeyd[:30]
 
 class Muqavile(models.Model):
     dealer=models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer")
