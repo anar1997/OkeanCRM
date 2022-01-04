@@ -60,7 +60,7 @@ class Emeliyyat(models.Model):
     gonderen=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="gonderen")
     qebul_eden=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="qebul_eden")
     gonderilen_mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="gonderilen_mehsul")
-    gonderen_qeyd=models.TextField()
+    qeyd=models.TextField(default="")
 
     def __str__(self) -> str:
         return self.qeyd[:30]
