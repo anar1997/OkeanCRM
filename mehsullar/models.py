@@ -33,9 +33,15 @@ class Mehsullar(models.Model):
         return self.mehsulun_adi
 
 class Emeliyyat(models.Model):
+    mehsulun_sayi=models.IntegerField(default=0)
     gonderen=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="gonderen")
     qebul_eden=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="qebul_eden")
     gonderilen_mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="gonderilen_mehsul")
+
+class Hediyye(models.Model):
+    hediyye_adi= models.CharField(max_length=200)
+    def __str__(self) -> str:
+        return self.hediyye_adi
 
 class Muqavile(models.Model):
     dealer=models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer")
@@ -45,6 +51,8 @@ class Muqavile(models.Model):
     elektron_imza=models.ImageField(upload_to="media/")
     muqavile_tarixi=models.DateField(auto_now_add=True)
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile")
+    status=models.BooleanField(default=False)
+    hediyye=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
 
@@ -53,9 +61,8 @@ class Dates(models.Model):
     tarix = models.DateField(default=False, blank=True, null=True)
     qiymet = models.FloatField(null=True, blank=True)
     ilkin_odenis=models.FloatField(blank=True, null=True)
-    available = models.BooleanField(default=False)
+    status = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return f"{self.tarix} - {self.muqavile}"
-
 

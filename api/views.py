@@ -1,8 +1,8 @@
 from django.db.models import query
 from django.db.models.query import QuerySet
 from rest_framework import generics, serializers
-from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
-from mehsullar.models import Emeliyyat, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
+from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
 # user get post put delete
 class UserListCreateAPIView(generics.ListCreateAPIView):
@@ -124,3 +124,12 @@ class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
 class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Emeliyyat.objects.all()
     serializer_class=EmeliyyatSerializer
+
+# put delete post get
+
+class HediyyeListCreateAPIView(generics.ListCreateAPIView):
+    queryset=Hediyye.objects.all()
+    serializer_class=HediyyeSerializer
+class HediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset=Hediyye.objects.all()
+    serializer_class=HediyyeSerializer
