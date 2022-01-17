@@ -81,6 +81,7 @@ class Muqavile(models.Model):
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile")
     status=models.BooleanField(default=False)
     hediyye=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    pdf=models.FileField(blank=True, null=True)
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
 
