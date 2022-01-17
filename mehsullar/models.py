@@ -70,7 +70,15 @@ class Hediyye(models.Model):
     hediyye_adi= models.CharField(max_length=200)
     def __str__(self) -> str:
         return self.hediyye_adi
-
+class Hediyye2(models.Model):
+    hediyye_adi=models.CharField(max_length=200)
+    def __str__(self) -> str:
+        return self.hediyye_adi
+class Hediyye3(models.Model):
+    hediyye_adi=models.CharField(max_length=200)
+    def __str__(self) -> str:
+        return self.hediyye_adi
+        
 class Muqavile(models.Model):
     dealer=models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer")
     canvesser=models.ForeignKey(User, on_delete=models.CASCADE, related_name="canvesser")
