@@ -24,7 +24,13 @@ class Shobe(models.Model):
     def __str__(self) -> str:
         return self.shobe_adi
 
-
+class Vezifeler(models.Model):
+    vezife_adi = models.CharField(max_length=50)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_vezife")
+    shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="shobe_vezife")
+    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
+    def __str__(self):
+        return self.vezife_adi
 
 class User(AbstractUser):
     username = None
@@ -39,6 +45,7 @@ class User(AbstractUser):
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, null=True, related_name="ishci")
     ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="ishci")
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="ishci")
+    vezife = models.OneToOneField(Vezifeler, on_delete=models.CASCADE, related_name="user_vezife", null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -48,15 +55,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-
-
-class Vezifeler(models.Model):
-    vezife_adi = models.CharField(max_length=50)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_vezife")
-    shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="shobe_vezife")
-    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
-    def __str__(self):
-        return self.vezife_adi
 # class UserVezifeler(models.Model):
 #     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user")
 #     vezife = models.OneToOneField(Vezifeler, on_delete=models.CASCADE, related_name="vezife")

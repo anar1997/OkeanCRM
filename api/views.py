@@ -1,8 +1,8 @@
 from django.db.models import query
 from django.db.models.query import QuerySet
 from rest_framework import generics, serializers
-from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer, Hediyye2Serializer, Hediyye3Serializer
-from mehsullar.models import Emeliyyat, Hediyye, Hediyye2, Hediyye3, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
+from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
 
 # user get post put delete
@@ -135,20 +135,20 @@ class HediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Hediyye.objects.all()
     serializer_class=HediyyeSerializer
 
-# put delete post get
-class Hediyye2ListCreateAPIView(generics.ListCreateAPIView):
-    queryset=Hediyye2.objects.all()
-    serializer_class=Hediyye2Serializer
-class Hediyye2DetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset=Hediyye2.objects.all()
-    serializer_class=Hediyye2Serializer
+# # put delete post get
+# class Hediyye2ListCreateAPIView(generics.ListCreateAPIView):
+#     queryset=Hediyye2.objects.all()
+#     serializer_class=Hediyye2Serializer
+# class Hediyye2DetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset=Hediyye2.objects.all()
+#     serializer_class=Hediyye2Serializer
 
-# put delete post get
+# # put delete post get
 
 
-class Hediyye3ListCreateAPIView(generics.ListCreateAPIView):
-    queryset=Hediyye3.objects.all()
-    serializer_class=Hediyye3Serializer
-class Hediyye3DetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset=Hediyye3.objects.all()
-    serializer_class=Hediyye3Serializer
+# class Hediyye3ListCreateAPIView(generics.ListCreateAPIView):
+#     queryset=Hediyye3.objects.all()
+#     serializer_class=Hediyye3Serializer
+# class Hediyye3DetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset=Hediyye3.objects.all()
+#     serializer_class=Hediyye3Serializer

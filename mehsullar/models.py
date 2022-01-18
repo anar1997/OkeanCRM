@@ -70,14 +70,6 @@ class Hediyye(models.Model):
     hediyye_adi= models.CharField(max_length=200)
     def __str__(self) -> str:
         return self.hediyye_adi
-class Hediyye2(models.Model):
-    hediyye_adi=models.CharField(max_length=200)
-    def __str__(self) -> str:
-        return self.hediyye_adi
-class Hediyye3(models.Model):
-    hediyye_adi=models.CharField(max_length=200)
-    def __str__(self) -> str:
-        return self.hediyye_adi
         
 class Muqavile(models.Model):
     dealer=models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer")
@@ -88,9 +80,10 @@ class Muqavile(models.Model):
     muqavile_tarixi=models.DateField(auto_now_add=True)
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile")
     status=models.BooleanField(default=False)
-    hediyye=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    hediyye2=models.ForeignKey(Hediyye2, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    hediyye3=models.ForeignKey(Hediyye3, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    hediyye1=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True, blank=True)
+    hediyye2=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True, blank=True)
+    hediyye3=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True, blank=True)
+
     pdf=models.FileField(blank=True, null=True)
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"

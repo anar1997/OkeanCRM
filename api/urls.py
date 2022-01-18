@@ -34,10 +34,10 @@ urlpatterns=[
     path('emeliyyat/<int:pk>', views.EmeliyyatDetailAPIView.as_view(), name="emeliyyat_detail"),
     path('hediyye/', views.HediyyeListCreateAPIView.as_view(), name="hediyye"),
     path('hediyye/<int:pk>', views.HediyyeDetailAPIView.as_view(), name="hediyye_detail"),
-    path('hediyye2/', views.Hediyye2ListCreateAPIView.as_view(), name="hediyye2"),
-    path('hediyye2/<int:pk>', views.Hediyye2DetailAPIView.as_view(), name="hediyye2_detail"),
-    path('hediyye3/', views.Hediyye3ListCreateAPIView.as_view(), name="hediyye3"),
-    path('hediyye3/<int:pk>', views.Hediyye3DetailAPIView.as_view(), name="hediyye3_detail"),
+    # path('hediyye2/', views.Hediyye2ListCreateAPIView.as_view(), name="hediyye2"),
+    # path('hediyye2/<int:pk>', views.Hediyye2DetailAPIView.as_view(), name="hediyye2_detail"),
+    # path('hediyye3/', views.Hediyye3ListCreateAPIView.as_view(), name="hediyye3"),
+    # path('hediyye3/<int:pk>', views.Hediyye3DetailAPIView.as_view(), name="hediyye3_detail"),
 
 
 ]
