@@ -11,7 +11,7 @@ class UserListCreateAPIView(generics.ListCreateAPIView):
     serializer_class=UserSerializer
 class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=User.objects.all()
-    serializers_class=UserSerializer
+    serializer_class=UserSerializer
 
 
 # musteri get post put delete

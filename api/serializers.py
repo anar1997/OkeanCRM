@@ -86,6 +86,11 @@ class ShobeSerializer(serializers.ModelSerializer):
         model=Shobe
         fields="__all__"
 
+class VezifelerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Vezifeler
+        fields="__all__"
+
 class UserSerializer(serializers.ModelSerializer):
     shirket=ShirketSerializer(read_only=True)
     ofis=MerkezlerSerializer(read_only=True)
@@ -99,6 +104,11 @@ class UserSerializer(serializers.ModelSerializer):
     shobe_id=serializers.PrimaryKeyRelatedField(
         queryset=Shobe.objects.all(), source='shobe',
         write_only=True
+    )
+
+    vezife = VezifelerSerializer(read_only = True)
+    vezife_id=serializers.PrimaryKeyRelatedField(
+        queryset=Vezifeler.objects.all(), source='vezife', write_only=True
     )
     class Meta:
         model=User
