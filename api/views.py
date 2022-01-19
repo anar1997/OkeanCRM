@@ -1,17 +1,78 @@
 from django.db.models import query
 from django.db.models.query import QuerySet
 from rest_framework import generics, serializers
-from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer
+
+from rest_framework.views import APIView
+from rest_framework import status
+
+from rest_framework.response import Response
+from rest_framework import generics, permissions, mixins
+from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer, RegisterSerializer
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .utils import jwt_decode_handler
+
+#Register API
+class RegisterApi(generics.CreateAPIView):
+    queryset=User.objects.all()
+    serializer_class = RegisterSerializer
+    
+    def post(self, request, *args,  **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "message": "User Created Successfully.  Now perform Login to get your token",
+        })
+
+
+
+# class CreateUser(APIView):
+
+#     # permission_classes = [AllowAny]
+
+#     def post(self, request):
+
+#         serializer = UserSerializer(data=request.data)
+
+#         if serializer.is_valid():
+
+#             serializer.save()
+
+#             data = dict(serializer.data)
+#             data.pop("password")
+#             return Response(data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # user get post put delete
-class UserListCreateAPIView(generics.ListCreateAPIView):
+class UserList(generics.ListAPIView):
     queryset=User.objects.all()
     serializer_class=UserSerializer
-class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset=User.objects.all()
     serializer_class=UserSerializer
+
+class Login(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        data = super().post(request, *args, **kwargs)
+
+        data = data.data
+
+        acces_token = jwt_decode_handler(data.get("access"))
+
+        if not User.objects.filter(id=acces_token.get("user_id")).last(): return Response({"error": True,"message": "No such a user"},status=status.HTTP_404_NOT_FOUND)
+        
+        user =  User.objects.filter(id=acces_token.get("user_id")).last()
+        
+        user_details = UserSerializer(user)
+
+        data["user_details"] = user_details.data    
+        return Response(data)
 
 
 # musteri get post put delete
@@ -57,6 +118,7 @@ class MehsullarListCreateAPIView(generics.ListCreateAPIView):
 class MehsullarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Mehsullar.objects.all()
     serializer_class=MehsullarSerializer
+
 #  kateqoriyalar put delete post get
 
 # class KateqoriyalarListCreateAPIView(generics.ListCreateAPIView):
@@ -134,21 +196,3 @@ class HediyyeListCreateAPIView(generics.ListCreateAPIView):
 class HediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset=Hediyye.objects.all()
     serializer_class=HediyyeSerializer
-
-# # put delete post get
-# class Hediyye2ListCreateAPIView(generics.ListCreateAPIView):
-#     queryset=Hediyye2.objects.all()
-#     serializer_class=Hediyye2Serializer
-# class Hediyye2DetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset=Hediyye2.objects.all()
-#     serializer_class=Hediyye2Serializer
-
-# # put delete post get
-
-
-# class Hediyye3ListCreateAPIView(generics.ListCreateAPIView):
-#     queryset=Hediyye3.objects.all()
-#     serializer_class=Hediyye3Serializer
-# class Hediyye3DetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset=Hediyye3.objects.all()
-#     serializer_class=Hediyye3Serializer

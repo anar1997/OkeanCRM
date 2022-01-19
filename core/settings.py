@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
+
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +45,38 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'mehsullar.apps.MehsullarConfig',
 ]
+
+SIMPLE_JWT = {
+    'ROTATE_REFRESH_TOKENS': True, #When set to True, if a refresh token is submitted to the TokenRefreshView, a new refresh token will be returned along with the new access token. 
+    'BLACKLIST_AFTER_ROTATION': True, #refresh tokens submitted to the TokenRefreshView to be added to the blacklist 
+
+    'ALGORITHM': 'HS256', #TWO types either HMAC  or RSA for HMAC 'HS256', 'HS384', 'HS512: SIGNING_KEY setting will be used as both the signing key and the verifying key.  asymmetric RSA RS256', 'RS384', 'RS512' SIGNING_KEY setting must be set to a string that contains an RSA private key. Likewise, the VERIFYING_KEY
+    'SIGNING_KEY': settings.SECRET_KEY, #content of generated tokens.
+    'VERIFYING_KEY': None, #The verifying key which is used to verify the content of generated tokens
+    'AUDIENCE': None, #The audience claim to be included in generated tokens and/or validated in decoded tokens
+    'ISSUER': None, #ssuer claim to be included in generated tokens 
+
+    'AUTH_HEADER_TYPES': ('Bearer',), #Authorization: Bearer <token> ('Bearer', 'JWT')
+    'USER_ID_FIELD': 'id', #The database field from the user model that will be included in generated tokens to identify users.
+    'USER_ID_CLAIM': 'user_id', #value of 'user_id' would mean generated tokens include a “user_id” claim that contains the user’s identifier.
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type', #The claim name that is used to store a token’s type
+
+    'JTI_CLAIM': 'jti', #The claim name that is used to store a token’s unique identifier.
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  #which specifies how long access tokens are valid
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1), # how long refresh tokens are valid.
+}
+
+
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

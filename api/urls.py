@@ -1,10 +1,16 @@
 from django.urls import path, include
 from django.urls.resolvers import URLPattern
 from api import views
+from rest_framework_simplejwt.views import token_refresh
 
 urlpatterns=[
-    path('users/', views.UserListCreateAPIView.as_view(), name="users"),
-    path('users/<int:pk>', views.UserDetailAPIView.as_view(), name="user_detail"),
+    path('users/', views.UserList.as_view()),
+    # path('user/', views.CreateUser.as_view()),
+    path('register/', views.RegisterApi.as_view()),
+
+
+    path("login/", views.Login.as_view()),
+    path("token-refresh/", token_refresh),
 
     path('musteriler/', views.MusteriListCreateAPIView.as_view(), name="musteriler"),
     path('musteriler/<int:pk>', views.MusteriDetailAPIView.as_view(), name="musteri_detail"),
@@ -34,12 +40,6 @@ urlpatterns=[
     path('emeliyyat/<int:pk>', views.EmeliyyatDetailAPIView.as_view(), name="emeliyyat_detail"),
     path('hediyye/', views.HediyyeListCreateAPIView.as_view(), name="hediyye"),
     path('hediyye/<int:pk>', views.HediyyeDetailAPIView.as_view(), name="hediyye_detail"),
-    # path('hediyye2/', views.Hediyye2ListCreateAPIView.as_view(), name="hediyye2"),
-    # path('hediyye2/<int:pk>', views.Hediyye2DetailAPIView.as_view(), name="hediyye2_detail"),
-    # path('hediyye3/', views.Hediyye3ListCreateAPIView.as_view(), name="hediyye3"),
-    # path('hediyye3/<int:pk>', views.Hediyye3DetailAPIView.as_view(), name="hediyye3_detail"),
-
-
 ]
 
 
