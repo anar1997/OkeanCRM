@@ -1,15 +1,6 @@
 from django.db import models
-from django.db.models.fields.related import ForeignKey
-
 from account.models import Merkezler, Musteri, User, Shirket, Shobe
 
-# Create your models here.
-# class Kateqoriyalar(models.Model):
-#     kateqoriya=models.CharField(max_length=300)
-#     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="kateqoriya")
-
-#     def __str__(self):
-#         return self.kateqoriya
 class Anbar(models.Model):
     ad=models.CharField(max_length=100)
     merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_anbar")
@@ -85,7 +76,9 @@ class Muqavile(models.Model):
     hediyye2=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True, blank=True)
     hediyye3=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True, blank=True)
     odenis_uslubu = models.BooleanField(default=True)
-
+    ilkin_odenis=models.FloatField(blank=True, null=True)
+    ilkin_odenis_tarixi=models.DateField(blank=True, null=True)
+    
     pdf=models.FileField(blank=True, null=True)
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
@@ -94,9 +87,7 @@ class Dates(models.Model):
     muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='muqavilenin_tarixi', on_delete=models.CASCADE)
     tarix = models.DateField(default=False, blank=True, null=True)
     qiymet = models.FloatField(null=True, blank=True)
-    ilkin_odenis=models.FloatField(blank=True, null=True)
     status = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return f"{self.tarix} - {self.muqavile}"
-

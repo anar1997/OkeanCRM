@@ -27,7 +27,6 @@ class Shobe(models.Model):
 
 class Vezifeler(models.Model):
     vezife_adi = models.CharField(max_length=50)
-    # user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_vezife")
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="shobe_vezife")
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
     def __str__(self):
@@ -69,9 +68,14 @@ class Musteri(models.Model):
     tel4 = models.CharField(max_length=50)
     unvan = models.TextField()
 
+    def __str__(self):
+        return self.asa
+
 class MusteriQeydler(models.Model):
     basliq=models.CharField(max_length=100)
     qeyd=models.TextField()
     musteri=models.ForeignKey(Musteri,on_delete=models.CASCADE, related_name="musteri_qeydler")
 
+    def __str__(self):
+        return self.basliq
 
