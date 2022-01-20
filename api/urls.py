@@ -1,7 +1,10 @@
-from django.urls import path, include
-from django.urls.resolvers import URLPattern
+from django.conf import settings
+from django.urls import path
 from api import views
 from rest_framework_simplejwt.views import token_refresh
+
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.static import static
 
 urlpatterns=[
     path('users/', views.UserList.as_view()),
@@ -42,4 +45,4 @@ urlpatterns=[
     path('hediyye/<int:pk>', views.HediyyeDetailAPIView.as_view(), name="hediyye_detail"),
 ]
 
-
+urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
