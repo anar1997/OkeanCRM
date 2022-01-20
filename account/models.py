@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import CustomUserManager
+from django.utils import timezone
 
 
 class Shirket(models.Model):
@@ -34,11 +35,15 @@ class Vezifeler(models.Model):
 
 class User(AbstractUser):
     username = None
+    first_name = None
+    last_name = None
+
     email = models.EmailField(_('email address'), unique=True)
-    asa=models.CharField(max_length=200)
-    maas=models.FloatField(default=0)
-    dogum_tarixi=models.DateField(null=True, blank=True)
-    ishe_baslama_tarixi=models.DateField(null=True, blank=True)
+    asa= models.CharField(max_length=200)
+    maas= models.FloatField(default=0)
+    dogum_tarixi= models.DateField(null=True, blank=True)
+    ishe_baslama_tarixi= models.DateField(auto_now_add = True, null=True, blank=True)
+    last_login = models.DateTimeField(auto_now = True, null=True, blank=True)
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
     sv_image=models.ImageField(upload_to="media/")

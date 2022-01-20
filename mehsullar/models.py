@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.fields.related import ForeignKey
 
-from account.models import Merkezler, Musteri, User, Shirket
+from account.models import Merkezler, Musteri, User, Shirket, Shobe
 
 # Create your models here.
 # class Kateqoriyalar(models.Model):
@@ -79,6 +79,7 @@ class Muqavile(models.Model):
     elektron_imza=models.ImageField(upload_to="media/")
     muqavile_tarixi=models.DateField(auto_now_add=True)
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile")
+    shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, related_name="muqavile", null=True)
     status=models.BooleanField(default=False)
     hediyye1=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True, blank=True)
     hediyye2=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True, blank=True)

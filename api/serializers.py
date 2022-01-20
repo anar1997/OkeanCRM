@@ -1,4 +1,3 @@
-from django.db.models import fields, query
 from rest_framework import serializers
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler
@@ -145,6 +144,10 @@ class MusteriSerializer(serializers.ModelSerializer):
         model = Musteri
         fields = "__all__"
 
+class ShobeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shobe
+        fields = "__all__"
 
 class MuqavileSerializer(serializers.ModelSerializer):
     dealer = UserSerializer(read_only=True)
@@ -152,6 +155,7 @@ class MuqavileSerializer(serializers.ModelSerializer):
     musteri = MusteriSerializer(read_only=True)
     mehsul = MehsullarSerializer(read_only=True)
     shirket = ShirketSerializer(read_only=True)
+    shobe = ShobeSerializer(read_only=True)
     dealer_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), source='dealer', write_only=True
     )
@@ -159,13 +163,17 @@ class MuqavileSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), source='canvesser', write_only=True
     )
     musteri_id = serializers.PrimaryKeyRelatedField(
-        queryset=Musteri.objects.all(), source='muster', write_only=True
+        queryset=Musteri.objects.all(), source='musteri', write_only=True
     )
     mehsul_id = serializers.PrimaryKeyRelatedField(
         queryset=Mehsullar.objects.all(), source='mehsul', write_only=True
     )
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True
+    )
+
+    shobe_id = serializers.PrimaryKeyRelatedField(
+        queryset=Shobe.objects.all(), source='shobe', write_only=True
     )
 
     class Meta:
@@ -202,7 +210,3 @@ class MusteriQeydlerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ShobeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Shobe
-        fields = "__all__"

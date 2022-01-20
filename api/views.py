@@ -1,12 +1,10 @@
-from django.db.models import query
-from django.db.models.query import QuerySet
-from rest_framework import generics, serializers
+from rest_framework import generics
+from django.contrib.auth import user_logged_in
 
-from rest_framework.views import APIView
 from rest_framework import status
 
 from rest_framework.response import Response
-from rest_framework import generics, permissions, mixins
+from rest_framework import generics
 from  .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer, RegisterSerializer
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
@@ -68,6 +66,7 @@ class Login(TokenObtainPairView):
         if not User.objects.filter(id=acces_token.get("user_id")).last(): return Response({"error": True,"message": "No such a user"},status=status.HTTP_404_NOT_FOUND)
         
         user =  User.objects.filter(id=acces_token.get("user_id")).last()
+        user_logged_in.send(sender=type(user), request=request, user=user)
         
         user_details = UserSerializer(user)
 
