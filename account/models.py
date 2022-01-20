@@ -60,16 +60,8 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-# class UserVezifeler(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user")
-#     vezife = models.OneToOneField(Vezifeler, on_delete=models.CASCADE, related_name="vezife")
-#     def __str__(self):
-#         return f'{self.user}-{self.vezife}'
-
 class Musteri(models.Model):
     asa = models.CharField(max_length=200)
-    # soyad = models.CharField(max_length=50)
-    # ata_adi = models.CharField(max_length=50)
     sv_image = models.ImageField(upload_to="media/")
     tel1 = models.CharField(max_length=50)
     tel2 = models.CharField(max_length=50)
@@ -82,12 +74,4 @@ class MusteriQeydler(models.Model):
     qeyd=models.TextField()
     musteri=models.ForeignKey(Musteri,on_delete=models.CASCADE, related_name="musteri_qeydler")
 
-      
-
-# class NagdQiymet(models.Model):
-#     qiymet = models.FLoatField()
-#     mehsul_qiymeti=models.OneToOneField(Mehsullar, on_delete=models.CASCADE, related_name="mehsul_qiymeti")
-# class Kredit(models.Model):
-#     qiymet = models.FLoatField()
-#     ilkin_odenis = models.FLoatField(min=100.0)
 

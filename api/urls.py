@@ -8,9 +8,7 @@ from django.conf.urls.static import static
 
 urlpatterns=[
     path('users/', views.UserList.as_view()),
-    # path('user/', views.CreateUser.as_view()),
     path('register/', views.RegisterApi.as_view()),
-
 
     path("login/", views.Login.as_view()),
     path("token-refresh/", token_refresh),

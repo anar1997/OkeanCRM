@@ -84,6 +84,7 @@ class Muqavile(models.Model):
     hediyye1=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True, blank=True)
     hediyye2=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True, blank=True)
     hediyye3=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True, blank=True)
+    odenis_uslubu = models.BooleanField(default=True)
 
     pdf=models.FileField(blank=True, null=True)
     def __str__(self) -> str:
