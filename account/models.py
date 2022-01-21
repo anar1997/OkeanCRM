@@ -49,7 +49,7 @@ class User(AbstractUser):
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, null=True, related_name="ishci")
     ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="ishci")
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="ishci")
-    vezife = models.OneToOneField(Vezifeler, on_delete=models.CASCADE, related_name="user_vezife", null=True, blank=True)
+    vezife = models.ForeignKey(Vezifeler, on_delete=models.CASCADE, related_name="user_vezife", null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
