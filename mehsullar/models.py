@@ -63,6 +63,7 @@ class Hediyye(models.Model):
         return self.hediyye_adi
         
 class Muqavile(models.Model):
+    vanleader=models.ForeignKey(User, on_delete=models.CASCADE, related_name="vanleader", null=True)
     dealer=models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer")
     canvesser=models.ForeignKey(User, on_delete=models.CASCADE, related_name="canvesser")
     musteri=models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name="musteri_muqavile")
