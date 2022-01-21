@@ -149,6 +149,11 @@ class ShobeSerializer(serializers.ModelSerializer):
         model = Shobe
         fields = "__all__"
 
+class HediyyeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hediyye
+        fields = "__all__"
+
 class MuqavileSerializer(serializers.ModelSerializer):
     dealer = UserSerializer(read_only=True)
     canvesser = UserSerializer(read_only=True)
@@ -156,6 +161,10 @@ class MuqavileSerializer(serializers.ModelSerializer):
     mehsul = MehsullarSerializer(read_only=True)
     shirket = ShirketSerializer(read_only=True)
     shobe = ShobeSerializer(read_only=True)
+    hediyye1 = HediyyeSerializer(read_only=True)
+    hediyye2 = HediyyeSerializer(read_only=True)
+    hediyye3 = HediyyeSerializer(read_only=True)
+
     dealer_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), source='dealer', write_only=True
     )
@@ -176,6 +185,18 @@ class MuqavileSerializer(serializers.ModelSerializer):
         queryset=Shobe.objects.all(), source='shobe', write_only=True
     )
 
+    hediyye1_id = serializers.PrimaryKeyRelatedField(
+        queryset=Hediyye.objects.all(), source='hediyye1', write_only=True
+    )
+
+    hediyye2_id = serializers.PrimaryKeyRelatedField(
+        queryset=Hediyye.objects.all(), source='hediyye2', write_only=True
+    )
+
+    hediyye3_id = serializers.PrimaryKeyRelatedField(
+        queryset=Hediyye.objects.all(), source='hediyye3', write_only=True
+    )
+
     class Meta:
         model = Muqavile
         fields = "__all__"
@@ -190,13 +211,6 @@ class DatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dates
         fields = "__all__"
-
-
-class HediyyeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Hediyye
-        fields = "__all__"
-
 
 class VezifelerSerializer(serializers.ModelSerializer):
     class Meta:
