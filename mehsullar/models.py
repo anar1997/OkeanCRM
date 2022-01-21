@@ -73,6 +73,7 @@ class Muqavile(models.Model):
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile")
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, related_name="muqavile", null=True)
     status=models.BooleanField(default=False)
+    dusen=models.BooleanField(default=False)
     hediyye1=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True, blank=True)
     hediyye2=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True, blank=True)
     hediyye3=models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True, blank=True)
