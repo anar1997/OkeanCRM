@@ -10,6 +10,9 @@ from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezif
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
 
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin, CreateModelMixin,DestroyModelMixin, UpdateModelMixin
+
 # ********************************** user get post put delete **********************************
 
 

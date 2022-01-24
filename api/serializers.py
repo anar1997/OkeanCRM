@@ -166,35 +166,35 @@ class MuqavileSerializer(serializers.ModelSerializer):
     hediyye3 = HediyyeSerializer(read_only=True)
 
     dealer_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), source='dealer', write_only=True
+        queryset=User.objects.all(), source='dealer', write_only=True, required=False, allow_null=True
     )
     canvesser_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(), source='canvesser', write_only=True
+        queryset=User.objects.all(), source='canvesser', write_only=True, required=False, allow_null=True
     )
     musteri_id = serializers.PrimaryKeyRelatedField(
-        queryset=Musteri.objects.all(), source='musteri', write_only=True
+        queryset=Musteri.objects.all(), source='musteri', write_only=True, required=False, allow_null=True
     )
     mehsul_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True
+        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True, required=False, allow_null=True
     )
     shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket', write_only=True
+        queryset=Shirket.objects.all(), source='shirket', write_only=True, required=False, allow_null=True
     )
 
     shobe_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shobe.objects.all(), source='shobe', write_only=True
+        queryset=Shobe.objects.all(), source='shobe', write_only=True, required=False, allow_null=True
     )
 
     hediyye1_id = serializers.PrimaryKeyRelatedField(
-        queryset=Hediyye.objects.all(), source='hediyye1', write_only=True
+        queryset=Hediyye.objects.all(), source='hediyye1', write_only=True, required=False, allow_null=True
     )
 
     hediyye2_id = serializers.PrimaryKeyRelatedField(
-        queryset=Hediyye.objects.all(), source='hediyye2', write_only=True
+        queryset=Hediyye.objects.all(), source='hediyye2', write_only=True, required=False, allow_null=True
     )
 
     hediyye3_id = serializers.PrimaryKeyRelatedField(
-        queryset=Hediyye.objects.all(), source='hediyye3', write_only=True
+        queryset=Hediyye.objects.all(), source='hediyye3', write_only=True, required=False, allow_null=True
     )
 
     class Meta:
