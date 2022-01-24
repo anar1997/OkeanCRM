@@ -155,6 +155,7 @@ class HediyyeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class MuqavileSerializer(serializers.ModelSerializer):
+    vanleader = UserSerializer(read_only=True)
     dealer = UserSerializer(read_only=True)
     canvesser = UserSerializer(read_only=True)
     musteri = MusteriSerializer(read_only=True)
@@ -165,6 +166,9 @@ class MuqavileSerializer(serializers.ModelSerializer):
     hediyye2 = HediyyeSerializer(read_only=True)
     hediyye3 = HediyyeSerializer(read_only=True)
 
+    vanleader_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='vanleader', write_only=True, required=False, allow_null=True
+    )
     dealer_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), source='dealer', write_only=True, required=False, allow_null=True
     )
