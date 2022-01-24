@@ -4,14 +4,31 @@ from rest_framework import status
 
 from rest_framework.response import Response
 from rest_framework import generics
-from .serializers import AnbarSerializer, EmeliyyatSerializer, DatesSerializer, HediyyeSerializer, MehsullarSerializer, MerkezlerSerializer, MuqavileSerializer, MusteriQeydlerSerializer, ShirketSerializer, ShobeSerializer, UserSerializer, MusteriSerializer, VezifelerSerializer, AnbarQeydlerSerializer, RegisterSerializer
+from .serializers import (
+    AnbarSerializer,
+    KomandaSerializer,
+    EmeliyyatSerializer,
+    DatesSerializer,
+    HediyyeSerializer,
+    MehsullarSerializer,
+    MerkezlerSerializer,
+    MuqavileSerializer,
+    MusteriQeydlerSerializer,
+    ShirketSerializer,
+    ShobeSerializer,
+    UserSerializer,
+    MusteriSerializer,
+    VezifelerSerializer,
+    AnbarQeydlerSerializer,
+    RegisterSerializer
+)
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
-from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler
+from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler, Komanda
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
 
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin, CreateModelMixin,DestroyModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 
 # ********************************** user get post put delete **********************************
 
@@ -84,6 +101,19 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
 class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Muqavile.objects.all()
     serializer_class = MuqavileSerializer
+
+# ********************************** komanda get post put delete **********************************
+
+
+class KomandaListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Komanda.objects.all()
+    serializer_class = KomandaSerializer
+
+
+class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Komanda.objects.all()
+    serializer_class = KomandaSerializer
+
 
 # ********************************** date put get post delete **********************************
 

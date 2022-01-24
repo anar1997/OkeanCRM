@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns=[
     path('users/', views.UserList.as_view()),
+    path('users/<int:pk>', views.UserDetail.as_view()),
     path('register/', views.RegisterApi.as_view()),
 
     path("login/", views.Login.as_view()),
@@ -49,6 +50,9 @@ urlpatterns=[
     
     path('hediyye/', views.HediyyeListCreateAPIView.as_view(), name="hediyye"),
     path('hediyye/<int:pk>', views.HediyyeDetailAPIView.as_view(), name="hediyye_detail"),
+
+    path('komanda/', views.KomandaListCreateAPIView.as_view(), name="komanda"),
+    path('komanda/<int:pk>', views.KomandaDetailAPIView.as_view(), name="komanda_detail"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

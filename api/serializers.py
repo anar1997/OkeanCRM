@@ -1,11 +1,17 @@
 from rest_framework import serializers
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
-from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler
+from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler, Komanda
 
 
 class ShirketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shirket
+        fields = "__all__"
+
+
+class KomandaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Komanda
         fields = "__all__"
 
 
@@ -104,34 +110,41 @@ class VezifelerSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'asa', 'maas', 'dogum_tarixi', 'tel1', 'tel2', 'sv_image', 'shirket', 'ofis', 'vezife', 'shobe', 'password')
+        fields = ('id', 'email', 'asa', 'maas', 'dogum_tarixi', 'tel1', 'tel2',
+                  'sv_image', 'shirket', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['email'], password=validated_data['password'],
-                                        asa=validated_data['asa'], maas=validated_data['maas'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], shobe=validated_data['shobe'])
+                                        asa=validated_data['asa'], maas=validated_data['maas'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], komanda=validated_data['komanda'], shobe=validated_data['shobe'])
         return user
+
 
 class UserSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
     ofis = MerkezlerSerializer(read_only=True)
     shobe = ShobeSerializer(read_only=True)
     shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket', write_only=True
+        queryset=Shirket.objects.all(), source='shirket', write_only=True, required=False, allow_null=True
     )
     ofis_id = serializers.PrimaryKeyRelatedField(
-        queryset=Merkezler.objects.all(), source='ofis', write_only=True
+        queryset=Merkezler.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
     )
     shobe_id = serializers.PrimaryKeyRelatedField(
         queryset=Shobe.objects.all(), source='shobe',
-        write_only=True
+        write_only=True, required=False, allow_null=True
     )
 
     vezife = VezifelerSerializer(read_only=True)
     vezife_id = serializers.PrimaryKeyRelatedField(
-        queryset=Vezifeler.objects.all(), source='vezife', write_only=True
+        queryset=Vezifeler.objects.all(), source='vezife', write_only=True, required=False, allow_null=True
+    )
+
+    komanda = KomandaSerializer(read_only=True)
+    komanda_id = serializers.PrimaryKeyRelatedField(
+        queryset=Komanda.objects.all(), source='komanda', write_only=True, required=False, allow_null=True
     )
 
     class Meta:
@@ -144,15 +157,18 @@ class MusteriSerializer(serializers.ModelSerializer):
         model = Musteri
         fields = "__all__"
 
+
 class ShobeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shobe
         fields = "__all__"
 
+
 class HediyyeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hediyye
         fields = "__all__"
+
 
 class MuqavileSerializer(serializers.ModelSerializer):
     vanleader = UserSerializer(read_only=True)
@@ -216,6 +232,7 @@ class DatesSerializer(serializers.ModelSerializer):
         model = Dates
         fields = "__all__"
 
+
 class VezifelerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vezifeler
@@ -226,5 +243,3 @@ class MusteriQeydlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = MusteriQeydler
         fields = "__all__"
-
-

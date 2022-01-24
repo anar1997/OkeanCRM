@@ -32,6 +32,12 @@ class Vezifeler(models.Model):
     def __str__(self):
         return self.vezife_adi
 
+class Komanda(models.Model):
+    komanda_adi = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.komanda_adi
+
 class User(AbstractUser):
     username = None
     first_name = None
@@ -50,6 +56,7 @@ class User(AbstractUser):
     ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="ishci")
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="ishci")
     vezife = models.ForeignKey(Vezifeler, on_delete=models.CASCADE, related_name="user_vezife", null=True, blank=True)
+    komanda = models.OneToOneField(Komanda, on_delete=models.CASCADE, related_name="user_komanda", null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
