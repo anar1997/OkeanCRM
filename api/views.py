@@ -30,6 +30,8 @@ from .utils import jwt_decode_handler
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 # ********************************** user get post put delete **********************************
 
 
@@ -121,11 +123,15 @@ class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class DatesListCreateAPIView(generics.ListCreateAPIView):
     queryset = Dates.objects.all()
     serializer_class = DatesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['muqavile']
 
 
 class DatesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Dates.objects.all()
     serializer_class = DatesSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['muqavile']
 
 # ********************************** anbar put get post delete **********************************
 

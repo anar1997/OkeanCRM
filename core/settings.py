@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'account.apps.AccountConfig',
     'mehsullar.apps.MehsullarConfig',
+    'django_filters',
 ]
 
 SIMPLE_JWT = {
@@ -170,6 +171,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 AUTH_USER_MODEL = 'account.User'
