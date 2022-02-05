@@ -32,6 +32,11 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin, DestroyModel
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .filters import (
+    DatesFilter,
+    MuqavileFilter,
+)
+
 # ********************************** user get post put delete **********************************
 
 
@@ -98,11 +103,15 @@ class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class MuqavileListCreateAPIView(generics.ListCreateAPIView):
     queryset = Muqavile.objects.all()
     serializer_class = MuqavileSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MuqavileFilter
 
 
 class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Muqavile.objects.all()
     serializer_class = MuqavileSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MuqavileFilter
 
 # ********************************** komanda get post put delete **********************************
 
@@ -124,7 +133,7 @@ class DatesListCreateAPIView(generics.ListCreateAPIView):
     queryset = Dates.objects.all()
     serializer_class = DatesSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['muqavile']
+    filterset_class = DatesFilter
 
 
 class DatesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -132,6 +141,7 @@ class DatesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DatesSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['muqavile']
+    filterset_class = DatesFilter
 
 # ********************************** anbar put get post delete **********************************
 
