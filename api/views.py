@@ -20,9 +20,10 @@ from .serializers import (
     MusteriSerializer,
     VezifelerSerializer,
     AnbarQeydlerSerializer,
-    RegisterSerializer
+    RegisterSerializer,
+    ServisSerializer,
 )
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler, Komanda
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
@@ -248,3 +249,15 @@ class HediyyeListCreateAPIView(generics.ListCreateAPIView):
 class HediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Hediyye.objects.all()
     serializer_class = HediyyeSerializer
+
+# put delete post get
+
+class ServisListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Servis.objects.all()
+    serializer_class = ServisSerializer
+
+class ServisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Servis.objects.all()
+    serializer_class = ServisSerializer
+    
+

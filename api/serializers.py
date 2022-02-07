@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler, Komanda
 
 
@@ -242,4 +242,9 @@ class VezifelerSerializer(serializers.ModelSerializer):
 class MusteriQeydlerSerializer(serializers.ModelSerializer):
     class Meta:
         model = MusteriQeydler
+        fields = "__all__"
+
+class ServisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Servis
         fields = "__all__"

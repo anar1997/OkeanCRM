@@ -93,3 +93,18 @@ class Dates(models.Model):
     
     def __str__(self) -> str:
         return f"{self.tarix} - {self.muqavile}"
+
+class Servis(models.Model):
+    muqavile=models.ForeignKey(Muqavile, related_name="servis", on_delete=models.CASCADE)
+    kortric1=models.ForeignKey(Mehsullar, related_name="kortric1_servis", on_delete=models.CASCADE)
+    kortric2=models.ForeignKey(Mehsullar, related_name="kortric2_servis", on_delete=models.CASCADE)
+    kortric3=models.ForeignKey(Mehsullar, related_name="kortric3_servis", on_delete=models.CASCADE)
+    kortric4=models.ForeignKey(Mehsullar, related_name="kortric4_servis", on_delete=models.CASCADE)
+    kortric5=models.ForeignKey(Mehsullar, related_name="kortric5_servis", on_delete=models.CASCADE)
+    kortric6=models.ForeignKey(Mehsullar, related_name="kortric6_servis", on_delete=models.CASCADE)
+    servis_tarix6ay=models.DateField(default=False)
+    servis_tarix24ay=models.DateField(default=False)
+    servis_tarix18ay=models.DateField(default=False)
+
+    def __str__(self) -> str:
+        return f"servis-{self.muqavile}"

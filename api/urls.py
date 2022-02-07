@@ -53,6 +53,10 @@ urlpatterns=[
 
     path('komanda/', views.KomandaListCreateAPIView.as_view(), name="komanda"),
     path('komanda/<int:pk>', views.KomandaDetailAPIView.as_view(), name="komanda_detail"),
+
+    path('servis/', views.ServisListCreateAPIView.as_view(), name="servis"),
+    path('servis/<int:pk>', views.ServisDetailAPIView.as_view(), name="servis_detail"),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
