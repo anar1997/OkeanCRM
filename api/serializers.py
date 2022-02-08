@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
-from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler, Komanda
+from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Ofis, MusteriQeydler, Komanda
 
 
 class ShirketSerializer(serializers.ModelSerializer):
@@ -15,25 +15,25 @@ class KomandaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class MerkezlerSerializer(serializers.ModelSerializer):
+class OfisSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True
     )
 
     class Meta:
-        model = Merkezler
+        model = Ofis
         fields = "__all__"
 
 
 class AnbarSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
-    merkez = MerkezlerSerializer(read_only=True)
+    ofis = OfisSerializer(read_only=True)
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True
     )
-    merkez_id = serializers.PrimaryKeyRelatedField(
-        queryset=Merkezler.objects.all(), source='merkez', write_only=True
+    ofis_id = serializers.PrimaryKeyRelatedField(
+        queryset=Ofis.objects.all(), source='ofis', write_only=True
     )
 
     class Meta:
@@ -91,9 +91,9 @@ class AnbarQeydlerSerializer(serializers.ModelSerializer):
 
 
 class ShobeSerializer(serializers.ModelSerializer):
-    merkez = MerkezlerSerializer(read_only=True)
-    merkez_id = serializers.PrimaryKeyRelatedField(
-        queryset=Merkezler.objects.all(), source='merkez', write_only=True
+    ofis = OfisSerializer(read_only=True)
+    ofis_id = serializers.PrimaryKeyRelatedField(
+        queryset=Ofis.objects.all(), source='ofis', write_only=True
     )
 
     class Meta:
@@ -124,13 +124,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
-    ofis = MerkezlerSerializer(read_only=True)
+    ofis = OfisSerializer(read_only=True)
     shobe = ShobeSerializer(read_only=True)
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True, required=False, allow_null=True
     )
     ofis_id = serializers.PrimaryKeyRelatedField(
-        queryset=Merkezler.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
+        queryset=Ofis.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
     )
     shobe_id = serializers.PrimaryKeyRelatedField(
         queryset=Shobe.objects.all(), source='shobe',
@@ -159,6 +159,10 @@ class MusteriSerializer(serializers.ModelSerializer):
 
 
 class ShobeSerializer(serializers.ModelSerializer):
+    ofis = OfisSerializer(read_only=True)
+    ofis_id = serializers.PrimaryKeyRelatedField(
+        queryset=Ofis.objects.all(), source="ofis", write_only=True, required=False, allow_null=True
+    )
     class Meta:
         model = Shobe
         fields = "__all__"
@@ -178,6 +182,7 @@ class MuqavileSerializer(serializers.ModelSerializer):
     mehsul = MehsullarSerializer(read_only=True)
     shirket = ShirketSerializer(read_only=True)
     shobe = ShobeSerializer(read_only=True)
+    ofis = OfisSerializer(read_only=True)
     hediyye1 = HediyyeSerializer(read_only=True)
     hediyye2 = HediyyeSerializer(read_only=True)
     hediyye3 = HediyyeSerializer(read_only=True)
@@ -203,6 +208,10 @@ class MuqavileSerializer(serializers.ModelSerializer):
 
     shobe_id = serializers.PrimaryKeyRelatedField(
         queryset=Shobe.objects.all(), source='shobe', write_only=True, required=False, allow_null=True
+    )
+
+    ofis_id = serializers.PrimaryKeyRelatedField(
+        queryset=Ofis.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
     )
 
     hediyye1_id = serializers.PrimaryKeyRelatedField(

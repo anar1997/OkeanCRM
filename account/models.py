@@ -3,7 +3,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import CustomUserManager
-from django.utils import timezone
 
 
 class Shirket(models.Model):
@@ -12,25 +11,25 @@ class Shirket(models.Model):
     def __str__(self) -> str:
         return self.shirket_adi
 
-class Merkezler(models.Model):
-    merkez=models.CharField(max_length=100)
-    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_merkezi")
+class Ofis(models.Model):
+    ofis_adi=models.CharField(max_length=100)
+    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_ofis")
     def __str__(self) -> str:
-        return self.merkez
+        return f"{self.ofis_adi} - {self.shirket}"
 
 
 class Shobe(models.Model):
     shobe_adi=models.CharField(max_length=200)
-    merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="shobe")
+    ofis=models.ForeignKey(Ofis, on_delete=models.CASCADE, null=True, related_name="shobe")
     def __str__(self) -> str:
-        return self.shobe_adi
+        return f"{self.shobe_adi} - {self.ofis}"
 
 class Vezifeler(models.Model):
     vezife_adi = models.CharField(max_length=50)
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="shobe_vezife")
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
     def __str__(self):
-        return self.vezife_adi
+        return f"{self.vezife_adi}-{self.shobe}"
 
 class Komanda(models.Model):
     komanda_adi = models.CharField(max_length=50)
@@ -53,7 +52,7 @@ class User(AbstractUser):
     tel2=models.CharField(max_length=200)
     sv_image=models.ImageField(upload_to="media/")
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, null=True, related_name="ishci")
-    ofis=models.ForeignKey(Merkezler, on_delete=models.CASCADE, null=True, related_name="ishci")
+    ofis=models.ForeignKey(Ofis, on_delete=models.CASCADE, null=True, related_name="ishci")
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="ishci")
     vezife = models.ForeignKey(Vezifeler, on_delete=models.CASCADE, related_name="user_vezife", null=True, blank=True)
     komanda = models.OneToOneField(Komanda, on_delete=models.CASCADE, related_name="user_komanda", null=True, blank=True)

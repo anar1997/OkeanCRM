@@ -11,7 +11,7 @@ from .serializers import (
     DatesSerializer,
     HediyyeSerializer,
     MehsullarSerializer,
-    MerkezlerSerializer,
+    OfisSerializer,
     MuqavileSerializer,
     MusteriQeydlerSerializer,
     ShirketSerializer,
@@ -25,7 +25,7 @@ from .serializers import (
     StokSerializer,
 )
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
-from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler, Komanda
+from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Ofis, Komanda
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
 
@@ -115,10 +115,12 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         vanleader = self.request.user
         user = get_object_or_404(User, pk=vanleader.id)
-        anbar = get_object_or_404(Anbar, merkez=user.ofis)
+        anbar = get_object_or_404(Anbar, ofis=user.ofis)
         stok = get_object_or_404(Stok, anbar=anbar, mehsul=serializer.is_valid("mehsul"))
 
         serializer.save(vanleader=user)
+        print(f"user --> {user}")
+        print(f"stok --> {stok}")
         stok.say = stok.say-1
         
         if(stok.say==0):
@@ -128,8 +130,6 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
 
         if(stok==None):
             return Response({"detail":"Stokda məhsul yoxdur!"}, serializer.data, status=status.HTTP_404_NOT_FOUND)
-        
-        stok.save()
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -195,14 +195,14 @@ class MehsullarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 # ********************************** merkezler put delete post get **********************************
 
 
-class MerkezlerListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Merkezler.objects.all()
-    serializer_class = MerkezlerSerializer
+class OfisListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Ofis.objects.all()
+    serializer_class = OfisSerializer
 
 
-class MerkezlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Merkezler.objects.all()
-    serializer_class = MerkezlerSerializer
+class OfisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ofis.objects.all()
+    serializer_class = OfisSerializer
 # ********************************** vezifeler put delete post get **********************************
 
 

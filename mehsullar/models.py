@@ -1,12 +1,13 @@
 from django.db import models
-from account.models import Merkezler, Musteri, User, Shirket, Shobe
+from account.models import Ofis, Musteri, User, Shirket, Shobe
 
 class Anbar(models.Model):
     ad=models.CharField(max_length=100)
-    merkez=models.ForeignKey(Merkezler, on_delete=models.CASCADE, related_name="merkez_anbar")
-    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="anbar")
+    ofis=models.ForeignKey(Ofis, on_delete=models.CASCADE, null=True, related_name="ofis_anbar")
+    shirket = models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_anbar")
+
     def __str__(self) -> str:
-        return self.ad
+        return f"{self.ad} - {self.ofis}"
 
 class AnbarQeydler(models.Model):
     basliq=models.CharField(max_length=100)
@@ -60,6 +61,7 @@ class Muqavile(models.Model):
     elektron_imza=models.ImageField(upload_to="media/", null=True, blank=True)
     muqavile_tarixi=models.DateField(auto_now_add=True, null=True, blank=True)
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    ofis = models.ForeignKey(Ofis, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     status=models.BooleanField(default=False)
     dusen=models.BooleanField(default=False)
@@ -69,8 +71,8 @@ class Muqavile(models.Model):
     odenis_uslubu = models.BooleanField(default=True)
     ilkin_odenis=models.FloatField(blank=True, null=True)
     ilkin_odenis_tarixi=models.DateField(blank=True, null=True)
-    
     pdf=models.FileField(blank=True, null=True)
+
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
 
@@ -92,8 +94,8 @@ class Servis(models.Model):
     kortric5=models.ForeignKey(Mehsullar, related_name="kortric5_servis", on_delete=models.CASCADE)
     kortric6=models.ForeignKey(Mehsullar, related_name="kortric6_servis", on_delete=models.CASCADE)
     servis_tarix6ay=models.DateField(default=False, null=True, blank=True)
-    servis_tarix24ay=models.DateField(default=False, null=True, blank=True)
     servis_tarix18ay=models.DateField(default=False, null=True, blank=True)
+    servis_tarix24ay = models.DateField(default=False, null=True, blank=True)
 
     def __str__(self) -> str:
         return f"servis-{self.muqavile}"

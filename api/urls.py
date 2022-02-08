@@ -27,9 +27,9 @@ urlpatterns=[
     path('mehsullar/', views.MehsullarListCreateAPIView.as_view(), name="mehsullar"),
     path('mehsullar/<int:pk>', views.MehsullarDetailAPIView.as_view(), name="mehsullar_detail"),
     
-    path('merkezler/', views.MerkezlerListCreateAPIView.as_view(), name="merkezler"),
-    path('merkezler/<int:pk>', views.MerkezlerDetailAPIView.as_view(), name="merkezler_detail"),
-    
+    path('ofisler/', views.OfisListCreateAPIView.as_view(), name="ofisler"),
+    path('ofisler/<int:pk>', views.OfisDetailAPIView.as_view(), name="ofisler_detail"),
+
     path('vezifeler/', views.VezifelerListCreateAPIView.as_view(), name="vezifeler"),
     path('vezifeler/<int:pk>', views.VezifelerDetailAPIView.as_view(), name="vezifeler_detail"),
     
