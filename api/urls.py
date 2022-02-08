@@ -57,6 +57,8 @@ urlpatterns=[
     path('servis/', views.ServisListCreateAPIView.as_view(), name="servis"),
     path('servis/<int:pk>', views.ServisDetailAPIView.as_view(), name="servis_detail"),
 
+    path('stok/', views.StokListCreateAPIView.as_view(), name="stok"),
+    path('stok/<int:pk>', views.StokDetailAPIView.as_view(), name="stok_detail"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

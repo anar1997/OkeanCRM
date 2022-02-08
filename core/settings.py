@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'account.apps.AccountConfig',
     'mehsullar.apps.MehsullarConfig',
     'django_filters',
+    'rest_auth',
 ]
 
 SIMPLE_JWT = {

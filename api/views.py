@@ -22,8 +22,9 @@ from .serializers import (
     AnbarQeydlerSerializer,
     RegisterSerializer,
     ServisSerializer,
+    StokSerializer,
 )
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri,  Vezifeler, Merkezler, Komanda
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
@@ -38,6 +39,9 @@ from .filters import (
     MuqavileFilter,
 )
 
+import datetime
+from rest_framework.views import APIView
+from rest_framework.generics import get_object_or_404
 # ********************************** user get post put delete **********************************
 
 
@@ -107,7 +111,27 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MuqavileFilter
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        vanleader = self.request.user
+        user = get_object_or_404(User, pk=vanleader.id)
+        anbar = get_object_or_404(Anbar, merkez=user.ofis)
+        stok = get_object_or_404(Stok, anbar=anbar, mehsul=serializer.is_valid("mehsul"))
 
+        serializer.save(vanleader=user)
+        stok.say = stok.say-1
+        
+        if(stok.say==0):
+            stok.delete()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        stok.save()
+
+        if(stok==None):
+            return Response({"detail":"Stokda məhsul yoxdur!"}, serializer.data, status=status.HTTP_404_NOT_FOUND)
+        
+        stok.save()
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Muqavile.objects.all()
     serializer_class = MuqavileSerializer
@@ -238,7 +262,7 @@ class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Emeliyyat.objects.all()
     serializer_class = EmeliyyatSerializer
 
-# ********************************** put delete post get **********************************
+# ********************************** hediyye put delete post get **********************************
 
 
 class HediyyeListCreateAPIView(generics.ListCreateAPIView):
@@ -250,14 +274,49 @@ class HediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Hediyye.objects.all()
     serializer_class = HediyyeSerializer
 
-# put delete post get
+# ********************************** servis put delete post get **********************************
 
 class ServisListCreateAPIView(generics.ListCreateAPIView):
     queryset = Servis.objects.all()
     serializer_class = ServisSerializer
 
+    def perform_create(self, serializer): 
+        month6 = datetime.datetime.now() + datetime.timedelta(days=180)
+        month18 = datetime.datetime.now() + datetime.timedelta(days=540)
+        month24 = datetime.datetime.now() + datetime.timedelta(days=720)
+
+        serializer.save(
+            servis_tarix6ay = f"{month6.year}-{month6.month}-{datetime.datetime.now().day}",
+            servis_tarix18ay = f"{month18.year}-{month18.month}-{datetime.datetime.now().day}",
+            servis_tarix24ay = f"{month24.year}-{month24.month}-{datetime.datetime.now().day}"
+        )
+
 class ServisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Servis.objects.all()
     serializer_class = ServisSerializer
-    
 
+    def perform_update(self, serializer):
+        indi = f"{datetime.datetime.now().year}-{datetime.datetime.now().month}-{datetime.datetime.now().day}"
+        month6 = datetime.datetime.now() + datetime.timedelta(days=180)
+        month18 = datetime.datetime.now() + datetime.timedelta(days=540)
+        month24 = datetime.datetime.now() + datetime.timedelta(days=720)
+        print(f'tarix --> {serializer.validated_data.get("servis_tarix6ay")}')
+        print(f"indi --> {indi}")
+        if(serializer.validated_data.get("servis_tarix6ay").__eq__(indi)):
+            serializer.save(servis_tarix6ay = f"{month6.year}-{month6.month}-{datetime.datetime.now().day}")
+
+        if(serializer.validated_data.get("servis_tarix18ay").__eq__(indi)):
+            serializer.save(servis_tarix18ay = f"{month18.year}-{month18.month}-{datetime.datetime.now().day}")
+
+        if(serializer.validated_data.get("servis_tarix24ay").__eq__(indi)):
+            serializer.save(servis_tarix24ay = f"{month24.year}-{month24.month}-{datetime.datetime.now().day}")
+
+# ********************************** stok put delete post get **********************************
+
+class StokListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Stok.objects.all()
+    serializer_class = StokSerializer
+
+class StokDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Stok.objects.all()
+    serializer_class = StokSerializer

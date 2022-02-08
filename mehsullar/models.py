@@ -17,35 +17,24 @@ class AnbarQeydler(models.Model):
 
 class Mehsullar(models.Model):
     mehsulun_adi=models.CharField(max_length=300)
-    # kateqoriya=models.ForeignKey(Kateqoriyalar, on_delete=models.CASCADE, related_name="mehsul_kateqoriya")
     anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_mehsul")
     qiymet=models.FloatField()
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="mehsul")
-    say = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.mehsulun_adi
 
 
-class Stock(models.Model):
-    warehouse = models.ForeignKey(Anbar, null=True, on_delete=models.CASCADE)
-    
-    quantity = models.IntegerField(default=0)
+class Stok(models.Model):
+    anbar = models.ForeignKey(Anbar, null=True, on_delete=models.CASCADE)
+    mehsul = models.ForeignKey(Mehsullar, null=True, on_delete=models.CASCADE)
+    say = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = [["warehouse"]]
         ordering = ("pk",)
 
-    def increase_stock(self, quantity: int, commit: bool = True):
-        """Return given quantity of product to a stock."""
-        self.quantity += quantity
-        if commit:
-            self.save(update_fields=["quantity"])
-
-    def decrease_stock(self, quantity: int, commit: bool = True):
-        self.quantity -= quantity
-        if commit:
-            self.save(update_fields=["quantity"])
+    def __str__(self) -> str:
+        return f"stok -> {self.anbar}"
 
 class Emeliyyat(models.Model):
     mehsulun_sayi=models.IntegerField(default=0)
@@ -102,9 +91,9 @@ class Servis(models.Model):
     kortric4=models.ForeignKey(Mehsullar, related_name="kortric4_servis", on_delete=models.CASCADE)
     kortric5=models.ForeignKey(Mehsullar, related_name="kortric5_servis", on_delete=models.CASCADE)
     kortric6=models.ForeignKey(Mehsullar, related_name="kortric6_servis", on_delete=models.CASCADE)
-    servis_tarix6ay=models.DateField(default=False)
-    servis_tarix24ay=models.DateField(default=False)
-    servis_tarix18ay=models.DateField(default=False)
+    servis_tarix6ay=models.DateField(default=False, null=True, blank=True)
+    servis_tarix24ay=models.DateField(default=False, null=True, blank=True)
+    servis_tarix18ay=models.DateField(default=False, null=True, blank=True)
 
     def __str__(self) -> str:
         return f"servis-{self.muqavile}"

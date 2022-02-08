@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Merkezler, MusteriQeydler, Komanda
 
 
@@ -247,4 +247,20 @@ class MusteriQeydlerSerializer(serializers.ModelSerializer):
 class ServisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Servis
+        fields = "__all__"
+
+class StokSerializer(serializers.ModelSerializer):
+    anbar = AnbarSerializer(read_only=True)
+    mehsul = MehsullarSerializer(read_only=True)
+
+    anbar_id = serializers.PrimaryKeyRelatedField(
+        queryset=Anbar.objects.all(), source='anbar', write_only=True
+    )
+
+    mehsul_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True
+    )
+    
+    class Meta:
+        model = Stok
         fields = "__all__"
