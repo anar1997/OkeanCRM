@@ -6,7 +6,7 @@ from .managers import CustomUserManager
 
 
 class Shirket(models.Model):
-    shirket_adi=models.CharField(max_length=200)
+    shirket_adi=models.CharField(max_length=200, unique=True)
 
     def __str__(self) -> str:
         return self.shirket_adi
@@ -32,7 +32,7 @@ class Vezifeler(models.Model):
         return f"{self.vezife_adi}-{self.shobe}"
 
 class Komanda(models.Model):
-    komanda_adi = models.CharField(max_length=50)
+    komanda_adi = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return self.komanda_adi

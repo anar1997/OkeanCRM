@@ -1,6 +1,7 @@
 from rest_framework import generics
 from django.contrib.auth import user_logged_in
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 from rest_framework.response import Response
 from rest_framework import generics
@@ -113,25 +114,33 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        vanleader = self.request.user
-        user = get_object_or_404(User, pk=vanleader.id)
-        anbar = get_object_or_404(Anbar, ofis=user.ofis)
-        stok = get_object_or_404(Stok, anbar=anbar, mehsul=serializer.is_valid("mehsul"))
+        user = self.request.user
+        print(f"login olan user ==> {user}")
 
-        serializer.save(vanleader=user)
-        print(f"user --> {user}")
-        print(f"stok --> {stok}")
-        stok.say = stok.say-1
-        
-        if(stok.say==0):
-            stok.delete()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        stok.save()
+        mehsul_id = int(request.POST["mehsul_id"])
+        print(f"mehsul id ==> {mehsul_id}")
+        mehsul = get_object_or_404(Mehsullar, pk=mehsul_id)
+        print(f"mehsul ==> {mehsul}")
 
-        if(stok==None):
-            return Response({"detail":"Stokda məhsul yoxdur!"}, serializer.data, status=status.HTTP_404_NOT_FOUND)
-        
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if(user.is_superuser == True or user.vezife.vezife_adi == "VANLEADER"):
+            anbar = get_object_or_404(Anbar, ofis=user.ofis)
+            print(f"anbar ==> {anbar}")
+            print(f"ofis ==> {user.ofis}")
+
+            try:
+                stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
+                print(f"stok ==> {stok}")
+                if(serializer.is_valid()):
+                    serializer.save(vanleader=user)
+                    stok.say = stok.say-1
+                    if(stok.say==0):
+                        stok.delete()
+                    stok.save()
+                    return Response({"Müqavilə müvəffəqiyyətlə imzalandı"}, status=status.HTTP_201_CREATED)
+            except:
+                return Response({"Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
+
 class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Muqavile.objects.all()
     serializer_class = MuqavileSerializer
@@ -256,6 +265,70 @@ class ShobeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
     queryset = Emeliyyat.objects.all()
     serializer_class = EmeliyyatSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        gonderen = int(request.POST["gonderen_id"])
+        # print(f"Gonderen id ==> {gonderen}")
+        gonderen_anbar = get_object_or_404(Anbar, pk=gonderen)
+        # print(f"Gonderen anbar ==> {gonderen_anbar}")
+        qebul_eden_id = int(request.POST["qebul_eden_id"])
+        # print(f"qebul_eden id ==> {qebul_eden_id}")
+        qebul_eden = get_object_or_404(Anbar, pk=qebul_eden_id)
+        # print(f"qebul_eden anbar ==> {qebul_eden}")
+
+        gonderilen_mehsul_id = int(request.POST["gonderilen_mehsul_id"])
+        # print(f"Gonderilen mehsul id ==> {gonderilen_mehsul_id}")
+        gonderilen_mehsul = get_object_or_404(Mehsullar, pk=gonderilen_mehsul_id)
+        # print(f"Gonderilen mehsul ==> {gonderilen_mehsul}")
+        say = int(request.POST["mehsulun_sayi"])
+        # print(f"say ==> {say}")
+
+        qeyd = request.POST["qeyd"]
+        print(f"qeyd ==> {qeyd}")
+
+        try:
+            stok1 = get_object_or_404(Stok, anbar=gonderen_anbar, mehsul=gonderilen_mehsul)
+            stok2 = get_object_or_404(Stok, anbar=qebul_eden)
+            if (stok1 == stok2):
+                # print("BURA ISE DUSDU")
+                return Response({"Göndərən və göndərilən anbar eynidir!"}, status=status.HTTP_404_NOT_FOUND)
+            # print(f"Stok1 ==> {stok1}")
+            # print(f"stok1.say ==> {stok1.say}")
+            if (say > stok1.say):
+                return Response({"Göndərən anbarda yetəri qədər məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
+            stok1.say = stok1.say - say
+            # print(f"stok1.say ==> {stok1.say}")
+            stok1.save()
+            # print("1 calisdi **********")
+            if (stok1.say == 0):
+                stok1.delete()
+                # print(f"stok1.say ==> {stok1.say}")
+                # print("2 calisdi **********")
+            try:
+                # print(f"stok2 ==> {stok2}")
+                # print(f"stok2.say ==> {stok2.say}")
+                stok2.say = stok2.say + say
+                stok2.save()
+                # print(f"stok2.say ==> {stok2.say}")
+                # print("3 calisdi **********")
+                if (serializer.is_valid()):
+                    serializer.save(gonderen=gonderen_anbar)
+                return Response({"Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            except:
+                stok2 = Stok.objects.create(anbar=qebul_eden, mehsul=gonderilen_mehsul, say=say)
+                if (stok1 == stok2):
+                    # print("BURA DAAAA ISE DUSDU")
+                    return Response({"Göndərən və göndərilən anbar eynidir!"}, status=status.HTTP_404_NOT_FOUND)
+                stok2.save()
+                # print(f"stok2.say ==> {stok2.say}")
+                # print("4 calisdi **********")
+                if (serializer.is_valid()):
+                    serializer.save(gonderen=gonderen_anbar)
+                return Response({"Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        except:
+            # print("5 calisdi **********")
+            return Response({"Göndərən anbarda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):

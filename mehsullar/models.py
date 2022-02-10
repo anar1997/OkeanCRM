@@ -18,9 +18,7 @@ class AnbarQeydler(models.Model):
 
 class Mehsullar(models.Model):
     mehsulun_adi=models.CharField(max_length=300)
-    anbar=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_mehsul")
     qiymet=models.FloatField()
-    shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="mehsul")
 
     def __str__(self) -> str:
         return self.mehsulun_adi
@@ -42,10 +40,11 @@ class Emeliyyat(models.Model):
     gonderen=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="gonderen")
     qebul_eden=models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="qebul_eden")
     gonderilen_mehsul=models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="gonderilen_mehsul")
-    qeyd=models.TextField(default="")
+    qeyd=models.TextField(default="", null=True, blank=True)
+    emeliyyat_tarixi = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self) -> str:
-        return self.qeyd[:30]
+        return f"Əməliyyat ==> {self.gonderen} - {self.qebul_eden} {self.emeliyyat_tarixi}"
 
 class Hediyye(models.Model):
     hediyye_adi= models.CharField(max_length=200)
@@ -87,12 +86,12 @@ class Dates(models.Model):
 
 class Servis(models.Model):
     muqavile=models.ForeignKey(Muqavile, related_name="servis", on_delete=models.CASCADE)
-    kortric1=models.ForeignKey(Mehsullar, related_name="kortric1_servis", on_delete=models.CASCADE)
-    kortric2=models.ForeignKey(Mehsullar, related_name="kortric2_servis", on_delete=models.CASCADE)
-    kortric3=models.ForeignKey(Mehsullar, related_name="kortric3_servis", on_delete=models.CASCADE)
-    kortric4=models.ForeignKey(Mehsullar, related_name="kortric4_servis", on_delete=models.CASCADE)
-    kortric5=models.ForeignKey(Mehsullar, related_name="kortric5_servis", on_delete=models.CASCADE)
-    kortric6=models.ForeignKey(Mehsullar, related_name="kortric6_servis", on_delete=models.CASCADE)
+    kortric1=models.ForeignKey(Mehsullar, related_name="kortric1_servis", on_delete=models.CASCADE, null=True)
+    kortric2=models.ForeignKey(Mehsullar, related_name="kortric2_servis", on_delete=models.CASCADE, null=True)
+    kortric3=models.ForeignKey(Mehsullar, related_name="kortric3_servis", on_delete=models.CASCADE, null=True)
+    kortric4=models.ForeignKey(Mehsullar, related_name="kortric4_servis", on_delete=models.CASCADE, null=True)
+    kortric5=models.ForeignKey(Mehsullar, related_name="kortric5_servis", on_delete=models.CASCADE, null=True)
+    kortric6=models.ForeignKey(Mehsullar, related_name="kortric6_servis", on_delete=models.CASCADE, null=True)
     servis_tarix6ay=models.DateField(default=False, null=True, blank=True)
     servis_tarix18ay=models.DateField(default=False, null=True, blank=True)
     servis_tarix24ay = models.DateField(default=False, null=True, blank=True)

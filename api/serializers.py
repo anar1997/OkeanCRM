@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Ofis, MusteriQeydler, Komanda
 
@@ -8,11 +10,28 @@ class ShirketSerializer(serializers.ModelSerializer):
         model = Shirket
         fields = "__all__"
 
+    def create(self, validated_data):
+        shirket_adi = validated_data.get('shirket_adi')
+        validated_data['shirket_adi'] = shirket_adi.upper()
+        try:
+            return super(ShirketSerializer, self).create(validated_data)
+        except:
+            raise ValidationError('Bu ad ilə şirkət artıq qeydiyyatdan keçirilib')
+
 
 class KomandaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Komanda
         fields = "__all__"
+
+    def create(self, validated_data):
+        komanda_adi = validated_data.get('komanda_adi')
+        validated_data['komanda_adi'] = komanda_adi.upper()
+        try:
+            return super(KomandaSerializer, self).create(validated_data)
+        except:
+            raise ValidationError('Bu ad ilə komanda artıq qeydiyyatdan keçirilib')
+
 
 
 class OfisSerializer(serializers.ModelSerializer):
@@ -24,6 +43,14 @@ class OfisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ofis
         fields = "__all__"
+
+    def create(self, validated_data):
+        ofis_adi = validated_data.get('ofis_adi')
+        validated_data['ofis_adi'] = ofis_adi.upper()
+        try:
+            return super(OfisSerializer, self).create(validated_data)
+        except:
+            raise ValidationError('Bu ad ilə ofis artıq qeydiyyatdan keçirilib')
 
 
 class AnbarSerializer(serializers.ModelSerializer):
@@ -40,22 +67,27 @@ class AnbarSerializer(serializers.ModelSerializer):
         model = Anbar
         fields = "__all__"
 
+    def create(self, validated_data):
+        ad = validated_data.get('ad')
+        validated_data['ad'] = ad.upper()
+        try:
+            return super(AnbarSerializer, self).create(validated_data)
+        except:
+            raise ValidationError('Bu ad ilə anbar artıq qeydiyyatdan keçirilib')
+
 
 class MehsullarSerializer(serializers.ModelSerializer):
-    anbar = AnbarSerializer(read_only=True)
-    shirket = ShirketSerializer(read_only=True)
-    anbar_id = serializers.PrimaryKeyRelatedField(
-        queryset=Anbar.objects.all(), source='anbar',
-        write_only=True
-    )
-    shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket',
-        write_only=True
-    )
-
     class Meta:
         model = Mehsullar
         fields = "__all__"
+
+    def create(self, validated_data):
+        mehsulun_adi = validated_data.get('mehsulun_adi')
+        validated_data['mehsulun_adi'] = mehsulun_adi.upper()
+        try:
+            return super(MehsullarSerializer, self).create(validated_data)
+        except:
+            raise ValidationError('Bu ad ilə məhsul artıq qeydiyyatdan keçirilib')
 
 
 class EmeliyyatSerializer(serializers.ModelSerializer):
@@ -78,7 +110,6 @@ class EmeliyyatSerializer(serializers.ModelSerializer):
         model = Emeliyyat
         fields = "__all__"
 
-
 class AnbarQeydlerSerializer(serializers.ModelSerializer):
     anbar = AnbarSerializer(read_only=True)
     anbar_id = serializers.PrimaryKeyRelatedField(
@@ -100,12 +131,23 @@ class ShobeSerializer(serializers.ModelSerializer):
         model = Shobe
         fields = "__all__"
 
-
 class VezifelerSerializer(serializers.ModelSerializer):
+    shobe = ShobeSerializer(read_only=True)
+    shirket = ShirketSerializer(read_only=True)
+    shobe_id = serializers.PrimaryKeyRelatedField(
+        queryset=Shobe.objects.all(), source='shobe', write_only=True
+    )
+    shirket_id = serializers.PrimaryKeyRelatedField(
+        queryset=Shirket.objects.all(), source='shirket', write_only=True
+    )
     class Meta:
         model = Vezifeler
         fields = "__all__"
 
+    def create(self, validated_data):
+        vezife_adi = validated_data.get('vezife_adi')
+        validated_data['vezife_adi'] = vezife_adi.upper()
+        return super(VezifelerSerializer, self).create(validated_data)
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -156,17 +198,6 @@ class MusteriSerializer(serializers.ModelSerializer):
     class Meta:
         model = Musteri
         fields = "__all__"
-
-
-class ShobeSerializer(serializers.ModelSerializer):
-    ofis = OfisSerializer(read_only=True)
-    ofis_id = serializers.PrimaryKeyRelatedField(
-        queryset=Ofis.objects.all(), source="ofis", write_only=True, required=False, allow_null=True
-    )
-    class Meta:
-        model = Shobe
-        fields = "__all__"
-
 
 class HediyyeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -240,13 +271,6 @@ class DatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dates
         fields = "__all__"
-
-
-class VezifelerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Vezifeler
-        fields = "__all__"
-
 
 class MusteriQeydlerSerializer(serializers.ModelSerializer):
     class Meta:
