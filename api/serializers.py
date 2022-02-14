@@ -278,9 +278,40 @@ class MusteriQeydlerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ServisSerializer(serializers.ModelSerializer):
+    muqavile = MuqavileSerializer(read_only=True)
+    kartric1 = MehsullarSerializer(read_only=True)
+    kartric2 = MehsullarSerializer(read_only=True)
+    kartric3 = MehsullarSerializer(read_only=True)
+    kartric4 = MehsullarSerializer(read_only=True)
+    kartric5 = MehsullarSerializer(read_only=True)
+    kartric6 = MehsullarSerializer(read_only=True)
+
+    muqavile_id = serializers.PrimaryKeyRelatedField(
+        queryset=Muqavile.objects.all(), source='muqavile', write_only=True
+    )
+    kartric1_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='kartric1', write_only=True
+    )
+    kartric2_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='kartric2', write_only=True
+    )
+    kartric3_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='kartric3', write_only=True
+    )
+    kartric4_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='kartric4', write_only=True
+    )
+    kartric5_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='kartric5', write_only=True
+    )
+    kartric6_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='kartric6', write_only=True
+    )
+
     class Meta:
         model = Servis
         fields = "__all__"
+
 
 class StokSerializer(serializers.ModelSerializer):
     anbar = AnbarSerializer(read_only=True)
