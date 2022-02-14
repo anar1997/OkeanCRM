@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'mehsullar.apps.MehsullarConfig',
     'django_filters',
     'rest_auth',
+    'django_extensions',
 ]
 
 SIMPLE_JWT = {
