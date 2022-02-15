@@ -9,7 +9,7 @@ from .serializers import (
     AnbarSerializer,
     KomandaSerializer,
     EmeliyyatSerializer,
-    DatesSerializer,
+    OdemeTarixSerializer,
     HediyyeSerializer,
     MehsullarSerializer,
     OfisSerializer,
@@ -25,7 +25,7 @@ from .serializers import (
     ServisSerializer,
     StokSerializer,
 )
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri, Vezifeler, Ofis, Komanda
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
@@ -33,7 +33,7 @@ from .utils import jwt_decode_handler
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .filters import (
-    DatesFilter,
+    OdemeTarixFilter,
     MuqavileFilter,
 )
 
@@ -164,19 +164,19 @@ class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 # ********************************** date put get post delete **********************************
 
 
-class DatesListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Dates.objects.all()
-    serializer_class = DatesSerializer
+class OdemeTarixListCreateAPIView(generics.ListCreateAPIView):
+    queryset = OdemeTarix.objects.all()
+    serializer_class = OdemeTarixSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = DatesFilter
+    filterset_class = OdemeTarixFilter
 
 
-class DatesDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Dates.objects.all()
-    serializer_class = DatesSerializer
+class OdemeTarixDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OdemeTarix.objects.all()
+    serializer_class = OdemeTarixSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['muqavile']
-    filterset_class = DatesFilter
+    filterset_class = OdemeTarixFilter
 
 
 # ********************************** anbar put get post delete **********************************

@@ -18,8 +18,8 @@ urlpatterns=[
     path('muqavile/', views.MuqavileListCreateAPIView.as_view(), name="muqavile"),
     path('muqavile/<int:pk>', views.MuqavileDetailAPIView.as_view(), name="muqavile_detail"),
 
-    path('dates/', views.DatesListCreateAPIView.as_view(), name="dates"),
-    path('dates/<int:pk>', views.DatesDetailAPIView.as_view(), name="dates_detail"),
+    path('odemetarixleri/', views.OdemeTarixListCreateAPIView.as_view(), name="odemetarix"),
+    path('odemetarixleri/<int:pk>', views.OdemeTarixDetailAPIView.as_view(), name="odemetarix_detail"),
     
     path('anbar/', views.AnbarListCreateAPIView.as_view(), name="anbar"),
     path('anbar/<int:pk>', views.AnbarDetailAPIView.as_view(), name="anbar_detail"),

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, Dates, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
+from mehsullar.models import Emeliyyat, Hediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Ofis, MusteriQeydler, Komanda
 
 
@@ -262,14 +262,14 @@ class MuqavileSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class DatesSerializer(serializers.ModelSerializer):
+class OdemeTarixSerializer(serializers.ModelSerializer):
     muqavile = MuqavileSerializer(read_only=True)
     muqavile_id = serializers.PrimaryKeyRelatedField(
         queryset=Muqavile.objects.all(), source='muqavile', write_only=True
     )
 
     class Meta:
-        model = Dates
+        model = OdemeTarix
         fields = "__all__"
 
 class MusteriQeydlerSerializer(serializers.ModelSerializer):

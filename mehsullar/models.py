@@ -89,7 +89,7 @@ class Muqavile(models.Model):
         return f"muqavile {self.musteri} - {self.mehsul}"
 
 
-class Dates(models.Model):
+class OdemeTarix(models.Model):
     muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='muqavilenin_tarixi',
                                  on_delete=models.CASCADE)
     tarix = models.DateField(default=False, blank=True, null=True)
