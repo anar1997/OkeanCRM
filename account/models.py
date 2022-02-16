@@ -8,12 +8,19 @@ from .managers import CustomUserManager
 class Shirket(models.Model):
     shirket_adi=models.CharField(max_length=200, unique=True)
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return self.shirket_adi
 
 class Ofis(models.Model):
     ofis_adi=models.CharField(max_length=100)
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_ofis")
+
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"{self.ofis_adi} - {self.shirket}"
 
@@ -21,6 +28,10 @@ class Ofis(models.Model):
 class Shobe(models.Model):
     shobe_adi=models.CharField(max_length=200)
     ofis=models.ForeignKey(Ofis, on_delete=models.CASCADE, null=True, related_name="shobe")
+
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"{self.shobe_adi} - {self.ofis}"
 
@@ -28,11 +39,18 @@ class Vezifeler(models.Model):
     vezife_adi = models.CharField(max_length=50)
     shobe=models.ForeignKey(Shobe, on_delete=models.CASCADE, null=True, related_name="shobe_vezife")
     shirket=models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_vezifeleri")
+
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self):
         return f"{self.vezife_adi}-{self.shobe}"
 
 class Komanda(models.Model):
     komanda_adi = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self):
         return self.komanda_adi
@@ -62,6 +80,9 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self):
         return self.email
 
@@ -74,6 +95,9 @@ class Musteri(models.Model):
     tel4 = models.CharField(max_length=50)
     unvan = models.TextField()
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self):
         return self.asa
 
@@ -81,6 +105,9 @@ class MusteriQeydler(models.Model):
     basliq=models.CharField(max_length=100)
     qeyd=models.TextField()
     musteri=models.ForeignKey(Musteri,on_delete=models.CASCADE, related_name="musteri_qeydler")
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self):
         return self.basliq

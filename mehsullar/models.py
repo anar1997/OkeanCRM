@@ -6,6 +6,9 @@ class Anbar(models.Model):
     ad = models.CharField(max_length=100)
     ofis = models.ForeignKey(Ofis, on_delete=models.CASCADE, null=True, related_name="ofis_anbar")
     shirket = models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_anbar")
+    
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"{self.ad} - {self.ofis}"
@@ -16,6 +19,9 @@ class AnbarQeydler(models.Model):
     qeyd = models.TextField()
     anbar = models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_qeyd")
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return self.basliq
 
@@ -23,6 +29,9 @@ class AnbarQeydler(models.Model):
 class Mehsullar(models.Model):
     mehsulun_adi = models.CharField(max_length=300)
     qiymet = models.FloatField()
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return self.mehsulun_adi
@@ -48,12 +57,18 @@ class Emeliyyat(models.Model):
     qeyd = models.TextField(default="", null=True, blank=True)
     emeliyyat_tarixi = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"Əməliyyat ==> {self.gonderen} - {self.qebul_eden} {self.emeliyyat_tarixi}"
 
 
 class Hediyye(models.Model):
     hediyye_adi = models.CharField(max_length=200)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return self.hediyye_adi
@@ -85,6 +100,9 @@ class Muqavile(models.Model):
     ilkin_odenis_tarixi = models.DateField(blank=True, null=True)
     pdf = models.FileField(blank=True, null=True)
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
 
@@ -95,6 +113,9 @@ class OdemeTarix(models.Model):
     tarix = models.DateField(default=False, blank=True, null=True)
     qiymet = models.FloatField(null=True, blank=True)
     status = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"{self.tarix} - {self.muqavile}"
@@ -111,6 +132,9 @@ class Servis(models.Model):
     servis_tarix6ay = models.DateField(default=False, null=True, blank=True)
     servis_tarix18ay = models.DateField(default=False, null=True, blank=True)
     servis_tarix24ay = models.DateField(default=False, null=True, blank=True)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"servis-{self.muqavile}"
