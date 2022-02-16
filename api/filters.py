@@ -1,8 +1,11 @@
 import django_filters
+from django_filters import DateFromToRangeFilter
+
 from mehsullar.models import OdemeTarix, Muqavile
 
 
 class OdemeTarixFilter(django_filters.FilterSet):
+    tarix = DateFromToRangeFilter()
     class Meta:
         model = OdemeTarix
         fields = {
@@ -11,15 +14,15 @@ class OdemeTarixFilter(django_filters.FilterSet):
             'muqavile__shirket__shirket_adi': ['exact', 'icontains'],
             'muqavile__vanleader__asa': ['exact', 'icontains'],
 
-            'muqavile__odenis_uslubu': ['exact', 'icontains'],
-            'muqavile__status': ['exact', 'icontains'],
-            'muqavile__dusen': ['exact', 'icontains'],
+            'muqavile__odenis_uslubu': ['exact'],
+            'muqavile__status': ['exact'],
+            'muqavile__dusen': ['exact'],
 
             'muqavile__musteri__asa': ['exact', 'icontains'],
             'muqavile__musteri__unvan': ['exact', 'icontains'],
 
-            'tarix': ['exact', 'icontains'],
-            'status': ['exact', 'icontains'],
+            'tarix': ['exact'],
+            'status': ['exact'],
         }
 
 

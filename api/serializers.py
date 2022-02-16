@@ -273,6 +273,11 @@ class OdemeTarixSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class MusteriQeydlerSerializer(serializers.ModelSerializer):
+    musteri = MusteriSerializer(read_only=True)
+
+    musteri_id = serializers.PrimaryKeyRelatedField(
+        queryset=MusteriQeydler.objects.all(), source='musteri', write_only=True
+    )
     class Meta:
         model = MusteriQeydler
         fields = "__all__"
