@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import generics
 from .serializers import (
     AnbarSerializer,
+    HoldingSerializer,
     KomandaSerializer,
     EmeliyyatSerializer,
     OdemeTarixSerializer,
@@ -24,9 +25,43 @@ from .serializers import (
     RegisterSerializer,
     ServisSerializer,
     StokSerializer,
+    HoldingdenShirketlereTransferSerializer,
+    ShirketdenHoldingeTransferSerializer,
+    OfisdenShirketeTransferSerializer,
+    ShirketdenOfislereTransferSerializer,
+    OfisKassaSerializer,
+    ShirketKassaSerializer,
+    HoldingKassaSerializer,
 )
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
-from account.models import MusteriQeydler, Shirket, Shobe, User, Musteri, Vezifeler, Ofis, Komanda
+from mehsullar.models import (
+    Emeliyyat, 
+    Hediyye, 
+    Muqavile, 
+    OdemeTarix, 
+    Anbar, 
+    Mehsullar, 
+    AnbarQeydler, 
+    Servis, 
+    Stok
+)
+from account.models import (
+    MusteriQeydler, 
+    Shirket, 
+    Shobe, 
+    User, 
+    Musteri, 
+    Vezifeler, 
+    Ofis, 
+    Komanda, 
+    Holding, 
+    ShirketKassa, 
+    OfisKassa,
+    HoldingKassa,
+    HoldingdenShirketlereTransfer,
+    OfisdenShirketeTransfer,
+    ShirketdenHoldingeTransfer,
+    ShirketdenOfislereTransfer
+)
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
 
@@ -92,7 +127,6 @@ class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 # ********************************** musteriqeydlerin put delete post get **********************************
 
-
 class MusteriQeydlerListCreateAPIView(generics.ListCreateAPIView):
     queryset = MusteriQeydler.objects.all()
     serializer_class = MusteriQeydlerSerializer
@@ -122,20 +156,44 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
         mehsul = get_object_or_404(Mehsullar, pk=mehsul_id)
         print(f"mehsul ==> {mehsul}")
 
+        verilecek_ilkin_odenis = request.POST["verilecek_ilkin_odenis"]
+        print(f"verilecek_ilkin_odenis ==> {verilecek_ilkin_odenis}")
+
+        ilkin_odenis = request.POST["ilkin_odenis"]
+        print(f"ilkin_odenis ==> {ilkin_odenis}")
+        
+        ilkin_odenis_qaliq = request.POST["ilkin_odenis_qaliq"]
+        print(f"ilkin_odenis_qaliq ==> {ilkin_odenis_qaliq}")
+
+
         if (user.is_superuser == True or user.vezife.vezife_adi == "VANLEADER"):
             anbar = get_object_or_404(Anbar, ofis=user.ofis)
             print(f"anbar ==> {anbar}")
             print(f"ofis ==> {user.ofis}")
+            stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
+            print(f"stok ==> {stok}")
 
             try:
                 stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
                 print(f"stok ==> {stok}")
                 if (serializer.is_valid()):
-                    serializer.save(vanleader=user)
                     stok.say = stok.say - 1
+                    stok.save()
                     if (stok.say == 0):
                         stok.delete()
-                    stok.save()
+                    print(f"stok say ==> {stok.say}")
+                    print(float(verilecek_ilkin_odenis) == float(ilkin_odenis))
+
+                    if(float(verilecek_ilkin_odenis) == float(ilkin_odenis)):
+                        serializer.save(vanleader=user, ilkin_odenis_status=True)
+                        print("Bura 1 ishe dushdu")
+                    elif(ilkin_odenis_qaliq != ""):
+                        if(float(verilecek_ilkin_odenis) == (float(ilkin_odenis) + float(ilkin_odenis_qaliq))):
+                            serializer.save(vanleader=user, ilkin_odenis_status=True)
+                            print("Bura 2 ishe dushdu")
+                    else:
+                        serializer.save(vanleader=user)
+                    
                     return Response({"Müqavilə müvəffəqiyyətlə imzalandı"}, status=status.HTTP_201_CREATED)
             except:
                 return Response({"Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
@@ -147,6 +205,21 @@ class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = MuqavileFilter
 
+    # def update(self, request, *args, **kwargs):
+    #     mehsul_id = int(request.POST["mehsul_id"])
+    #     print(f"mehsul id ==> {mehsul_id}")
+
+    #     mehsul = get_object_or_404(Mehsullar, pk=mehsul_id)
+    #     print(f"mehsul ==> {mehsul}")
+
+    #     ilkin_odenis = request.POST["ilkin_odenis"]
+    #     print(f"ilkin_odenis ==> {ilkin_odenis}")
+
+    #     serializer = self.get_serializer(data=request.data)
+    #     if (serializer.is_valid()):
+    #         if(ilkin_odenis != ""):
+    #                     serializer.save(ilkin_odenis_status=True)
+
 
 # ********************************** komanda get post put delete **********************************
 
@@ -155,13 +228,19 @@ class KomandaListCreateAPIView(generics.ListCreateAPIView):
     queryset = Komanda.objects.all()
     serializer_class = KomandaSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response({"detail": "Komanda müvəffəqiyyətlə düzəldildi"}, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Komanda.objects.all()
     serializer_class = KomandaSerializer
 
-
-# ********************************** date put get post delete **********************************
+# ********************************** odeme tarixi put get post delete **********************************
 
 
 class OdemeTarixListCreateAPIView(generics.ListCreateAPIView):
@@ -295,7 +374,6 @@ class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
 
         qeyd = request.POST["qeyd"]
         print(f"qeyd ==> {qeyd}")
-
 
         try:
             stok1 = get_object_or_404(Stok, anbar=gonderen_anbar, mehsul=gonderilen_mehsul)
@@ -557,9 +635,10 @@ class StokDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         print(f"Mehsul ==> {mehsul}")
         anbar = get_object_or_404(Anbar, pk=anbar_id)
         print(f"anbar ==> {anbar}")
-
         try:
-            stok = get_object_or_404(Stok, anbar=anbar)
+            stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
+            print(f"stok ==> {stok}")
+
             print(f"evvel mehsul_sayi ==> {stok.say}")
             stok.say = stok.say + say
             print(f"sonra mehsul_sayi ==> {stok.say}")
@@ -573,3 +652,90 @@ class StokDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"Problem"}, status=status.HTTP_404_NOT_FOUND)
 
 
+# ********************************** holding put delete post get **********************************
+
+class HoldingListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Holding.objects.all()
+    serializer_class = HoldingSerializer
+
+
+class HoldingDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Holding.objects.all()
+    serializer_class = HoldingSerializer
+
+# ********************************** kassa put delete post get **********************************
+
+class HoldingKassaListCreateAPIView(generics.ListCreateAPIView):
+    queryset = HoldingKassa.objects.all()
+    serializer_class = HoldingKassaSerializer
+
+
+class HoldingKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = HoldingKassa.objects.all()
+    serializer_class = HoldingKassaSerializer
+
+# **********************************
+
+class ShirketKassaListCreateAPIView(generics.ListCreateAPIView):
+    queryset = ShirketKassa.objects.all()
+    serializer_class = ShirketKassaSerializer
+
+
+class ShirketKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ShirketKassa.objects.all()
+    serializer_class = ShirketKassaSerializer
+
+# **********************************
+
+class OfisKassaListCreateAPIView(generics.ListCreateAPIView):
+    queryset = OfisKassa.objects.all()
+    serializer_class = OfisKassaSerializer
+
+
+class OfisKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OfisKassa.objects.all()
+    serializer_class = OfisKassaSerializer
+
+# ********************************** transfer put delete post get **********************************
+
+class HoldingdenShirketlereTransferListCreateAPIView(generics.ListCreateAPIView):
+    queryset = HoldingdenShirketlereTransfer.objects.all()
+    serializer_class = HoldingdenShirketlereTransferSerializer
+
+
+class HoldingdenShirketlereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = HoldingdenShirketlereTransfer.objects.all()
+    serializer_class = HoldingdenShirketlereTransferSerializer
+
+# **********************************
+
+class ShirketdenHoldingeTransferListCreateAPIView(generics.ListCreateAPIView):
+    queryset = ShirketdenHoldingeTransfer.objects.all()
+    serializer_class = ShirketdenHoldingeTransferSerializer
+
+
+class ShirketdenHoldingeTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ShirketdenHoldingeTransfer.objects.all()
+    serializer_class = ShirketdenHoldingeTransferSerializer
+
+# **********************************
+
+class OfisdenShirketeTransferListCreateAPIView(generics.ListCreateAPIView):
+    queryset = OfisdenShirketeTransfer.objects.all()
+    serializer_class = OfisdenShirketeTransferSerializer
+
+
+class OfisdenShirketeTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OfisdenShirketeTransfer.objects.all()
+    serializer_class = OfisdenShirketeTransferSerializer
+
+# **********************************
+
+class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
+    queryset = ShirketdenOfislereTransfer.objects.all()
+    serializer_class = ShirketdenOfislereTransferSerializer
+
+
+class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ShirketdenOfislereTransfer.objects.all()
+    serializer_class = ShirketdenOfislereTransferSerializer

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.urls import path
-from api import views
+from api.v1 import views
 from rest_framework_simplejwt.views import token_refresh
 from django.conf.urls.static import static
 
@@ -59,6 +59,30 @@ urlpatterns=[
 
     path('stok/', views.StokListCreateAPIView.as_view(), name="stok"),
     path('stok/<int:pk>', views.StokDetailAPIView.as_view(), name="stok_detail"),
+
+    path('holding/', views.HoldingListCreateAPIView.as_view(), name="holding"),
+    path('holding/<int:pk>', views.HoldingDetailAPIView.as_view(), name="holding_detail"),
+    
+    path('holding-kassa/', views.HoldingKassaListCreateAPIView.as_view(), name="holding_kassa"),
+    path('holding-kassa/<int:pk>', views.HoldingKassaDetailAPIView.as_view(), name="holding_kassa_detail"),
+
+    path('shirket-kassa/', views.ShirketKassaListCreateAPIView.as_view(), name="shirket_kassa"),
+    path('shirket-kassa/<int:pk>', views.ShirketKassaDetailAPIView.as_view(), name="shirket_kassa_detail"),
+
+    path('ofis-kassa/', views.OfisKassaListCreateAPIView.as_view(), name="ofis_kassa"),
+    path('ofis-kassa/<int:pk>', views.OfisKassaDetailAPIView.as_view(), name="ofis_kassa_detail"),
+
+    path('shirket-holding-transfer/', views.ShirketdenHoldingeTransferListCreateAPIView.as_view(), name="shirket_holding_transfer"),
+    path('shirket-holding-transfer/<int:pk>', views.ShirketdenHoldingeTransferDetailAPIView.as_view(), name="shirket_holding_transfer_detail"),
+
+    path('holding-shirket-transfer/', views.HoldingdenShirketlereTransferListCreateAPIView.as_view(), name="holding_shirket_transfer"),
+    path('holding-shirket-transfer/<int:pk>', views.HoldingdenShirketlereTransferDetailAPIView.as_view(), name="holding_shirket_transfer_detail"),
+    
+    path('shirket-ofis-transfer/', views.ShirketdenOfislereTransferListCreateAPIView.as_view(), name="shirket_ofis_transfer"),
+    path('shirket-ofis-transfer/<int:pk>', views.ShirketdenOfislereTransferDetailAPIView.as_view(), name="shirket_ofis_transfer_detail"),
+
+    path('ofis-shirket-transfer/', views.OfisdenShirketeTransferListCreateAPIView.as_view(), name="ofis_shirket_transfer"),
+    path('ofis-shirket-transfer/<int:pk>', views.OfisdenShirketeTransferDetailAPIView.as_view(), name="ofis_shirket_transfer_detail"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

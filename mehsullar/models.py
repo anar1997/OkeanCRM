@@ -53,7 +53,7 @@ class Emeliyyat(models.Model):
     mehsulun_sayi = models.IntegerField(default=0)
     gonderen = models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="gonderen")
     qebul_eden = models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="qebul_eden")
-    gonderilen_mehsul = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="gonderilen_mehsul")
+    gonderilen_mehsul = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, null=True, related_name="gonderilen_mehsul")
     qeyd = models.TextField(default="", null=True, blank=True)
     emeliyyat_tarixi = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
@@ -96,8 +96,14 @@ class Muqavile(models.Model):
     hediyye3 = models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True,
                                  blank=True)
     odenis_uslubu = models.BooleanField(default=True)
+
+    verilecek_ilkin_odenis = models.FloatField(blank=True, null=True)
     ilkin_odenis = models.FloatField(blank=True, null=True)
+    ilkin_odenis_qaliq = models.FloatField(blank=True, null=True)
     ilkin_odenis_tarixi = models.DateField(blank=True, null=True)
+    ilkin_odenis_qaliq_tarixi = models.DateField(blank=True, null=True)
+    ilkin_odenis_status = models.BooleanField(default=False)
+    
     pdf = models.FileField(blank=True, null=True)
 
     class Meta:
@@ -106,9 +112,8 @@ class Muqavile(models.Model):
     def __str__(self) -> str:
         return f"muqavile {self.musteri} - {self.mehsul}"
 
-
 class OdemeTarix(models.Model):
-    muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='muqavilenin_tarixi',
+    muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='odeme_tarixi',
                                  on_delete=models.CASCADE)
     tarix = models.DateField(default=False, blank=True, null=True)
     qiymet = models.FloatField(null=True, blank=True)

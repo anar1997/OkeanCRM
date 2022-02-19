@@ -1,8 +1,27 @@
+from attr import fields
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from mehsullar.models import Emeliyyat, Hediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
-from account.models import Musteri, Shirket, Shobe, User, Vezifeler, Ofis, MusteriQeydler, Komanda
+
+from account.models import (
+    MusteriQeydler, 
+    Shirket, 
+    Shobe, 
+    User, 
+    Musteri, 
+    Vezifeler, 
+    Ofis, 
+    Komanda, 
+    Holding, 
+    ShirketKassa, 
+    OfisKassa,
+    HoldingKassa,
+    HoldingdenShirketlereTransfer,
+    OfisdenShirketeTransfer,
+    ShirketdenHoldingeTransfer,
+    ShirketdenOfislereTransfer
+)
 
 
 class ShirketSerializer(serializers.ModelSerializer):
@@ -332,4 +351,46 @@ class StokSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Stok
+        fields = "__all__"
+
+
+class HoldingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Holding
+        fields = "__all__"
+
+class HoldingKassaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HoldingKassa
+        fields = "__all__"
+
+class ShirketKassaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShirketKassa
+        fields = "__all__"
+
+class OfisKassaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OfisKassa
+        fields = "__all__"
+
+
+class HoldingdenShirketlereTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HoldingdenShirketlereTransfer
+        fields = "__all__"
+
+class ShirketdenHoldingeTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShirketdenHoldingeTransfer
+        fields = "__all__"
+
+class OfisdenShirketeTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OfisdenShirketeTransfer,
+        fields = "__all__"
+
+class ShirketdenOfislereTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShirketdenOfislereTransfer
         fields = "__all__"
