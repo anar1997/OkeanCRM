@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from mehsullar.models import Stok
+
 from .managers import CustomUserManager
 
 class Holding(models.Model):
@@ -64,6 +66,12 @@ class Komanda(models.Model):
     def __str__(self):
         return self.komanda_adi
 
+class Status(models.Model):
+    status_adi = models.CharField(max_length=250)
+
+    def __str__(self) -> str:
+        return self.status_adi
+
 class User(AbstractUser):
     username = None
     first_name = None
@@ -71,7 +79,6 @@ class User(AbstractUser):
 
     email = models.EmailField(_('email address'), unique=True)
     asa= models.CharField(max_length=200)
-    maas= models.FloatField(default=0)
     dogum_tarixi= models.DateField(null=True, blank=True)
     ishe_baslama_tarixi= models.DateField(auto_now_add = True, null=True, blank=True)
     last_login = models.DateTimeField(auto_now = True, null=True, blank=True)
@@ -83,6 +90,7 @@ class User(AbstractUser):
     shobe=models.ForeignKey(Shobe, on_delete=models.SET_NULL, null=True, related_name="ishci")
     vezife = models.ForeignKey(Vezifeler, on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
     komanda = models.OneToOneField(Komanda, on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
+    status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -94,6 +102,8 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
 
 class Musteri(models.Model):
     asa = models.CharField(max_length=200)
@@ -121,6 +131,7 @@ class MusteriQeydler(models.Model):
     def __str__(self):
         return self.basliq
 
+# Kassa Ve Transferler **************************
 
 class OfisKassa(models.Model):
     ofis = models.ForeignKey(Ofis, on_delete=models.CASCADE, related_name="ofis_kassa")
@@ -183,3 +194,53 @@ class HoldingdenShirketlereTransfer(models.Model):
 
     def __str__(self) -> str:
         return f"{self.shirket} -> {self.holding} {self.transfer_meblegi} azn"
+
+
+#  Maas ve Bonus **************************
+
+class Maas(models.Model):
+    FIX = 'FIX'
+    BONUS = 'BONUS'
+    BONUS_FIX = 'BONUS-FIX'
+    MAAS_USLUBU_CHOICES = [
+        (FIX, "FIX"), 
+        (BONUS, "BONUS"),
+        (BONUS_FIX, 'BONUS-FIX')
+    ]
+
+    maas_uslubu = models.CharField(
+        max_length=20,
+        choices=MAAS_USLUBU_CHOICES,
+        default=FIX
+    )
+
+    isci = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="isci_maas")
+    verilecek_maas = models.FloatField(null=True, blank=True)
+    maas_tarixi = models.DateField(null=True, blank=True)
+    odenme_status = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return self.maas_uslubu
+
+
+class Bonus(models.Model):
+    KREDIT = 'KREDIT'
+    NAGD = 'NAGD'
+    ODENIS_USLUBU_CHOICES = [
+        (KREDIT, "KREDIT"), 
+        (NAGD, "NAGD"),
+    ]
+
+    status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True, related_name="status_bonus")
+    stok = models.ForeignKey(Stok, on_delete=models.CASCADE, null=True, related_name="stok_bonus")
+    satis_meblegi = models.FloatField(default=0)
+    odenis_uslubu =  models.CharField(
+        max_length=20,
+        choices=ODENIS_USLUBU_CHOICES,
+        default=NAGD
+    )
+    komandaya_gore_bonus = models.FloatField(default=0, null=True, blank=True)
+    ofise_gore_bonus = models.FloatField(default=0, null=True, blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.status} - {self.komandaya_gore_bonus}"

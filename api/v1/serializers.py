@@ -20,7 +20,10 @@ from account.models import (
     HoldingdenShirketlereTransfer,
     OfisdenShirketeTransfer,
     ShirketdenHoldingeTransfer,
-    ShirketdenOfislereTransfer
+    ShirketdenOfislereTransfer,
+    Status,
+    Maas,
+    Bonus,
 )
 
 
@@ -393,4 +396,19 @@ class OfisdenShirketeTransferSerializer(serializers.ModelSerializer):
 class ShirketdenOfislereTransferSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShirketdenOfislereTransfer
+        fields = "__all__"
+
+class StatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Status
+        fields = "__all__"
+
+class MaasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Maas
+        fields = "__all__"
+
+class BonusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bonus
         fields = "__all__"

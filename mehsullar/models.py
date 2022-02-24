@@ -1,5 +1,12 @@
 from django.db import models
-from account.models import Ofis, Musteri, User, Shirket, Shobe
+
+from account.models import (
+    Ofis,
+    Shirket,
+    User,
+    Musteri,
+    Shobe,
+)
 
 
 class Anbar(models.Model):
@@ -75,6 +82,13 @@ class Hediyye(models.Model):
 
 
 class Muqavile(models.Model):
+    KREDIT = 'KREDIT'
+    NAGD = 'NAGD'
+    ODENIS_USLUBU_CHOICES = [
+        (KREDIT, "KREDIT"), 
+        (NAGD, "NAGD"),
+    ]
+
     vanleader = models.ForeignKey(User, on_delete=models.CASCADE, related_name="vanleader", null=True, blank=True)
     dealer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer", null=True, blank=True)
     canvesser = models.ForeignKey(User, on_delete=models.CASCADE, related_name="canvesser", null=True, blank=True)
@@ -95,7 +109,11 @@ class Muqavile(models.Model):
                                  blank=True)
     hediyye3 = models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True,
                                  blank=True)
-    odenis_uslubu = models.BooleanField(default=True)
+    odenis_uslubu =  models.CharField(
+        max_length=20,
+        choices=ODENIS_USLUBU_CHOICES,
+        default=NAGD
+    )
 
     verilecek_ilkin_odenis = models.FloatField(blank=True, null=True)
     ilkin_odenis = models.FloatField(blank=True, null=True)

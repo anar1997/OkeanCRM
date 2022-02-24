@@ -32,6 +32,9 @@ from .serializers import (
     OfisKassaSerializer,
     ShirketKassaSerializer,
     HoldingKassaSerializer,
+    StatusSerializer,
+    MaasSerializer,
+    BonusSerializer,
 )
 from mehsullar.models import (
     Emeliyyat, 
@@ -60,7 +63,10 @@ from account.models import (
     HoldingdenShirketlereTransfer,
     OfisdenShirketeTransfer,
     ShirketdenHoldingeTransfer,
-    ShirketdenOfislereTransfer
+    ShirketdenOfislereTransfer,
+    Status,
+    Maas,
+    Bonus,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .utils import jwt_decode_handler
@@ -739,3 +745,35 @@ class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
 class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketdenOfislereTransfer.objects.all()
     serializer_class = ShirketdenOfislereTransferSerializer
+
+
+# ********************************** ishci status put delete post get **********************************
+
+class StatusListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Status.objects.all()
+    serializer_class = StatusSerializer
+
+class StatusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Status.objects.all()
+    serializer_class = StatusSerializer
+
+
+# ********************************** ishci maas put delete post get **********************************
+
+class MaasListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Maas.objects.all()
+    serializer_class = MaasSerializer
+
+class MaasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Maas.objects.all()
+    serializer_class = MaasSerializer
+
+# ********************************** ishci elave bonus put delete post get **********************************
+
+class BonusListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Bonus.objects.all()
+    serializer_class = BonusSerializer
+
+class BonusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bonus.objects.all()
+    serializer_class = BonusSerializer
