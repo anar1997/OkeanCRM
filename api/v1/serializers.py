@@ -21,7 +21,6 @@ from account.models import (
     OfisdenShirketeTransfer,
     ShirketdenHoldingeTransfer,
     ShirketdenOfislereTransfer,
-    Status,
     Maas,
     Bonus,
 )
@@ -174,15 +173,15 @@ class VezifelerSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'asa', 'maas', 'dogum_tarixi', 'tel1', 'tel2',
-                  'sv_image', 'shirket', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
+        fields = ('id', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
+                  'sv_image', 'shirket', 'status', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['email'], password=validated_data['password'],
-                                        asa=validated_data['asa'], maas=validated_data['maas'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], komanda=validated_data['komanda'], shobe=validated_data['shobe'])
+                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], komanda=validated_data['komanda'], shobe=validated_data['shobe'])
         return user
 
 
@@ -396,11 +395,6 @@ class OfisdenShirketeTransferSerializer(serializers.ModelSerializer):
 class ShirketdenOfislereTransferSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShirketdenOfislereTransfer
-        fields = "__all__"
-
-class StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Status
         fields = "__all__"
 
 class MaasSerializer(serializers.ModelSerializer):

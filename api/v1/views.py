@@ -32,7 +32,6 @@ from .serializers import (
     OfisKassaSerializer,
     ShirketKassaSerializer,
     HoldingKassaSerializer,
-    StatusSerializer,
     MaasSerializer,
     BonusSerializer,
 )
@@ -64,7 +63,6 @@ from account.models import (
     OfisdenShirketeTransfer,
     ShirketdenHoldingeTransfer,
     ShirketdenOfislereTransfer,
-    Status,
     Maas,
     Bonus,
 )
@@ -745,18 +743,6 @@ class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
 class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketdenOfislereTransfer.objects.all()
     serializer_class = ShirketdenOfislereTransferSerializer
-
-
-# ********************************** ishci status put delete post get **********************************
-
-class StatusListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Status.objects.all()
-    serializer_class = StatusSerializer
-
-class StatusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Status.objects.all()
-    serializer_class = StatusSerializer
-
 
 # ********************************** ishci maas put delete post get **********************************
 

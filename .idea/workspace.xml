@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d2a51d58-35f9-44db-b7b9-e61dc9897ac8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_16-56-47.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_90h48aE.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_GftUemk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_Q9BR6Ds.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_SgLqt22.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_Vd7OzH8.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_Vse2YGQ.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_caMzDA6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_gGMVpM6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_gi65AJ7.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_vURE653.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/Screenshot_from_2022-01-19_17-41-05_y2FAoHP.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/imza.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/imza_SHo1Dqu.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/imza_liSyBfU.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/pngwing.com.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_1PABF8k.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_3ooYylL.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_4436W9a.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_504taTi.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_8ygP6Rr.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_BYStPF3.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_J5eXVvt.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_JUgp09O.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_NWuNypm.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_O4z1guF.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_UA5MsRB.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_V277LQM.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_a1JbTKi.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_bRkbW1E.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_fCifuDh.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_mw2Las6.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_p6UTzFZ.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_rEGlU4Q.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_sqgYqzR.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_y9cDXU1.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/samsung_yErNMkK.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_7JuSdXT.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_Bd5PDsd.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_DtNNOTi.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_J22LhjE.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_VkSaZeu.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_YfnwFTw.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_bpZeQsp.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_cIThWwg.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_ibx45jZ.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_lH5Sz20.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_lozw1c8.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_pDcwibO.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_tPeWrAl.jfif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/media/sv_vuRRnP9.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mehsullar/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mehsullar/models.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="25YR0FxD8PTPg5rGgWKaNkVJhxW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+  </component>
+  <component name="RunManager">
+    <configuration name="OkeanCRM" type="Python.DjangoServer" factoryName="Django server">
+      <module name="OkeanCRM" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d2a51d58-35f9-44db-b7b9-e61dc9897ac8" name="Changes" comment="" />
+      <created>1645701808468</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1645701808468</updated>
+      <workItem from="1645701809955" duration="842000" />
+      <workItem from="1645789728964" duration="599000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

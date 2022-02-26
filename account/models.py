@@ -66,11 +66,31 @@ class Komanda(models.Model):
     def __str__(self):
         return self.komanda_adi
 
-class Status(models.Model):
-    status_adi = models.CharField(max_length=250)
+class Bonus(models.Model):
+    KREDIT = 'KREDIT'
+    NAGD = 'NAGD'
+    ODENIS_USLUBU_CHOICES = [
+        (KREDIT, "KREDIT"),
+        (NAGD, "NAGD"),
+    ]
+
+    status = models.CharField(max_length=250, null=True)
+    stok = models.ForeignKey(Stok, on_delete=models.CASCADE, null=True, related_name="stok_bonus")
+    satis_meblegi = models.FloatField(default=0)
+    odenis_uslubu =  models.CharField(
+        max_length=20,
+        choices=ODENIS_USLUBU_CHOICES,
+        default=NAGD
+    )
+    vezife = models.ForeignKey(Vezifeler, on_delete=models.SET_NULL, null=True, related_name="vezife_bonus")
+    komandaya_gore_bonus = models.FloatField(default=0, null=True, blank=True)
+    ofise_gore_bonus = models.FloatField(default=0, null=True, blank=True)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
-        return self.status_adi
+        return f"{self.status} - {self.komandaya_gore_bonus}"
 
 class User(AbstractUser):
     username = None
@@ -90,7 +110,7 @@ class User(AbstractUser):
     shobe=models.ForeignKey(Shobe, on_delete=models.SET_NULL, null=True, related_name="ishci")
     vezife = models.ForeignKey(Vezifeler, on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
     komanda = models.OneToOneField(Komanda, on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
-    status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.ForeignKey(Bonus, on_delete=models.SET_NULL, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -137,12 +157,18 @@ class OfisKassa(models.Model):
     ofis = models.ForeignKey(Ofis, on_delete=models.CASCADE, related_name="ofis_kassa")
     balans = models.FloatField()
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"{self.ofis} -> {self.balans}"
 
 class ShirketKassa(models.Model):
     shirket = models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_kassa")
     balans = models.FloatField()
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"{self.shirket} -> {self.balans}"
@@ -151,6 +177,9 @@ class ShirketKassa(models.Model):
 class HoldingKassa(models.Model):
     holding = models.ForeignKey(Holding, on_delete=models.CASCADE, related_name="holding_kassa")
     balans = models.FloatField()
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"{self.holding} -> {self.balans}"
@@ -162,6 +191,9 @@ class OfisdenShirketeTransfer(models.Model):
     transfer_tarixi = models.DateField(auto_now = True)
     transfer_qeydi = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"{self.ofis} -> {self.shirket} {self.transfer_meblegi} azn"
 
@@ -171,6 +203,9 @@ class ShirketdenOfislereTransfer(models.Model):
     transfer_meblegi = models.FloatField()
     transfer_tarixi = models.DateField(auto_now = True)
     transfer_qeydi = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"{self.shirket} -> {self.ofis} {self.transfer_meblegi} azn"
@@ -182,6 +217,9 @@ class ShirketdenHoldingeTransfer(models.Model):
     transfer_tarixi = models.DateField(auto_now = True)
     transfer_qeydi = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ("pk",)
+
     def __str__(self) -> str:
         return f"{self.shirket} -> {self.holding} {self.transfer_meblegi} azn"
 
@@ -191,6 +229,9 @@ class HoldingdenShirketlereTransfer(models.Model):
     transfer_meblegi = models.FloatField()
     transfer_tarixi = models.DateField(auto_now = True)
     transfer_qeydi = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return f"{self.shirket} -> {self.holding} {self.transfer_meblegi} azn"
@@ -217,30 +258,13 @@ class Maas(models.Model):
     isci = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="isci_maas")
     verilecek_maas = models.FloatField(null=True, blank=True)
     maas_tarixi = models.DateField(null=True, blank=True)
+
     odenme_status = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ("pk",)
 
     def __str__(self) -> str:
         return self.maas_uslubu
 
 
-class Bonus(models.Model):
-    KREDIT = 'KREDIT'
-    NAGD = 'NAGD'
-    ODENIS_USLUBU_CHOICES = [
-        (KREDIT, "KREDIT"), 
-        (NAGD, "NAGD"),
-    ]
-
-    status = models.ForeignKey(Status, on_delete=models.SET_NULL, null=True, related_name="status_bonus")
-    stok = models.ForeignKey(Stok, on_delete=models.CASCADE, null=True, related_name="stok_bonus")
-    satis_meblegi = models.FloatField(default=0)
-    odenis_uslubu =  models.CharField(
-        max_length=20,
-        choices=ODENIS_USLUBU_CHOICES,
-        default=NAGD
-    )
-    komandaya_gore_bonus = models.FloatField(default=0, null=True, blank=True)
-    ofise_gore_bonus = models.FloatField(default=0, null=True, blank=True)
-
-    def __str__(self) -> str:
-        return f"{self.status} - {self.komandaya_gore_bonus}"

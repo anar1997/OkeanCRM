@@ -1,19 +1,12 @@
 from django.db import models
-
-from account.models import (
-    Ofis,
-    Shirket,
-    User,
-    Musteri,
-    Shobe,
-)
+import account
 
 
 class Anbar(models.Model):
     ad = models.CharField(max_length=100)
-    ofis = models.ForeignKey(Ofis, on_delete=models.CASCADE, null=True, related_name="ofis_anbar")
-    shirket = models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="shirket_anbar")
-    
+    ofis = models.ForeignKey('account.Ofis', on_delete=models.CASCADE, null=True, related_name="ofis_anbar")
+    shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_anbar")
+
     class Meta:
         ordering = ("pk",)
 
@@ -58,8 +51,8 @@ class Stok(models.Model):
 
 class Emeliyyat(models.Model):
     mehsulun_sayi = models.IntegerField(default=0)
-    gonderen = models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="gonderen")
-    qebul_eden = models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="qebul_eden")
+    gonderen = models.ForeignKey(Anbar, on_delete=models.CASCADE, null=True, related_name="gonderen")
+    qebul_eden = models.ForeignKey(Anbar, on_delete=models.CASCADE, null=True, related_name="qebul_eden")
     gonderilen_mehsul = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, null=True, related_name="gonderilen_mehsul")
     qeyd = models.TextField(default="", null=True, blank=True)
     emeliyyat_tarixi = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -85,22 +78,22 @@ class Muqavile(models.Model):
     KREDIT = 'KREDIT'
     NAGD = 'NAGD'
     ODENIS_USLUBU_CHOICES = [
-        (KREDIT, "KREDIT"), 
+        (KREDIT, "KREDIT"),
         (NAGD, "NAGD"),
     ]
 
-    vanleader = models.ForeignKey(User, on_delete=models.CASCADE, related_name="vanleader", null=True, blank=True)
-    dealer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="dealer", null=True, blank=True)
-    canvesser = models.ForeignKey(User, on_delete=models.CASCADE, related_name="canvesser", null=True, blank=True)
-    musteri = models.ForeignKey(Musteri, on_delete=models.CASCADE, related_name="musteri_muqavile", null=True,
+    vanleader = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="vanleader", null=True, blank=True)
+    dealer = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="dealer", null=True, blank=True)
+    canvesser = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="canvesser", null=True, blank=True)
+    musteri = models.ForeignKey('account.Musteri', on_delete=models.CASCADE, related_name="musteri_muqavile", null=True,
                                 blank=True)
     mehsul = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="mehsul_muqavile", null=True,
                                blank=True)
     elektron_imza = models.ImageField(upload_to="media/", null=True, blank=True)
     muqavile_tarixi = models.DateField(auto_now_add=True, null=True, blank=True)
-    shirket = models.ForeignKey(Shirket, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    ofis = models.ForeignKey(Ofis, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    shobe = models.ForeignKey(Shobe, on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    ofis = models.ForeignKey('account.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    shobe = models.ForeignKey('account.Shobe', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     status = models.BooleanField(default=False)
     dusen = models.BooleanField(default=False)
     hediyye1 = models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True,
@@ -121,7 +114,7 @@ class Muqavile(models.Model):
     ilkin_odenis_tarixi = models.DateField(blank=True, null=True)
     ilkin_odenis_qaliq_tarixi = models.DateField(blank=True, null=True)
     ilkin_odenis_status = models.BooleanField(default=False)
-    
+
     pdf = models.FileField(blank=True, null=True)
 
     class Meta:
@@ -145,7 +138,7 @@ class OdemeTarix(models.Model):
 
 
 class Servis(models.Model):
-    muqavile = models.ForeignKey(Muqavile, related_name="servis", on_delete=models.CASCADE)
+    muqavile = models.ForeignKey(Muqavile, related_name="servis", null=True, on_delete=models.CASCADE)
     kartric1 = models.ForeignKey(Mehsullar, related_name="kartric1_servis", on_delete=models.CASCADE, null=True)
     kartric2 = models.ForeignKey(Mehsullar, related_name="kartric2_servis", on_delete=models.CASCADE, null=True)
     kartric3 = models.ForeignKey(Mehsullar, related_name="kartric3_servis", on_delete=models.CASCADE, null=True)

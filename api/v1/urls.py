@@ -84,9 +84,6 @@ urlpatterns=[
     path('ofis-shirket-transfer/', views.OfisdenShirketeTransferListCreateAPIView.as_view(), name="ofis_shirket_transfer"),
     path('ofis-shirket-transfer/<int:pk>', views.OfisdenShirketeTransferDetailAPIView.as_view(), name="ofis_shirket_transfer_detail"),
 
-    path('status/', views.StatusListCreateAPIView.as_view(), name="status"),
-    path('status/<int:pk>', views.StatusDetailAPIView.as_view(), name="status_detail"),
-
     path('maas/', views.MaasListCreateAPIView.as_view(), name="maas"),
     path('maas/<int:pk>', views.MaasDetailAPIView.as_view(), name="maas_detail"),
 
