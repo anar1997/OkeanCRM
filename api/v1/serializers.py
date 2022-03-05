@@ -395,7 +395,7 @@ class OfisdenShirketeTransferSerializer(serializers.ModelSerializer):
 class ShirketdenOfislereTransferSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShirketdenOfislereTransfer
-        fields = "__all__"
+        fields = "__all__"  
 
 class MaasSerializer(serializers.ModelSerializer):
     class Meta:

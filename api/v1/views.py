@@ -3,6 +3,12 @@ from django.contrib.auth import user_logged_in
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
+import math
+import pandas as pd
+
+import datetime
+from dateutil.relativedelta import relativedelta
+
 from rest_framework.response import Response
 from rest_framework import generics
 from .serializers import (
@@ -253,13 +259,341 @@ class OdemeTarixListCreateAPIView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = OdemeTarixFilter
 
-
 class OdemeTarixDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OdemeTarix.objects.all()
     serializer_class = OdemeTarixSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['muqavile']
     filterset_class = OdemeTarixFilter
+    
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        odenme_status = request.POST.get("odenme_status")
+        natamama_gore_odeme_status = request.POST.get("natamama_gore_odeme_status")
+        sifira_gore_odeme_status = request.POST.get("sifira_gore_odeme_status")
+
+        # Natamam Ay odeme statusu ile bagli emeliyyatlar
+        if(odenme_status == "NATAMAM AY"):
+            indiki_ay = self.get_object()
+            muqavile = indiki_ay.muqavile
+            ilkin_odenis = muqavile.ilkin_odenis
+            ilkin_odenis_qaliq = muqavile.ilkin_odenis_qaliq
+            ilkin_odenis_tam = ilkin_odenis + ilkin_odenis_qaliq
+            print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
+            mehsulun_qiymeti = muqavile.mehsul.qiymet
+            print(f"mehsulun ==> {mehsulun_qiymeti}")
+            indiki_ay = self.get_object()
+            indiki_ay.odenme_status = "NATAMAM AY"
+            indiki_ay.save()
+
+            odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+            odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
+            if(natamama_gore_odeme_status == "NATAMAM DİGƏR AYLAR"):
+                print(f"indiki_ay.qiymet ==> {indiki_ay.qiymet}")
+                odenmeyen_pul = indiki_ay.qiymet - odemek_istediyi_mebleg
+                print(f"odenmeyen_pul ==> {odenmeyen_pul}")
+                odenmeyen_aylar = len(odenmeyen_odemetarixler)
+                print(len(odenmeyen_odemetarixler))
+                
+                aylara_elave_olunacaq_mebleg = odenmeyen_pul // odenmeyen_aylar
+                print(f"aylara_elave_olunacaq_mebleg ==> {aylara_elave_olunacaq_mebleg}")
+                b = aylara_elave_olunacaq_mebleg * (odenmeyen_aylar-1)
+                print(f"b ==> {b}")
+                sonuncu_aya_elave_olunacaq_mebleg = odenmeyen_pul - b
+                print(f"sonuncu_aya_elave_olunacaq_mebleg ==> {sonuncu_aya_elave_olunacaq_mebleg}")
+                
+                indiki_ay.qiymet = odemek_istediyi_mebleg
+                indiki_ay.natamama_gore_odeme_status = "NATAMAM DİGƏR AYLAR"
+                indiki_ay.save()
+                i = 0
+                while(i<=(odenmeyen_aylar-1)):
+                    print(f"odenmeyen_aylar-1===>{odenmeyen_aylar-1}")
+                    if(i == (odenmeyen_aylar-1)):
+                        odenmeyen_odemetarixler[i].qiymet = odenmeyen_odemetarixler[i].qiymet + sonuncu_aya_elave_olunacaq_mebleg
+                        odenmeyen_odemetarixler[i].save()
+                    else:
+                        odenmeyen_odemetarixler[i].qiymet = odenmeyen_odemetarixler[i].qiymet + aylara_elave_olunacaq_mebleg
+                        odenmeyen_odemetarixler[i].save()
+                    i+=1
+                return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            if(natamama_gore_odeme_status == "NATAMAM NÖVBƏTİ AY"):
+                indiki_ay = self.get_object()
+                natamam_odemek_istediyi_mebleg = indiki_ay.qiymet - odemek_istediyi_mebleg
+
+                novbeti_ay = get_object_or_404(OdemeTarix, pk=self.get_object().id+1)
+                novbeti_ay.qiymet = novbeti_ay.qiymet + natamam_odemek_istediyi_mebleg
+                novbeti_ay.save()
+
+                indiki_ay.qiymet = odemek_istediyi_mebleg
+                indiki_ay.odenme_status = "NATAMAM AY"
+                indiki_ay.natamama_gore_odeme_status = "NATAMAM NÖVBƏTİ AY"
+                indiki_ay.save()
+                return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            if(natamama_gore_odeme_status == "NATAMAM SONUNCU AY"):
+                indiki_ay = self.get_object()
+                natamam_odemek_istediyi_mebleg = indiki_ay.qiymet - odemek_istediyi_mebleg
+
+                sonuncu_ay = self.get_queryset()[len(self.get_queryset())-1]
+                sonuncu_ay.qiymet = sonuncu_ay.qiymet + natamam_odemek_istediyi_mebleg
+                sonuncu_ay.save()
+
+                indiki_ay.qiymet = odemek_istediyi_mebleg
+                indiki_ay.odenme_status = "NATAMAM AY"
+                indiki_ay.natamama_gore_odeme_status = "NATAMAM SONUNCU AY"
+                indiki_ay.save()
+                return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        # Buraxilmis Ay odeme statusu ile bagli emeliyyatlar
+        elif(odenme_status == "BURAXILMIŞ AY"):
+            indiki_ay = self.get_object()
+            muqavile = indiki_ay.muqavile
+            ilkin_odenis = muqavile.ilkin_odenis
+            ilkin_odenis_qaliq = muqavile.ilkin_odenis_qaliq
+            mehsulun_qiymeti = muqavile.mehsul.qiymet
+            print(f"mehsulun ==> {mehsulun_qiymeti}")
+            ilkin_odenis_tam = ilkin_odenis + ilkin_odenis_qaliq
+            print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
+            indiki_ay.odenme_status = "BURAXILMIŞ AY"
+            indiki_ay.save()
+            odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+            odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
+            
+            if(sifira_gore_odeme_status == "SIFIR NÖVBƏTİ AY"):
+                novbeti_ay = get_object_or_404(OdemeTarix, pk=self.get_object().id+1)
+                novbeti_ay.qiymet = novbeti_ay.qiymet + indiki_ay.qiymet
+                novbeti_ay.save()
+                indiki_ay.qiymet = 0
+                indiki_ay.odenme_status = "BURAXILMIŞ AY"
+                indiki_ay.sifira_gore_odeme_status = "SIFIR NÖVBƏTİ AY"
+                indiki_ay.save()
+                return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            if(sifira_gore_odeme_status == "SIFIR SONUNCU AY"):
+                sonuncu_ay = self.get_queryset()[len(self.get_queryset())-1]
+                sonuncu_ay.qiymet = sonuncu_ay.qiymet + indiki_ay.qiymet
+                sonuncu_ay.save()
+                indiki_ay.qiymet = 0
+                indiki_ay.odenme_status = "BURAXILMIŞ AY"
+                indiki_ay.sifira_gore_odeme_status = "SIFIR SONUNCU AY"
+                indiki_ay.save()
+                return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            if(sifira_gore_odeme_status == "SIFIR DİGƏR AYLAR"):
+                odenmeyen_pul = indiki_ay.qiymet
+                print(f"odenmeyen_pul ==> {odenmeyen_pul}")
+                odenmeyen_aylar = len(odenmeyen_odemetarixler)
+                print(f"odenmeyen_aylar ==> {odenmeyen_aylar}")
+                aylara_elave_olunacaq_mebleg = odenmeyen_pul // odenmeyen_aylar
+                print(f"aylara_elave_olunacaq_mebleg ==> {aylara_elave_olunacaq_mebleg}")
+                a = aylara_elave_olunacaq_mebleg * (odenmeyen_aylar-1)
+                sonuncu_aya_elave_olunacaq_mebleg = odenmeyen_pul - a
+                print(f"sonuncu_aya_elave_olunacaq_mebleg ==> {sonuncu_aya_elave_olunacaq_mebleg}")
+                indiki_ay.qiymet = 0
+                indiki_ay.sifira_gore_odeme_status = "SIFIR DİGƏR AYLAR"
+                indiki_ay.save()
+                i = 0
+                while(i<=(odenmeyen_aylar-1)):
+                    if(i == (odenmeyen_aylar-1)):
+                        odenmeyen_odemetarixler[i].qiymet = odenmeyen_odemetarixler[i].qiymet + sonuncu_aya_elave_olunacaq_mebleg
+                        odenmeyen_odemetarixler[i].save()
+                    else:
+                        odenmeyen_odemetarixler[i].qiymet = odenmeyen_odemetarixler[i].qiymet + aylara_elave_olunacaq_mebleg
+                        odenmeyen_odemetarixler[i].save()
+                    i+=1
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        elif(odenme_status == "YENİ QRAFİK"):
+            indiki_ay = self.get_object()
+            muqavile = indiki_ay.muqavile
+            m = get_object_or_404(Muqavile, pk = muqavile.id)
+            print(f"m ===> {m}")
+            ilkin_odenis = muqavile.ilkin_odenis
+            ilkin_odenis_qaliq = muqavile.ilkin_odenis_qaliq
+            ilkin_odenis_tam = ilkin_odenis + ilkin_odenis_qaliq
+            print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
+            mehsulun_qiymeti = muqavile.mehsul.qiymet
+            print(f"mehsulun ==> {mehsulun_qiymeti}")
+
+            odenen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNƏN")
+            print(f"odenen_odemetarixler ==> {odenen_odemetarixler}")
+            
+            odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+            print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler}")
+            
+            odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
+            print(f"odemek_istediyi_mebleg ==> {odemek_istediyi_mebleg}")
+
+            print(f"len(odenen_odemetarixler) ==> {len(odenen_odemetarixler)}")
+
+            odediyi = len(odenen_odemetarixler) * indiki_ay.qiymet + ilkin_odenis_tam
+            print(f"odediyi ==> {odediyi}")
+
+            qaliq_borc = mehsulun_qiymeti - odediyi
+            print(f"qaliq_borc ==> {qaliq_borc}")
+
+            odenmeyen_aylar = len(odenmeyen_odemetarixler)
+            print(f"odenmeyen_aylar ==> {odenmeyen_aylar}")
+
+            try:
+                elave_olunacaq_ay_qaliqli = qaliq_borc / odemek_istediyi_mebleg
+                indiki_ay.odenme_status = "YENİ QRAFİK"
+                indiki_ay.qiymet = odemek_istediyi_mebleg
+                indiki_ay.save()
+            except:
+                return Response({"detail": "Ödəmək istədiyiniz məbləği doğru daxil edin"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            elave_olunacaq_ay = math.ceil(elave_olunacaq_ay_qaliqli)
+            print(f"elave_olunacaq_ay == > {elave_olunacaq_ay}")
+            create_olunacaq_ay = elave_olunacaq_ay - len(odenmeyen_odemetarixler)
+            print(f"create_olunacaq_ay == > {create_olunacaq_ay}")
+            a = odemek_istediyi_mebleg * (elave_olunacaq_ay-1)
+            son_aya_elave_edilecek_mebleg = qaliq_borc - a
+            print(f"son_aya_elave_edilecek_mebleg == > {son_aya_elave_edilecek_mebleg}")
+            inc_month = pd.date_range(odenmeyen_odemetarixler[len(odenmeyen_odemetarixler)-1].tarix, periods = create_olunacaq_ay+1, freq='M')
+            print(f"inc_month == > {inc_month}")
+            m.kredit_muddeti = m.kredit_muddeti + create_olunacaq_ay
+            m.save()
+            print(f"m.kredit_muddeti ===> {m.kredit_muddeti}")
+            # Var olan aylarin qiymetini musterinin istediyi qiymet edir
+            i = 1
+            while(i<len(odenmeyen_odemetarixler)):
+                odenmeyen_odemetarixler[i].qiymet = odemek_istediyi_mebleg
+                odenmeyen_odemetarixler[i].save()
+                i+=1
+
+            # Elave olunacaq aylari create edir
+            j = 1
+            while(j<=create_olunacaq_ay):
+                if(j == create_olunacaq_ay):
+                    if(datetime.date.today().day < 29):
+                        OdemeTarix.objects.create(
+                            muqavile = muqavile,
+                            tarix = f"{inc_month[j].year}-{inc_month[j].month}-{datetime.date.today().day}",
+                            qiymet = son_aya_elave_edilecek_mebleg
+                        )
+                    elif(datetime.date.today().day == 31 or datetime.date.today().day == 30 or datetime.date.today().day == 29):
+                        if(inc_month[j].day <= datetime.date.today().day):
+                            OdemeTarix.objects.create(
+                                muqavile = muqavile,
+                                tarix = f"{inc_month[j].year}-{inc_month[j].month}-{inc_month[j].day}",
+                                qiymet = son_aya_elave_edilecek_mebleg
+                            )
+                else:
+                    if(datetime.date.today().day < 29):
+                        OdemeTarix.objects.create(
+                            muqavile = muqavile,
+                            tarix = f"{inc_month[j].year}-{inc_month[j].month}-{datetime.date.today().day}",
+                            qiymet = odemek_istediyi_mebleg
+                        )
+                    elif(datetime.date.today().day == 31 or datetime.date.today().day == 30 or datetime.date.today().day == 29):
+                        if(inc_month[j].day <= datetime.date.today().day):
+                            OdemeTarix.objects.create(
+                                muqavile = muqavile,
+                                tarix = f"{inc_month[j].year}-{inc_month[j].month}-{inc_month[j].day}",
+                                qiymet = odemek_istediyi_mebleg
+                            )
+                j+=1
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        elif(odenme_status == "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"):
+            indiki_ay = self.get_object()
+            muqavile = indiki_ay.muqavile
+            ilkin_odenis = muqavile.ilkin_odenis
+            ilkin_odenis_qaliq = muqavile.ilkin_odenis_qaliq
+            ilkin_odenis_tam = ilkin_odenis + ilkin_odenis_qaliq
+            print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
+            mehsulun_qiymeti = muqavile.mehsul.qiymet
+            print(f"mehsulun ==> {mehsulun_qiymeti}")
+            indiki_ay.odenme_status = "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"
+            indiki_ay.save()
+
+            odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+            odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
+
+            print(f"indiki_ay.qiymet ==> {indiki_ay.qiymet}")
+            odenmeyen_pul = indiki_ay.qiymet - odemek_istediyi_mebleg
+            print(f"odenmeyen_pul ==> {odenmeyen_pul}")
+            odenmeyen_aylar = len(odenmeyen_odemetarixler)
+            print(len(odenmeyen_odemetarixler))
+            
+            aylara_elave_olunacaq_mebleg = odenmeyen_pul // odenmeyen_aylar
+            print(f"aylara_elave_olunacaq_mebleg ==> {aylara_elave_olunacaq_mebleg}")
+            b = aylara_elave_olunacaq_mebleg * (odenmeyen_aylar-1)
+            print(f"b ==> {b}")
+            sonuncu_aya_elave_olunacaq_mebleg = odenmeyen_pul - b
+            print(f"sonuncu_aya_elave_olunacaq_mebleg ==> {sonuncu_aya_elave_olunacaq_mebleg}")
+            
+            indiki_ay.qiymet = odemek_istediyi_mebleg
+            indiki_ay.save()
+            i = 0
+            while(i<=(odenmeyen_aylar-1)):
+                print(f"odenmeyen_aylar-1===>{odenmeyen_aylar-1}")
+                if(i == (odenmeyen_aylar-1)):
+                    odenmeyen_odemetarixler[i].qiymet = odenmeyen_odemetarixler[i].qiymet + sonuncu_aya_elave_olunacaq_mebleg
+                    odenmeyen_odemetarixler[i].save()
+                else:
+                    odenmeyen_odemetarixler[i].qiymet = odenmeyen_odemetarixler[i].qiymet + aylara_elave_olunacaq_mebleg
+                    odenmeyen_odemetarixler[i].save()
+                i+=1
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        elif(odenme_status == "ARTIQ ÖDƏMƏ"):
+            indiki_ay = self.get_object()
+            print(f"indiki ay ===> {indiki_ay}")
+            muqavile = indiki_ay.muqavile
+            print(f"muqavile ===> {muqavile}")
+            odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
+            print(f"odemek_istediyi_mebleg ===> {odemek_istediyi_mebleg}")
+            normalda_odenmeli_olan = indiki_ay.qiymet
+            print(f"normalda_odenmeli_olan ===> {normalda_odenmeli_olan}")
+
+            artiqdan_normalda_odenmeli_olani_cixan_ferq = odemek_istediyi_mebleg - normalda_odenmeli_olan
+            print(f"artiqdan_normalda_odenmeli_olani_cixan_ferq ===> {artiqdan_normalda_odenmeli_olani_cixan_ferq}")
+
+            odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+            print(f"odenmeyen_odemetarixler ===> {odenmeyen_odemetarixler}")
+
+            indiki_ay.qiymet = odemek_istediyi_mebleg
+            indiki_ay.odenme_status = "ARTIQ ÖDƏMƏ"
+            indiki_ay.save()
+
+            sonuncu_ay = odenmeyen_odemetarixler[len(odenmeyen_odemetarixler)-1]
+            print(f"sonuncu_ay ===> {sonuncu_ay}")
+            sonuncudan_bir_evvelki_ay = odenmeyen_odemetarixler[len(odenmeyen_odemetarixler)-2]
+            print(f"sonuncudan_bir_evvelki_ay ===> {sonuncudan_bir_evvelki_ay}")
+            
+            sonuncu_aydan_qalan = sonuncu_ay.qiymet - artiqdan_normalda_odenmeli_olani_cixan_ferq
+            print(f"sonuncu_aydan_qalan ===> {sonuncu_aydan_qalan}")
+
+            if(sonuncu_ay.qiymet > artiqdan_normalda_odenmeli_olani_cixan_ferq):
+                sonuncu_ay.qiymet = sonuncu_ay.qiymet - artiqdan_normalda_odenmeli_olani_cixan_ferq
+                sonuncu_ay.save()
+            elif(sonuncu_ay.qiymet == artiqdan_normalda_odenmeli_olani_cixan_ferq):
+                sonuncu_ay.delete()
+                muqavile.kredit_muddeti = muqavile.kredit_muddeti - 1
+                muqavile.save()
+            elif(sonuncu_ay.qiymet < artiqdan_normalda_odenmeli_olani_cixan_ferq):
+                qalan_mebleg = artiqdan_normalda_odenmeli_olani_cixan_ferq - sonuncu_ay.qiymet
+                print(f"qalan_mebleg ===> {qalan_mebleg}")
+                sonuncu_ay.delete()
+                muqavile.kredit_muddeti = muqavile.kredit_muddeti - 1
+                muqavile.save()
+                if(sonuncudan_bir_evvelki_ay.qiymet > qalan_mebleg):
+                    sonuncudan_bir_evvelki_ay.qiymet = sonuncudan_bir_evvelki_ay.qiymet - qalan_mebleg
+                    sonuncudan_bir_evvelki_ay.save()
+                if(sonuncudan_bir_evvelki_ay.qiymet == qalan_mebleg):
+                    sonuncudan_bir_evvelki_ay.delete()
+                    muqavile.kredit_muddeti = muqavile.kredit_muddeti - 1
+                    muqavile.save()
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+
+        # Odenen statusu ile bagli emeliyyatlar
+        elif(odenme_status == "ÖDƏNƏN"):
+            indiki_ay = self.get_object()
+            indiki_ay.odenme_status = "ÖDƏNƏN"
+            indiki_ay.sifira_gore_odeme_status = None
+            indiki_ay.natamama_gore_odeme_status = None
+            indiki_ay.save()
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        else:
+            if(serializer.is_valid()):
+                super(OdemeTarixDetailAPIView, self).update(request, *args, **kwargs)
+                return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+        return Response({"detail": "Xəta baş verdi"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # ********************************** anbar put get post delete **********************************

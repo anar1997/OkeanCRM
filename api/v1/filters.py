@@ -9,20 +9,20 @@ class OdemeTarixFilter(django_filters.FilterSet):
     class Meta:
         model = OdemeTarix
         fields = {
+            'muqavile' : ['exact'],
             'muqavile__shobe__shobe_adi': ['exact', 'icontains'],
             'muqavile__ofis__ofis_adi': ['exact', 'icontains'],
             'muqavile__shirket__shirket_adi': ['exact', 'icontains'],
             'muqavile__vanleader__asa': ['exact', 'icontains'],
 
             'muqavile__odenis_uslubu': ['exact'],
-            'muqavile__status': ['exact'],
-            'muqavile__dusen': ['exact'],
+            'muqavile__muqavile_status': ['exact'],
 
             'muqavile__musteri__asa': ['exact', 'icontains'],
             'muqavile__musteri__unvan': ['exact', 'icontains'],
 
             'tarix': ['exact'],
-            'status': ['exact'],
+            'odenme_status': ['exact'],
         }
 
 

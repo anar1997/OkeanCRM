@@ -266,5 +266,5 @@ class Maas(models.Model):
 
     def __str__(self) -> str:
         return self.maas_uslubu
-
+ 
 

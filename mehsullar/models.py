@@ -76,10 +76,29 @@ class Hediyye(models.Model):
 
 class Muqavile(models.Model):
     KREDIT = 'KREDIT'
-    NAGD = 'NAGD'
+    NAGD = 'NƏĞD'
+    IKI_DEFEYE_NEGD = "İKİ DƏFƏYƏ NƏĞD"
     ODENIS_USLUBU_CHOICES = [
         (KREDIT, "KREDIT"),
-        (NAGD, "NAGD"),
+        (NAGD, "NƏĞD"),
+        (IKI_DEFEYE_NEGD, "İKİ DƏFƏYƏ NƏĞD"),
+    ]
+
+    BITMIS = "BİTMİŞ"
+    DAVAM_EDEN = "DAVAM EDƏN"
+    DUSEN = "LƏĞV OLUNMUŞ"
+    YOXDUR = "YOXDUR"
+
+    MUQAVILE_STATUS_CHOICES = [
+        (BITMIS, "BİTMİŞ"),
+        (DAVAM_EDEN,"DAVAM EDƏN"),
+        (DUSEN, "LƏĞV OLUNMUŞ")
+    ]
+
+    ILKIN_ODENIS_STATUS_CHOICES = [
+        (BITMIS, "BİTMİŞ"),
+        (DAVAM_EDEN,"DAVAM EDƏN"),
+        (YOXDUR,"YOXDUR"),
     ]
 
     vanleader = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="vanleader", null=True, blank=True)
@@ -94,47 +113,122 @@ class Muqavile(models.Model):
     shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     ofis = models.ForeignKey('account.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     shobe = models.ForeignKey('account.Shobe', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    status = models.BooleanField(default=False)
-    dusen = models.BooleanField(default=False)
-    hediyye1 = models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True,
+    
+    hediyye1 = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True,
                                  blank=True)
-    hediyye2 = models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True,
+    hediyye2 = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True,
                                  blank=True)
-    hediyye3 = models.ForeignKey(Hediyye, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True,
+    hediyye3 = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True,
                                  blank=True)
+    
     odenis_uslubu =  models.CharField(
         max_length=20,
         choices=ODENIS_USLUBU_CHOICES,
         default=NAGD
     )
 
-    verilecek_ilkin_odenis = models.FloatField(blank=True, null=True)
-    ilkin_odenis = models.FloatField(blank=True, null=True)
-    ilkin_odenis_qaliq = models.FloatField(blank=True, null=True)
+    negd_odenis_1 = models.FloatField(default=0, null=True, blank=True)
+    negd_odenis_2 = models.FloatField(default=0, null=True, blank=True)
+    
+    negd_odenis_1_tarix = models.DateField(blank=True, null=True)
+    negd_odenis_2_tarix = models.DateField(blank=True, null=True)
+
+
+    muqavile_status = models.CharField(
+        max_length=20,
+        choices=MUQAVILE_STATUS_CHOICES,
+        default=DAVAM_EDEN
+    )
+
+    kredit_muddeti = models.IntegerField(default=0, null=True, blank=True)
+    verilecek_ilkin_odenis = models.FloatField(blank=True, null=True, default=0)
+    ilkin_odenis = models.FloatField(blank=True, null=True, default=0)
+    ilkin_odenis_qaliq = models.FloatField(blank=True, null=True, default=0)
     ilkin_odenis_tarixi = models.DateField(blank=True, null=True)
     ilkin_odenis_qaliq_tarixi = models.DateField(blank=True, null=True)
-    ilkin_odenis_status = models.BooleanField(default=False)
-
+    ilkin_odenis_status = models.CharField(
+        max_length=20,
+        choices=ILKIN_ODENIS_STATUS_CHOICES,
+        default=YOXDUR
+    )
     pdf = models.FileField(blank=True, null=True)
 
     class Meta:
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return f"muqavile {self.musteri} - {self.mehsul}"
+        return f"{self.pk}. muqavile {self.musteri} - {self.mehsul}"
 
 class OdemeTarix(models.Model):
+    ODENEN = "ÖDƏNƏN"
+    ODENMEYEN = "ÖDƏNMƏYƏN"
+    BURAXILMIS_AY = "BURAXILMIŞ AY"
+    NATAMAM_AY = "NATAMAM AY"
+    RAZILASDIRILMIS_AZ_ODEME = "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"
+    YENI_QRAFIK = "YENİ QRAFİK"
+    ARTIQ_ODEME = "ARTIQ ÖDƏMƏ"
+
+    SIFIR_NOVBETI_AY = "SIFIR NÖVBƏTİ AY"
+    SIFIR_SONUNCU_AY = "SIFIR SONUNCU AY"
+    SIFIR_DIGER_AYLAR = "SIFIR DİGƏR AYLAR"
+
+    NATAMAM_NOVBETI_AY = "NATAMAM NÖVBƏTİ AY"
+    NATAMAM_SONUNCU_AY = "NATAMAM SONUNCU AY"
+    NATAMAM_DIGER_AYLAR = "NATAMAM DİGƏR AYLAR"
+
+    ODEME_STATUS_CHOICES = [
+        (ODENMEYEN,"ÖDƏNMƏYƏN"),
+        (ODENEN, "ÖDƏNƏN"),
+        (BURAXILMIS_AY, "BURAXILMIŞ AY"),
+        (NATAMAM_AY, "NATAMAM AY"),
+        (RAZILASDIRILMIS_AZ_ODEME, "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"),
+        (YENI_QRAFIK, "YENİ QRAFİK"),
+        (ARTIQ_ODEME, "ARTIQ ÖDƏMƏ")
+    ]
+
+    SIFIR_STATUS_CHOICES = [
+        (SIFIR_NOVBETI_AY,"SIFIR NÖVBƏTİ AY"),
+        (SIFIR_SONUNCU_AY, "SIFIR SONUNCU AY"),
+        (SIFIR_DIGER_AYLAR, "SIFIR DİGƏR AYLAR")
+    ]
+
+    NATAMAM_STATUS_CHOICES = [
+        (NATAMAM_NOVBETI_AY,"NATAMAM NÖVBƏTİ AY"),
+        (NATAMAM_SONUNCU_AY, "NATAMAM SONUNCU AY"),
+        (NATAMAM_DIGER_AYLAR, "NATAMAM DİGƏR AYLAR")
+    ]
+
     muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='odeme_tarixi',
                                  on_delete=models.CASCADE)
     tarix = models.DateField(default=False, blank=True, null=True)
     qiymet = models.FloatField(null=True, blank=True)
-    status = models.BooleanField(default=False)
+    odenme_status = models.CharField(
+        max_length=30,
+        choices=ODEME_STATUS_CHOICES,
+        default=ODENMEYEN
+    )
 
+    sifira_gore_odeme_status = models.CharField(
+        max_length=20,
+        choices=SIFIR_STATUS_CHOICES,
+        default=None,
+        null=True,
+        blank=True
+    )
+
+    natamama_gore_odeme_status = models.CharField(
+        max_length=20,
+        choices=NATAMAM_STATUS_CHOICES,
+        default=None,
+        null=True,
+        blank=True
+    )
+    
     class Meta:
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return f"{self.tarix} - {self.muqavile}"
+        return f"{self.pk}. {self.tarix} - {self.muqavile} - {self.qiymet}"
 
 
 class Servis(models.Model):
