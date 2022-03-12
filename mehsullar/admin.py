@@ -7,8 +7,9 @@ class OdemeTarixAdmin(admin.ModelAdmin):
         "muqavile",
         'muqavile__odenis_uslubu',
         'odenme_status',
-        'sifira_gore_odeme_status',
-        'natamama_gore_odeme_status',
+        'gecikdirme_status',
+        'buraxilmis_ay_alt_status',
+        'natamam_ay_alt_status',
     ]
     search_fields = (
         "muqavile",

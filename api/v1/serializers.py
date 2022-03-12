@@ -281,6 +281,14 @@ class MuqavileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Muqavile
         fields = "__all__"
+        read_only_fields = (
+            'muqavile_umumi_mebleg', 
+            'negd_odenis_gecikdirme', 
+            'negd_odenis_1_status', 
+            'negd_odenis_2_status',
+            'ilkin_odenis_status',
+            'qaliq_ilkin_odenis_status'
+        )
 
 
 class OdemeTarixSerializer(serializers.ModelSerializer):

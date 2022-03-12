@@ -14,3 +14,4 @@ def jwt_decode_handler(token):
         issuer=settings.SIMPLE_JWT.get("ISSUER"),
         algorithms=[settings.SIMPLE_JWT.get("ALGORITHM")]
     )
+

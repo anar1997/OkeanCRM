@@ -23,6 +23,7 @@ class OdemeTarixFilter(django_filters.FilterSet):
 
             'tarix': ['exact'],
             'odenme_status': ['exact'],
+            'gecikdirme_status': ['exact'],
         }
 
 
