@@ -93,11 +93,11 @@ class Bonus(models.Model):
         return f"{self.status} - {self.komandaya_gore_bonus}"
 
 class User(AbstractUser):
-    username = None
+    # username = None
     first_name = None
     last_name = None
 
-    email = models.EmailField(_('email address'), unique=True)
+    # email = models.EmailField(_('email address'), unique=True)
     asa= models.CharField(max_length=200)
     dogum_tarixi= models.DateField(null=True, blank=True)
     ishe_baslama_tarixi= models.DateField(auto_now_add = True, null=True, blank=True)
@@ -112,7 +112,7 @@ class User(AbstractUser):
     komanda = models.OneToOneField(Komanda, on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
     status = models.ForeignKey(Bonus, on_delete=models.SET_NULL, null=True, blank=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
