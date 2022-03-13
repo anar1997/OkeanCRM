@@ -22,6 +22,7 @@ from account.models import (
     ShirketdenOfislereTransfer,
     Maas,
     Bonus,
+    Bolge
 )
 
 
@@ -97,6 +98,10 @@ class AnbarSerializer(serializers.ModelSerializer):
 
 
 class MehsullarSerializer(serializers.ModelSerializer):
+    shirket = ShirketSerializer(read_only = True)
+    shirket_id = serializers.PrimaryKeyRelatedField(
+        queryset = Shirket.objects.all(), source = "shirket", write_only= True
+    )
     class Meta:
         model = Mehsullar
         fields = "__all__"
@@ -213,8 +218,16 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = "__all__"
 
+class BolgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bolge
+        fields = "__all__"
 
 class MusteriSerializer(serializers.ModelSerializer):
+    bolge = BolgeSerializer(read_only=True)
+    bolge_id = serializers.PrimaryKeyRelatedField(
+        queryset = Bolge.objects.all(), source = "bolge", write_only=True
+    )
     class Meta:
         model = Musteri
         fields = "__all__"
@@ -239,10 +252,10 @@ class MuqavileSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), source='canvesser', write_only=True, required=False, allow_null=True
     )
     musteri_id = serializers.PrimaryKeyRelatedField(
-        queryset=Musteri.objects.all(), source='musteri', write_only=True,
+        queryset=Musteri.objects.all(), source='musteri', write_only=True, required=False, allow_null=True
     )
     mehsul_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True,
+        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True, required=False, allow_null=True
     )
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True, required=False, allow_null=True

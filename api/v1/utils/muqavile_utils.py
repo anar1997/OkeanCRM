@@ -135,7 +135,7 @@ def muqavile_create(self, request, *args, **kwargs):
     try:
         stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
         print(f"stok ==> {stok}")
-        
+        print(serializer.is_valid())
         if (serializer.is_valid()):
             if(mehsul_sayi == ""):
                 mehsul_sayi = 1
@@ -335,6 +335,7 @@ def muqavile_create(self, request, *args, **kwargs):
                             return Response({"detail": "Müqavilə müvəffəqiyyətlə imzalandı"}, status=status.HTTP_201_CREATED)
                         
                         elif((indiki_tarix_san < negd_odenis_1_tarix_san) and (indiki_tarix_san < negd_odenis_2_tarix_san)):
+                            print("Burda xeta cixir")
                             stok_mehsul_ciximi(stok, int(mehsul_sayi))
                             serializer.save(vanleader=user, dealer=dealer, canvesser=canvesser, shirket = shirket, ofis = ofis, shobe = shobe, odenis_uslubu = "İKİ DƏFƏYƏ NƏĞD", negd_odenis_1_status = "DAVAM EDƏN", negd_odenis_2_status = "DAVAM EDƏN", muqavile_umumi_mebleg = muqavile_umumi_mebleg)
                             return Response({"detail": "Müqavilə müvəffəqiyyətlə imzalandı"}, status=status.HTTP_201_CREATED)
@@ -462,6 +463,14 @@ def muqavile_patch(self, request, *args, **kwargs):
     indiki_tarix = datetime.datetime.combine(indiki_tarix_date, my_time)
     indiki_tarix_san = datetime.datetime.timestamp(indiki_tarix)
     print(f"indiki_tarix_san ===> {indiki_tarix_san}")
+
+    dusen_muqavile_status = request.data.get("muqavile_status")
+    print(f"muqavile_status ===> {muqavile_status}")
+
+    if(dusen_muqavile_status == "DÜŞƏN"):
+        muqavile.muqavile_status = "DÜŞƏN"
+        muqavile.save()
+        return Response({"detail": "Müqavilə düşən statusuna keçirildi"}, status=status.HTTP_200_OK)
     
     if(muqavile.odenis_uslubu == "KREDİT"):
         if(odemek_istediyi_ilkin_odenis != None and ilkin_odenis_status == "DAVAM EDƏN"):
@@ -553,6 +562,15 @@ def muqavile_update(self, request, *args, **kwargs):
     indiki_tarix = datetime.datetime.combine(indiki_tarix_date, my_time)
     indiki_tarix_san = datetime.datetime.timestamp(indiki_tarix)
     print(f"indiki_tarix_san ===> {indiki_tarix_san}")
+
+    dusen_muqavile_status = request.data.get("muqavile_status")
+    print(f"muqavile_status ===> {muqavile_status}")
+
+    if(dusen_muqavile_status == "DÜŞƏN"):
+        muqavile.muqavile_status = "DÜŞƏN"
+        muqavile.save()
+        return Response({"detail": "Müqavilə düşən statusuna keçirildi"}, status=status.HTTP_200_OK)
+    
     
     if(muqavile.odenis_uslubu == "KREDİT"):
         if(odemek_istediyi_ilkin_odenis != None and ilkin_odenis_status == "DAVAM EDƏN"):

@@ -16,7 +16,6 @@ class Anbar(models.Model):
 
 
 class AnbarQeydler(models.Model):
-    basliq = models.CharField(max_length=100)
     qeyd = models.TextField()
     anbar = models.ForeignKey(Anbar, on_delete=models.CASCADE, related_name="anbar_qeyd")
 
@@ -24,18 +23,19 @@ class AnbarQeydler(models.Model):
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return self.basliq
+        return f"{self.anbar} - {self.qeyd[:30]}"
 
 
 class Mehsullar(models.Model):
     mehsulun_adi = models.CharField(max_length=300)
     qiymet = models.FloatField()
+    shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_mehsul")
 
     class Meta:
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return self.mehsulun_adi
+        return f"{self.shirket} şirkəti {self.mehsulun_adi} - {self.qiymet} AZN"
 
 
 class Stok(models.Model):
@@ -78,13 +78,13 @@ class Muqavile(models.Model):
 
     BITMIS = "BİTMİŞ"
     DAVAM_EDEN = "DAVAM EDƏN"
-    DUSEN = "LƏĞV OLUNMUŞ"
+    DUSEN = "DÜŞƏN"
     YOXDUR = "YOXDUR"
 
     MUQAVILE_STATUS_CHOICES = [
         (DAVAM_EDEN,"DAVAM EDƏN"),
         (BITMIS, "BİTMİŞ"),
-        (DUSEN, "LƏĞV OLUNMUŞ")
+        (DUSEN, "DÜŞƏN")
     ]
 
     ILKIN_ODENIS_STATUS_CHOICES = [

@@ -121,16 +121,25 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+class Bolge(models.Model):
+    bolge_adi = models.CharField(max_length=300)
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return self.bolge_adi
 
 
 class Musteri(models.Model):
     asa = models.CharField(max_length=200)
     sv_image = models.ImageField(upload_to="media/")
     tel1 = models.CharField(max_length=50)
-    tel2 = models.CharField(max_length=50)
-    tel3 = models.CharField(max_length=50)
-    tel4 = models.CharField(max_length=50)
+    tel2 = models.CharField(max_length=50, null=True, blank=True)
+    tel3 = models.CharField(max_length=50, null=True, blank=True)
+    tel4 = models.CharField(max_length=50, null=True, blank=True)
     unvan = models.TextField()
+    bolge = models.ForeignKey(Bolge, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ("pk",)
@@ -139,7 +148,6 @@ class Musteri(models.Model):
         return self.asa
 
 class MusteriQeydler(models.Model):
-    basliq=models.CharField(max_length=100)
     qeyd=models.TextField()
     musteri=models.ForeignKey(Musteri,on_delete=models.CASCADE, related_name="musteri_qeydler")
 
@@ -147,7 +155,7 @@ class MusteriQeydler(models.Model):
         ordering = ("pk",)
 
     def __str__(self):
-        return self.basliq
+        return f"{self.musteri} -- {self.qeyd[:20]}"
 
 # Kassa Ve Transferler **************************
 

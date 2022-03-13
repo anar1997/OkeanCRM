@@ -54,7 +54,7 @@ def odeme_tarixi_patch(self, request, *args, **kwargs):
                         if serializer.is_valid():
                             print(f"request.data ===> {request.data}")
                             serializer.save()
-                            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi PATCH"}, status=status.HTTP_200_OK)
+                            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
                 except:
                     return Response({"detail": "Yeni tarix hal-hazırki tarix ile növbəti ayın tarixi arasında olmalıdır"}, status=status.HTTP_400_BAD_REQUEST)
             elif(indiki_ay != odenmeyen_odemetarixler[-1]):

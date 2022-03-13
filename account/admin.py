@@ -17,7 +17,8 @@ from account.models import (
     ShirketdenHoldingeTransfer,
     ShirketdenOfislereTransfer,
     Maas,
-    Bonus
+    Bonus,
+    Bolge
 )
 from django.contrib.auth.models import Permission
 
@@ -40,6 +41,7 @@ admin.site.register(ShirketdenHoldingeTransfer)
 admin.site.register(ShirketdenOfislereTransfer)
 admin.site.register(Maas)
 admin.site.register(Bonus)
+admin.site.register(Bolge)
 
 
 admin.site.register(Permission)

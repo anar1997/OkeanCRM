@@ -89,6 +89,9 @@ urlpatterns=[
 
     path('bonus/', views.BonusListCreateAPIView.as_view(), name="bonus"),
     path('bonus/<int:pk>', views.BonusDetailAPIView.as_view(), name="bonus_detail"),
+
+    path('bolge/', views.BolgeListCreateAPIView.as_view(), name="bolge"),
+    path('bolge/<int:pk>', views.BolgeDetailAPIView.as_view(), name="bolge_detail"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
