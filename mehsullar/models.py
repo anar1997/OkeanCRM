@@ -65,16 +65,6 @@ class Emeliyyat(models.Model):
         return f"Əməliyyat ==> {self.gonderen} - {self.qebul_eden} {self.emeliyyat_tarixi}"
 
 
-class Hediyye(models.Model):
-    hediyye_adi = models.CharField(max_length=200)
-
-    class Meta:
-        ordering = ("pk",)
-
-    def __str__(self) -> str:
-        return self.hediyye_adi
-
-
 class Muqavile(models.Model):
     KREDIT = 'KREDİT'
     NAGD = 'NƏĞD'
@@ -136,13 +126,6 @@ class Muqavile(models.Model):
     ofis = models.ForeignKey('account.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     shobe = models.ForeignKey('account.Shobe', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     
-    hediyye1 = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="muqavile_hediyye1", null=True,
-                                 blank=True)
-    hediyye2 = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="muqavile_hediyye2", null=True,
-                                 blank=True)
-    hediyye3 = models.ForeignKey(Mehsullar, on_delete=models.CASCADE, related_name="muqavile_hediyye3", null=True,
-                                 blank=True)
-    
     odenis_uslubu =  models.CharField(
         max_length=20,
         choices=ODENIS_USLUBU_CHOICES,
@@ -154,8 +137,6 @@ class Muqavile(models.Model):
     
     negd_odenis_1_tarix = models.DateField(blank=True, null=True)
     negd_odenis_2_tarix = models.DateField(blank=True, null=True)
-
-    # negd_odenis_gecikdirme = models.BooleanField(default=False)
 
     negd_odenis_1_status = models.CharField(
         max_length=20,
@@ -176,7 +157,6 @@ class Muqavile(models.Model):
     )
 
     kredit_muddeti = models.IntegerField(default=0, blank=True)
-    # verilecek_ilkin_odenis = models.FloatField(blank=True, default=0)
     ilkin_odenis = models.FloatField(blank=True, default=0)
     ilkin_odenis_qaliq = models.FloatField(blank=True, default=0)
     ilkin_odenis_tarixi = models.DateField(blank=True, null=True)
@@ -187,7 +167,6 @@ class Muqavile(models.Model):
         choices=ILKIN_ODENIS_STATUS_CHOICES,
         default=YOXDUR
     )
-    
 
     qaliq_ilkin_odenis_status = models.CharField(
         max_length=20,
@@ -201,6 +180,16 @@ class Muqavile(models.Model):
 
     def __str__(self) -> str:
         return f"{self.pk}. muqavile {self.musteri} - {self.mehsul}"
+
+class MuqavileHediyye(models.Model):
+    mehsul = models.ForeignKey(Mehsullar, on_delete=models.SET_NULL, null=True, related_name="mehsul_hediyye")
+    muqavile = models.ForeignKey(Muqavile, on_delete=models.CASCADE, related_name="muqavile_hediyye")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"Hədiyyə --- {self.muqavile} - {self.mehsul}"
 
 class OdemeTarix(models.Model):
     ODENEN = "ÖDƏNƏN"

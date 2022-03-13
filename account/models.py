@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from mehsullar.models import Stok
+import mehsullar
 
 from .managers import CustomUserManager
 
@@ -75,7 +75,7 @@ class Bonus(models.Model):
     ]
 
     status = models.CharField(max_length=250, null=True)
-    stok = models.ForeignKey(Stok, on_delete=models.CASCADE, null=True, related_name="stok_bonus")
+    stok = models.ForeignKey('mehsullar.Stok', on_delete=models.CASCADE, null=True, related_name="stok_bonus")
     satis_meblegi = models.FloatField(default=0)
     odenis_uslubu =  models.CharField(
         max_length=20,
@@ -93,18 +93,16 @@ class Bonus(models.Model):
         return f"{self.status} - {self.komandaya_gore_bonus}"
 
 class User(AbstractUser):
-    # username = None
     first_name = None
     last_name = None
 
-    # email = models.EmailField(_('email address'), unique=True)
     asa= models.CharField(max_length=200)
     dogum_tarixi= models.DateField(null=True, blank=True)
     ishe_baslama_tarixi= models.DateField(auto_now_add = True, null=True, blank=True)
     last_login = models.DateTimeField(auto_now = True, null=True, blank=True)
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
-    sv_image=models.ImageField(upload_to="media/")
+    sv_image=models.ImageField(upload_to="media/", null=True, blank=True)
     shirket=models.ForeignKey(Shirket, on_delete=models.SET_NULL, null=True, related_name="ishci")
     ofis=models.ForeignKey(Ofis, on_delete=models.SET_NULL, null=True, related_name="ishci")
     shobe=models.ForeignKey(Shobe, on_delete=models.SET_NULL, null=True, related_name="ishci")
@@ -118,10 +116,10 @@ class User(AbstractUser):
     objects = CustomUserManager()
 
     class Meta:
-        ordering = ("pk",)
+        ordering = ("pk",)  
 
     def __str__(self):
-        return self.email
+        return self.username
 
 
 

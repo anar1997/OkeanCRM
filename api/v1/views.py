@@ -1,4 +1,3 @@
-import code
 from django.contrib.auth import user_logged_in
 from rest_framework import status, permissions, generics
 from rest_framework.exceptions import ValidationError
@@ -17,7 +16,7 @@ from .serializers import (
     KomandaSerializer,
     EmeliyyatSerializer,
     OdemeTarixSerializer,
-    HediyyeSerializer,
+    MuqavileHediyyeSerializer,
     MehsullarSerializer,
     OfisSerializer,
     MuqavileSerializer,
@@ -43,7 +42,7 @@ from .serializers import (
 )
 from mehsullar.models import (
     Emeliyyat, 
-    Hediyye, 
+    MuqavileHediyye, 
     Muqavile, 
     OdemeTarix, 
     Anbar, 
@@ -77,6 +76,7 @@ from .utils.utils import jwt_decode_handler
 from .utils import (
     odeme_tarixleri_utils,
     muqavile_utils,
+    muqavile_hediyye_utils,
 )
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -393,14 +393,17 @@ class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 # ********************************** hediyye put delete post get **********************************
 
 
-class HediyyeListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Hediyye.objects.all()
-    serializer_class = HediyyeSerializer
+class MuqavileHediyyeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = MuqavileHediyye.objects.all()
+    serializer_class = MuqavileHediyyeSerializer
+
+    def create(self, request, *args, **kwargs):
+        return muqavile_hediyye_utils.muqavile_hediyye_create(self, request, *args, **kwargs)
 
 
-class HediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Hediyye.objects.all()
-    serializer_class = HediyyeSerializer
+class MuqavileHediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MuqavileHediyye.objects.all()
+    serializer_class = MuqavileHediyyeSerializer
 
 
 # ********************************** servis put delete post get **********************************

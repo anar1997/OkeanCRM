@@ -48,8 +48,8 @@ urlpatterns=[
     path('emeliyyat/', views.EmeliyyatListCreateAPIView.as_view(), name="emeliyyat"),
     path('emeliyyat/<int:pk>', views.EmeliyyatDetailAPIView.as_view(), name="emeliyyat_detail"),
     
-    path('hediyye/', views.HediyyeListCreateAPIView.as_view(), name="hediyye"),
-    path('hediyye/<int:pk>', views.HediyyeDetailAPIView.as_view(), name="hediyye_detail"),
+    path('hediyye/', views.MuqavileHediyyeListCreateAPIView.as_view(), name="hediyye"),
+    path('hediyye/<int:pk>', views.MuqavileHediyyeDetailAPIView.as_view(), name="hediyye_detail"),
 
     path('komanda/', views.KomandaListCreateAPIView.as_view(), name="komanda"),
     path('komanda/<int:pk>', views.KomandaDetailAPIView.as_view(), name="komanda_detail"),

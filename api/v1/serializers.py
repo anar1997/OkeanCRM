@@ -1,8 +1,7 @@
-from attr import fields
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from mehsullar.models import Emeliyyat, Hediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
+from mehsullar.models import Emeliyyat, MuqavileHediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 
 from account.models import (
     MusteriQeydler, 
@@ -173,14 +172,14 @@ class VezifelerSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
+        fields = ('id', 'username', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
                   'sv_image', 'shirket', 'status', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['email'], password=validated_data['password'],
+        user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'], password=validated_data['password'],
                                         asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], komanda=validated_data['komanda'], shobe=validated_data['shobe'])
         return user
 
@@ -190,7 +189,7 @@ class UserSerializer(serializers.ModelSerializer):
     ofis = OfisSerializer(read_only=True)
     shobe = ShobeSerializer(read_only=True)
     shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket', write_only=True, required=False, allow_null=True
+        queryset=Shirket.objects.all(), source='shirket', write_only=True,
     )
     ofis_id = serializers.PrimaryKeyRelatedField(
         queryset=Ofis.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
@@ -202,12 +201,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     vezife = VezifelerSerializer(read_only=True)
     vezife_id = serializers.PrimaryKeyRelatedField(
-        queryset=Vezifeler.objects.all(), source='vezife', write_only=True, required=False, allow_null=True
+        queryset=Vezifeler.objects.all(), source='vezife', write_only=True,
     )
 
     komanda = KomandaSerializer(read_only=True)
     komanda_id = serializers.PrimaryKeyRelatedField(
-        queryset=Komanda.objects.all(), source='komanda', write_only=True, required=False, allow_null=True
+        queryset=Komanda.objects.all(), source='komanda', write_only=True,
     )
 
     class Meta:
@@ -220,12 +219,6 @@ class MusteriSerializer(serializers.ModelSerializer):
         model = Musteri
         fields = "__all__"
 
-class HediyyeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Hediyye
-        fields = "__all__"
-
-
 class MuqavileSerializer(serializers.ModelSerializer):
     vanleader = UserSerializer(read_only=True)
     dealer = UserSerializer(read_only=True)
@@ -235,9 +228,6 @@ class MuqavileSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
     shobe = ShobeSerializer(read_only=True)
     ofis = OfisSerializer(read_only=True)
-    hediyye1 = HediyyeSerializer(read_only=True)
-    hediyye2 = HediyyeSerializer(read_only=True)
-    hediyye3 = HediyyeSerializer(read_only=True)
 
     vanleader_id = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), source='vanleader', write_only=True, required=False, allow_null=True
@@ -249,10 +239,10 @@ class MuqavileSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(), source='canvesser', write_only=True, required=False, allow_null=True
     )
     musteri_id = serializers.PrimaryKeyRelatedField(
-        queryset=Musteri.objects.all(), source='musteri', write_only=True, required=False, allow_null=True
+        queryset=Musteri.objects.all(), source='musteri', write_only=True,
     )
     mehsul_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True, required=False, allow_null=True
+        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True,
     )
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True, required=False, allow_null=True
@@ -266,18 +256,6 @@ class MuqavileSerializer(serializers.ModelSerializer):
         queryset=Ofis.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
     )
 
-    hediyye1_id = serializers.PrimaryKeyRelatedField(
-        queryset=Hediyye.objects.all(), source='hediyye1', write_only=True, required=False, allow_null=True
-    )
-
-    hediyye2_id = serializers.PrimaryKeyRelatedField(
-        queryset=Hediyye.objects.all(), source='hediyye2', write_only=True, required=False, allow_null=True
-    )
-
-    hediyye3_id = serializers.PrimaryKeyRelatedField(
-        queryset=Hediyye.objects.all(), source='hediyye3', write_only=True, required=False, allow_null=True
-    )
-
     class Meta:
         model = Muqavile
         fields = "__all__"
@@ -289,6 +267,22 @@ class MuqavileSerializer(serializers.ModelSerializer):
             'ilkin_odenis_status',
             'qaliq_ilkin_odenis_status'
         )
+
+class MuqavileHediyyeSerializer(serializers.ModelSerializer):
+    mehsul = MehsullarSerializer(read_only=True)
+    muqavile = MuqavileSerializer(read_only=True)
+
+    mehsul_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='mehsul', write_only=True,
+    )
+
+    muqavile_id = serializers.PrimaryKeyRelatedField(
+        queryset=Muqavile.objects.all(), source='muqavile', write_only=True
+    )
+
+    class Meta:
+        model = MuqavileHediyye
+        fields = "__all__"
 
 
 class OdemeTarixSerializer(serializers.ModelSerializer):
@@ -321,25 +315,25 @@ class ServisSerializer(serializers.ModelSerializer):
     kartric6 = MehsullarSerializer(read_only=True)
 
     muqavile_id = serializers.PrimaryKeyRelatedField(
-        queryset=Muqavile.objects.all(), source='muqavile', write_only=True
+        queryset=Muqavile.objects.all(), source='muqavile', write_only=True, required=False, allow_null=True
     )
     kartric1_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric1', write_only=True
+        queryset=Mehsullar.objects.all(), source='kartric1', write_only=True, required=False, allow_null=True
     )
     kartric2_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric2', write_only=True
+        queryset=Mehsullar.objects.all(), source='kartric2', write_only=True, required=False, allow_null=True
     )
     kartric3_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric3', write_only=True
+        queryset=Mehsullar.objects.all(), source='kartric3', write_only=True, required=False, allow_null=True
     )
     kartric4_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric4', write_only=True
+        queryset=Mehsullar.objects.all(), source='kartric4', write_only=True, required=False, allow_null=True
     )
     kartric5_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric5', write_only=True
+        queryset=Mehsullar.objects.all(), source='kartric5', write_only=True, required=False, allow_null=True
     )
     kartric6_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric6', write_only=True
+        queryset=Mehsullar.objects.all(), source='kartric6', write_only=True, required=False, allow_null=True
     )
 
     class Meta:
