@@ -4,75 +4,26 @@ from rest_framework.exceptions import ValidationError
 from mehsullar.models import Emeliyyat, MuqavileHediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
 
 from account.models import (
-    MusteriQeydler, 
-    Shirket, 
-    Shobe, 
     User, 
-    Musteri, 
-    Vezifeler, 
-    Ofis, 
-    Komanda, 
-    Holding, 
-    ShirketKassa, 
-    OfisKassa,
-    HoldingKassa,
-    HoldingdenShirketlereTransfer,
-    OfisdenShirketeTransfer,
-    ShirketdenHoldingeTransfer,
-    ShirketdenOfislereTransfer,
-    Maas,
-    Bonus,
-    Bolge
+    Musteri,
 )
 
+from api.v1.all_serializers.company_serializers import (
+    ShirketSerializer,
+    OfisSerializer,
+    ShobeSerializer,
+)
 
-class ShirketSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Shirket
-        fields = "__all__"
+from api.v1.all_serializers.account_serializers import (
+    UserSerializer,
+    MusteriSerializer
+)
 
-    def create(self, validated_data):
-        shirket_adi = validated_data.get('shirket_adi')
-        validated_data['shirket_adi'] = shirket_adi.upper()
-        try:
-            return super(ShirketSerializer, self).create(validated_data)
-        except:
-            raise ValidationError('Bu ad ilə şirkət artıq qeydiyyatdan keçirilib')
-
-
-class KomandaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Komanda
-        fields = "__all__"
-
-    def create(self, validated_data):
-        komanda_adi = validated_data.get('komanda_adi')
-        validated_data['komanda_adi'] = komanda_adi.upper()
-        try:
-            return super(KomandaSerializer, self).create(validated_data)
-        except:
-            raise ValidationError('Bu ad ilə komanda artıq qeydiyyatdan keçirilib')
-
-
-
-class OfisSerializer(serializers.ModelSerializer):
-    shirket = ShirketSerializer(read_only=True)
-    shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket', write_only=True
-    )
-
-    class Meta:
-        model = Ofis
-        fields = "__all__"
-
-    def create(self, validated_data):
-        ofis_adi = validated_data.get('ofis_adi')
-        validated_data['ofis_adi'] = ofis_adi.upper()
-        try:
-            return super(OfisSerializer, self).create(validated_data)
-        except:
-            raise ValidationError('Bu ad ilə ofis artıq qeydiyyatdan keçirilib')
-
+from company.models import (
+    Shirket,
+    Ofis,
+    Shobe,
+)
 
 class AnbarSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
@@ -143,93 +94,6 @@ class AnbarQeydlerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AnbarQeydler
-        fields = "__all__"
-
-
-class ShobeSerializer(serializers.ModelSerializer):
-    ofis = OfisSerializer(read_only=True)
-    ofis_id = serializers.PrimaryKeyRelatedField(
-        queryset=Ofis.objects.all(), source='ofis', write_only=True
-    )
-
-    class Meta:
-        model = Shobe
-        fields = "__all__"
-
-class VezifelerSerializer(serializers.ModelSerializer):
-    shobe = ShobeSerializer(read_only=True)
-    shirket = ShirketSerializer(read_only=True)
-    shobe_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shobe.objects.all(), source='shobe', write_only=True
-    )
-    shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket', write_only=True
-    )
-    class Meta:
-        model = Vezifeler
-        fields = "__all__"
-
-    def create(self, validated_data):
-        vezife_adi = validated_data.get('vezife_adi')
-        validated_data['vezife_adi'] = vezife_adi.upper()
-        return super(VezifelerSerializer, self).create(validated_data)
-
-class RegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
-                  'sv_image', 'shirket', 'status', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
-        extra_kwargs = {
-            'password': {'write_only': True},
-        }
-
-    def create(self, validated_data):
-        user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'], password=validated_data['password'],
-                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], komanda=validated_data['komanda'], shobe=validated_data['shobe'])
-        return user
-
-
-class UserSerializer(serializers.ModelSerializer):
-    shirket = ShirketSerializer(read_only=True)
-    ofis = OfisSerializer(read_only=True)
-    shobe = ShobeSerializer(read_only=True)
-    shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shirket.objects.all(), source='shirket', write_only=True,
-    )
-    ofis_id = serializers.PrimaryKeyRelatedField(
-        queryset=Ofis.objects.all(), source='ofis', write_only=True, required=False, allow_null=True
-    )
-    shobe_id = serializers.PrimaryKeyRelatedField(
-        queryset=Shobe.objects.all(), source='shobe',
-        write_only=True, required=False, allow_null=True
-    )
-
-    vezife = VezifelerSerializer(read_only=True)
-    vezife_id = serializers.PrimaryKeyRelatedField(
-        queryset=Vezifeler.objects.all(), source='vezife', write_only=True,
-    )
-
-    komanda = KomandaSerializer(read_only=True)
-    komanda_id = serializers.PrimaryKeyRelatedField(
-        queryset=Komanda.objects.all(), source='komanda', write_only=True,
-    )
-
-    class Meta:
-        model = User
-        fields = "__all__"
-
-class BolgeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bolge
-        fields = "__all__"
-
-class MusteriSerializer(serializers.ModelSerializer):
-    bolge = BolgeSerializer(read_only=True)
-    bolge_id = serializers.PrimaryKeyRelatedField(
-        queryset = Bolge.objects.all(), source = "bolge", write_only=True
-    )
-    class Meta:
-        model = Musteri
         fields = "__all__"
 
 class MuqavileSerializer(serializers.ModelSerializer):
@@ -308,16 +172,6 @@ class OdemeTarixSerializer(serializers.ModelSerializer):
         model = OdemeTarix
         fields = "__all__"
 
-class MusteriQeydlerSerializer(serializers.ModelSerializer):
-    musteri = MusteriSerializer(read_only=True)
-
-    musteri_id = serializers.PrimaryKeyRelatedField(
-        queryset=MusteriQeydler.objects.all(), source='musteri', write_only=True
-    )
-    class Meta:
-        model = MusteriQeydler
-        fields = "__all__"
-
 class ServisSerializer(serializers.ModelSerializer):
     muqavile = MuqavileSerializer(read_only=True)
     kartric1 = MehsullarSerializer(read_only=True)
@@ -368,56 +222,5 @@ class StokSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Stok
-        fields = "__all__"
+        fields = "__all__" 
 
-
-class HoldingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Holding
-        fields = "__all__"
-
-class HoldingKassaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HoldingKassa
-        fields = "__all__"
-
-class ShirketKassaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ShirketKassa
-        fields = "__all__"
-
-class OfisKassaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OfisKassa
-        fields = "__all__"
-
-
-class HoldingdenShirketlereTransferSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HoldingdenShirketlereTransfer
-        fields = "__all__"
-
-class ShirketdenHoldingeTransferSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ShirketdenHoldingeTransfer
-        fields = "__all__"
-
-class OfisdenShirketeTransferSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OfisdenShirketeTransfer,
-        fields = "__all__"
-
-class ShirketdenOfislereTransferSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ShirketdenOfislereTransfer
-        fields = "__all__"  
-
-class MaasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Maas
-        fields = "__all__"
-
-class BonusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bonus
-        fields = "__all__"

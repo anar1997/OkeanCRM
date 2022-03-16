@@ -1,12 +1,12 @@
 from django.db import models
-from numpy import require
 import account
+import company
 
 
 class Anbar(models.Model):
     ad = models.CharField(max_length=100)
-    ofis = models.ForeignKey('account.Ofis', on_delete=models.CASCADE, null=True, related_name="ofis_anbar")
-    shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_anbar")
+    ofis = models.ForeignKey('company.Ofis', on_delete=models.CASCADE, null=True, related_name="ofis_anbar")
+    shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_anbar")
 
     class Meta:
         ordering = ("pk",)
@@ -29,7 +29,7 @@ class AnbarQeydler(models.Model):
 class Mehsullar(models.Model):
     mehsulun_adi = models.CharField(max_length=300)
     qiymet = models.FloatField()
-    shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_mehsul")
+    shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_mehsul")
 
     class Meta:
         ordering = ("pk",)
@@ -122,9 +122,9 @@ class Muqavile(models.Model):
     muqavile_umumi_mebleg = models.FloatField(default=0, blank=True)
     elektron_imza = models.ImageField(upload_to="media/", null=True, blank=True)
     muqavile_tarixi = models.DateField(auto_now_add=True, null=True, blank=True)
-    shirket = models.ForeignKey('account.Shirket', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    ofis = models.ForeignKey('account.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
-    shobe = models.ForeignKey('account.Shobe', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    ofis = models.ForeignKey('company.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
+    shobe = models.ForeignKey('company.Shobe', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     
     odenis_uslubu =  models.CharField(
         max_length=20,
@@ -175,6 +175,9 @@ class Muqavile(models.Model):
     )
     pdf = models.FileField(blank=True, null=True)
 
+    kompensasiya_medaxil = models.FloatField(default=0, null=True, blank=True)
+    kompensasiya_mexaric = models.FloatField(default=0, null=True, blank=True)
+
     class Meta:
         ordering = ("pk",)
 
@@ -214,6 +217,8 @@ class OdemeTarix(models.Model):
     ARTIQ_BIR_AY = "ARTIQ_BİR_AY"
     ARTIQ_BUTUN_AYLAR = "ARTIQ_BÜTÜN_AYLAR"
 
+    BORCU_BAGLA = "BORCU BAĞLA"
+
     ODEME_STATUS_CHOICES = [
         (ODENMEYEN,"ÖDƏNMƏYƏN"),
         (ODENEN, "ÖDƏNƏN"),
@@ -246,6 +251,10 @@ class OdemeTarix(models.Model):
         (ARTIQ_BUTUN_AYLAR, "ARTIQ_BÜTÜN_AYLAR")
     ]
 
+    BORCU_BAGLA_STATUS_CHOICES = [
+        (BORCU_BAGLA,"BORCU BAĞLA")
+    ]
+
     muqavile = models.ForeignKey(Muqavile, blank=True, null=True, related_name='odeme_tarixi',
                                  on_delete=models.CASCADE)
     tarix = models.DateField(default=False, blank=True, null=True)
@@ -254,6 +263,14 @@ class OdemeTarix(models.Model):
         max_length=30,
         choices=ODEME_STATUS_CHOICES,
         default=ODENMEYEN
+    )
+
+    borcu_bagla_status = models.CharField(
+        max_length=30,
+        choices=BORCU_BAGLA_STATUS_CHOICES,
+        default=None,
+        null=True,
+        blank=True
     )
 
     gecikdirme_status = models.CharField(

@@ -14,21 +14,27 @@ class OdemeTarixFilter(django_filters.FilterSet):
             'muqavile__ofis__ofis_adi': ['exact', 'icontains'],
             'muqavile__shirket__shirket_adi': ['exact', 'icontains'],
             'muqavile__vanleader__asa': ['exact', 'icontains'],
-
             'muqavile__odenis_uslubu': ['exact'],
             'muqavile__muqavile_status': ['exact'],
 
             'muqavile__musteri__asa': ['exact', 'icontains'],
             'muqavile__musteri__unvan': ['exact', 'icontains'],
+            'muqavile__musteri__tel1': ['exact', 'icontains'],
+            'muqavile__musteri__tel2': ['exact', 'icontains'],
+            'muqavile__musteri__tel3': ['exact', 'icontains'],
+            'muqavile__musteri__tel4': ['exact', 'icontains'],
 
-            'tarix': ['exact'],
+            'tarix': ['exact', 'gte', 'lte'],
+            'qiymet': ['exact', 'gte', 'lte'],     
             'odenme_status': ['exact'],
             'gecikdirme_status': ['exact'],
+            'buraxilmis_ay_alt_status': ['exact'],
+            'natamam_ay_alt_status': ['exact'],
+            'artiq_odeme_alt_status': ['exact'],
         }
 
 
 class MuqavileFilter(django_filters.FilterSet):
-    
     class Meta:
         model = Muqavile
         fields = {
@@ -43,8 +49,15 @@ class MuqavileFilter(django_filters.FilterSet):
             'ofis__ofis_adi': ['exact', 'icontains'],
             'odenis_uslubu': ['exact', 'icontains'],
             'muqavile_status': ['exact', 'icontains'],
-            'vanleader__komanda__komanda_adi': ['exact', 'icontains'],
+            'negd_odenis_1_status': ['exact', 'icontains'],
+            'negd_odenis_2_status': ['exact', 'icontains'],
+            'kredit_muddeti': ['exact'],
+            'ilkin_odenis_tarixi': ['exact', 'gte', 'lte'],
+            'ilkin_odenis_qaliq_tarixi': ['exact', 'gte', 'lte'],
+            'ilkin_odenis_status': ['exact', 'icontains'],
+            'qaliq_ilkin_odenis_status': ['exact', 'icontains'],
 
+            'vanleader__komanda__komanda_adi': ['exact', 'icontains'],
         }
 
 

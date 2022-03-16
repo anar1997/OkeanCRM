@@ -1,3 +1,5 @@
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
 from mehsullar.models import Muqavile, Servis, OdemeTarix
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -7,60 +9,44 @@ import pandas as pd
 
 @receiver(post_save, sender=Muqavile)
 def create_services(sender, instance, created, **kwargs):
-    print(f"Created ==> {created}")
-    indi = datetime.datetime.today().strftime('%Y-%m-%d')
-    month6 = datetime.datetime.today()+ relativedelta(months=6)
-    month18 = datetime.datetime.today()+ relativedelta(months=18)
-    month24 = datetime.datetime.today()+ relativedelta(months=24)
-    print(f'muqavile --> {instance}')
-    print(f"indi --> {indi}")
-    print(instance.mehsul_sayi)
-    i = 0
-    while(i<instance.mehsul_sayi):
-        if created:
+    if created:
+        print(f"Created ==> {created}")
+        indi = datetime.datetime.today().strftime('%Y-%m-%d')
+        month6 = datetime.datetime.today()+ relativedelta(months=6)
+        month18 = datetime.datetime.today()+ relativedelta(months=18)
+        month24 = datetime.datetime.today()+ relativedelta(months=24)
+        print(f'muqavile --> {instance}')
+        print(f"indi --> {indi}")
+        print(instance.mehsul_sayi)
+        i = 0
+        while(i<instance.mehsul_sayi):
+        
             Servis.objects.create(
                 muqavile=instance,
                 servis_tarix6ay= month6.strftime('%Y-%m-%d'),
                 servis_tarix18ay= month18.strftime('%Y-%m-%d'),
                 servis_tarix24ay= month24.strftime('%Y-%m-%d'),
             )
-        i+=1
+            i+=1
 
 @receiver(post_save, sender=Muqavile)
 def create_odeme_tarix(sender, instance, created, **kwargs):
-    print(f"Created muqavile for odeme tarixleri ==> {created}")
-    kredit_muddeti = instance.kredit_muddeti
-    print(f"kredit_muddeti ===> {kredit_muddeti} --- {type(kredit_muddeti)}")
+    if created:
+        print(f"Created muqavile for odeme tarixleri ==> {created}")
+        kredit_muddeti = instance.kredit_muddeti
+        print(f"kredit_muddeti ===> {kredit_muddeti} --- {type(kredit_muddeti)}")
 
-    mehsul_sayi = instance.mehsul_sayi
-    print(f"mehsul_sayi ===> {mehsul_sayi} --- {type(mehsul_sayi)}")
+        mehsul_sayi = instance.mehsul_sayi
+        print(f"mehsul_sayi ===> {mehsul_sayi} --- {type(mehsul_sayi)}")
 
-    print(f"odenis_uslubu ===> {instance.odenis_uslubu} --- {type(instance.odenis_uslubu)}")
-    
-    def kredit_muddeti_func(kredit_muddeti, mehsul_sayi):
-        kredit_muddeti_yeni = kredit_muddeti * mehsul_sayi
-        return kredit_muddeti_yeni
+        print(f"odenis_uslubu ===> {instance.odenis_uslubu} --- {type(instance.odenis_uslubu)}")
+        
+        def kredit_muddeti_func(kredit_muddeti, mehsul_sayi):
+            kredit_muddeti_yeni = kredit_muddeti * mehsul_sayi
+            return kredit_muddeti_yeni
 
-
-    # if(instance.odenis_uslubu == "İKİ DƏFƏYƏ NƏĞD"):
-    #     if created:
-    #         i = 0
-    #         while(i<2):
-    #             if(i==0):
-    #                 OdemeTarix.objects.create(
-    #                     muqavile = instance,
-    #                     tarix = instance.negd_odenis_1_tarix,
-    #                     qiymet = instance.negd_odenis_1
-    #                 )
-    #             if(i==1):
-    #                 OdemeTarix.objects.create(
-    #                     muqavile = instance,
-    #                     tarix = instance.negd_odenis_2_tarix,
-    #                     qiymet = instance.negd_odenis_2
-    #                 )
-    #             i+=1
-    if(instance.odenis_uslubu == "KREDİT"):
-        if created:
+        if(instance.odenis_uslubu == "KREDİT"):
+            
             indi = datetime.datetime.today().strftime('%Y-%m-%d')
             print(f"INDI ====> {indi} --- {type(indi)}")
             inc_month = pd.date_range(indi, periods = kredit_muddeti+1, freq='M')

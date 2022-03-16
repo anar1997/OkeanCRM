@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'account.apps.AccountConfig',
     'mehsullar.apps.MehsullarConfig',
+    'company.apps.CompanyConfig',
     'django_filters',
     'rest_auth',
     'django_extensions',

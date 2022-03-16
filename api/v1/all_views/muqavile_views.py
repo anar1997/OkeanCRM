@@ -1,46 +1,25 @@
-from django.contrib.auth import user_logged_in
 from rest_framework import status, permissions, generics
-from rest_framework.exceptions import ValidationError
 
 import math
 import pandas as pd
 
 import datetime
-from dateutil.relativedelta import relativedelta
 
 from rest_framework.response import Response
 from rest_framework import generics
-from .serializers import (
+
+from api.v1.all_serializers.muqavile_serializers import (
     AnbarSerializer,
-    BolgeSerializer,
-    HoldingSerializer,
-    KomandaSerializer,
-    EmeliyyatSerializer,
-    OdemeTarixSerializer,
-    MuqavileHediyyeSerializer,
     MehsullarSerializer,
-    OfisSerializer,
-    MuqavileSerializer,
-    MusteriQeydlerSerializer,
-    ShirketSerializer,
-    ShobeSerializer,
-    UserSerializer,
-    MusteriSerializer,
-    VezifelerSerializer,
+    EmeliyyatSerializer,
     AnbarQeydlerSerializer,
-    RegisterSerializer,
+    MuqavileSerializer,
+    MuqavileHediyyeSerializer,
+    OdemeTarixSerializer,
     ServisSerializer,
     StokSerializer,
-    HoldingdenShirketlereTransferSerializer,
-    ShirketdenHoldingeTransferSerializer,
-    OfisdenShirketeTransferSerializer,
-    ShirketdenOfislereTransferSerializer,
-    OfisKassaSerializer,
-    ShirketKassaSerializer,
-    HoldingKassaSerializer,
-    MaasSerializer,
-    BonusSerializer,
 )
+
 from mehsullar.models import (
     Emeliyyat, 
     MuqavileHediyye, 
@@ -52,39 +31,18 @@ from mehsullar.models import (
     Servis, 
     Stok
 )
-from account.models import (
-    Bolge,
-    MusteriQeydler, 
-    Shirket, 
-    Shobe, 
-    User, 
-    Musteri, 
-    Vezifeler, 
-    Ofis, 
-    Komanda, 
-    Holding, 
-    ShirketKassa, 
-    OfisKassa,
-    HoldingKassa,
-    HoldingdenShirketlereTransfer,
-    OfisdenShirketeTransfer,
-    ShirketdenHoldingeTransfer,
-    ShirketdenOfislereTransfer,
-    Maas,
-    Bonus,
-)
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .utils.utils import jwt_decode_handler
-from .utils import (
+from api.v1.utils import (
     odeme_tarixleri_utils,
     muqavile_utils,
     muqavile_hediyye_utils,
-    anbar_emeliyyat_utils
+    anbar_emeliyyat_utils,
+    servis_utils,
+    stok_utils
 )
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .filters import (
+from api.v1.filters import (
     OdemeTarixFilter,
     MuqavileFilter,
     StokFilter,
@@ -92,71 +50,7 @@ from .filters import (
 
 from rest_framework.generics import get_object_or_404
 
-
-
-# ********************************** user get post put delete **********************************
-
-
-class RegisterApi(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-
-
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class Login(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        data = super().post(request, *args, **kwargs)
-
-        data = data.data
-
-        acces_token = jwt_decode_handler(data.get("access"))
-
-        if not User.objects.filter(id=acces_token.get("user_id")).last():
-            return Response({"error": True, "message": "No such a user"}, status=status.HTTP_404_NOT_FOUND)
-
-        user = User.objects.filter(id=acces_token.get("user_id")).last()
-        user_logged_in.send(sender=type(user), request=request, user=user)
-
-        user_details = UserSerializer(user)
-
-        data["user_details"] = user_details.data
-        return Response(data)
-
-
-# ********************************** musteri get post put delete **********************************
-class MusteriListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Musteri.objects.all()
-    serializer_class = MusteriSerializer
-
-
-class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Musteri.objects.all()
-    serializer_class = MusteriSerializer
-
-
-# ********************************** musteriqeydlerin put delete post get **********************************
-
-class MusteriQeydlerListCreateAPIView(generics.ListCreateAPIView):
-    queryset = MusteriQeydler.objects.all()
-    serializer_class = MusteriQeydlerSerializer
-
-
-class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = MusteriQeydler.objects.all()
-    serializer_class = MusteriQeydlerSerializer
-
-
 # ********************************** muqavile get post put delete **********************************
-
 
 class MuqavileListCreateAPIView(generics.ListCreateAPIView):
     queryset = Muqavile.objects.all()
@@ -181,24 +75,6 @@ class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         return muqavile_utils.muqavile_update(self, request, *args, **kwargs)
 
-# ********************************** komanda get post put delete **********************************
-
-
-class KomandaListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Komanda.objects.all()
-    serializer_class = KomandaSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response({"detail": "Komanda müvəffəqiyyətlə düzəldildi"}, status=status.HTTP_201_CREATED, headers=headers)
-
-
-class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Komanda.objects.all()
-    serializer_class = KomandaSerializer
 
 # ********************************** odeme tarixi put get post delete **********************************
 
@@ -252,32 +128,6 @@ class MehsullarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MehsullarSerializer
 
 
-# ********************************** merkezler put delete post get **********************************
-
-
-class OfisListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Ofis.objects.all()
-    serializer_class = OfisSerializer
-
-
-class OfisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Ofis.objects.all()
-    serializer_class = OfisSerializer
-
-
-# ********************************** vezifeler put delete post get **********************************
-
-
-class VezifelerListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Vezifeler.objects.all()
-    serializer_class = VezifelerSerializer
-
-
-class VezifelerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Vezifeler.objects.all()
-    serializer_class = VezifelerSerializer
-
-
 # ********************************** anbar put delete post get **********************************
 
 
@@ -289,31 +139,6 @@ class AnbarQeydlerListCreateAPIView(generics.ListCreateAPIView):
 class AnbarQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = AnbarQeydler.objects.all()
     serializer_class = AnbarQeydlerSerializer
-
-
-# ********************************** shirket put delete post get **********************************
-class ShirketListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Shirket.objects.all()
-    serializer_class = ShirketSerializer
-
-
-class ShirketDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Shirket.objects.all()
-    serializer_class = ShirketSerializer
-
-
-# ********************************** shobe put delete post get **********************************
-
-
-class ShobeListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Shobe.objects.all()
-    serializer_class = ShobeSerializer
-
-
-class ShobeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Shobe.objects.all()
-    serializer_class = ShobeSerializer
-
 
 # ********************************** emeliyyat put delete post get **********************************
 
@@ -367,7 +192,6 @@ class ServisListCreateAPIView(generics.ListCreateAPIView):
 class ServisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Servis.objects.all()
     serializer_class = ServisSerializer
-
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -534,150 +358,4 @@ class StokDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     filterset_class = StokFilter
 
     def update(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        mehsul_id = int(request.POST["mehsul_id"])
-        say = int(request.POST["say"])
-        anbar_id = int(request.POST["anbar_id"])
-        print(f"mehsul id ==> {mehsul_id}")
-        print(f"anbar id ==> {anbar_id}")
-        print(f"say ==> {say}")
-
-        mehsul = get_object_or_404(Mehsullar, pk = mehsul_id)
-        print(f"Mehsul ==> {mehsul}")
-        anbar = get_object_or_404(Anbar, pk=anbar_id)
-        print(f"anbar ==> {anbar}")
-        try:
-            stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
-            print(f"stok ==> {stok}")
-
-            print(f"evvel mehsul_sayi ==> {stok.say}")
-            stok.say = stok.say + say
-            print(f"sonra mehsul_sayi ==> {stok.say}")
-            print("1 ishe dushdu ***********")
-            stok.save()
-            # super(StokSerializer, self).update(request, *args, **kwargs)
-            print("2 ishe dushdu ***********")
-            return Response({f"Anbardakı {mehsul} adlı məhsulun sayı artırıldı."}, status=status.HTTP_200_OK)
-        except:
-            print("3 ishe dushdu ***********")
-            return Response({"Problem"}, status=status.HTTP_404_NOT_FOUND)
-
-
-# ********************************** holding put delete post get **********************************
-
-class HoldingListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Holding.objects.all()
-    serializer_class = HoldingSerializer
-
-
-class HoldingDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Holding.objects.all()
-    serializer_class = HoldingSerializer
-
-# ********************************** kassa put delete post get **********************************
-
-class HoldingKassaListCreateAPIView(generics.ListCreateAPIView):
-    queryset = HoldingKassa.objects.all()
-    serializer_class = HoldingKassaSerializer
-
-
-class HoldingKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = HoldingKassa.objects.all()
-    serializer_class = HoldingKassaSerializer
-
-# **********************************
-
-class ShirketKassaListCreateAPIView(generics.ListCreateAPIView):
-    queryset = ShirketKassa.objects.all()
-    serializer_class = ShirketKassaSerializer
-
-
-class ShirketKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ShirketKassa.objects.all()
-    serializer_class = ShirketKassaSerializer
-
-# **********************************
-
-class OfisKassaListCreateAPIView(generics.ListCreateAPIView):
-    queryset = OfisKassa.objects.all()
-    serializer_class = OfisKassaSerializer
-
-
-class OfisKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = OfisKassa.objects.all()
-    serializer_class = OfisKassaSerializer
-
-# ********************************** transfer put delete post get **********************************
-
-class HoldingdenShirketlereTransferListCreateAPIView(generics.ListCreateAPIView):
-    queryset = HoldingdenShirketlereTransfer.objects.all()
-    serializer_class = HoldingdenShirketlereTransferSerializer
-
-
-class HoldingdenShirketlereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = HoldingdenShirketlereTransfer.objects.all()
-    serializer_class = HoldingdenShirketlereTransferSerializer
-
-# **********************************
-
-class ShirketdenHoldingeTransferListCreateAPIView(generics.ListCreateAPIView):
-    queryset = ShirketdenHoldingeTransfer.objects.all()
-    serializer_class = ShirketdenHoldingeTransferSerializer
-
-
-class ShirketdenHoldingeTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ShirketdenHoldingeTransfer.objects.all()
-    serializer_class = ShirketdenHoldingeTransferSerializer
-
-# **********************************
-
-class OfisdenShirketeTransferListCreateAPIView(generics.ListCreateAPIView):
-    queryset = OfisdenShirketeTransfer.objects.all()
-    serializer_class = OfisdenShirketeTransferSerializer
-
-
-class OfisdenShirketeTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = OfisdenShirketeTransfer.objects.all()
-    serializer_class = OfisdenShirketeTransferSerializer
-
-# **********************************
-
-class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
-    queryset = ShirketdenOfislereTransfer.objects.all()
-    serializer_class = ShirketdenOfislereTransferSerializer
-
-
-class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ShirketdenOfislereTransfer.objects.all()
-    serializer_class = ShirketdenOfislereTransferSerializer
-
-# ********************************** ishci maas put delete post get **********************************
-
-class MaasListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Maas.objects.all()
-    serializer_class = MaasSerializer
-
-class MaasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Maas.objects.all()
-    serializer_class = MaasSerializer
-
-# ********************************** ishci elave bonus put delete post get **********************************
-
-class BonusListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Bonus.objects.all()
-    serializer_class = BonusSerializer
-
-class BonusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Bonus.objects.all()
-    serializer_class = BonusSerializer
-
-# ********************************** bolge put delete post get **********************************
-
-class BolgeListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Bolge.objects.all()
-    serializer_class = BolgeSerializer
-
-
-class BolgeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Bolge.objects.all()
-    serializer_class = BolgeSerializer
+        return stok_utils.stok_update(self, request, *args, **kwargs)

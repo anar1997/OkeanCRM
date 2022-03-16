@@ -1,4 +1,3 @@
-from api.v1.serializers import OdemeTarixSerializer
 from mehsullar.models import Muqavile, OdemeTarix
 from rest_framework.exceptions import ValidationError
 import datetime
@@ -7,6 +6,8 @@ from rest_framework import status
 from rest_framework.generics import get_object_or_404
 import math
 import pandas as pd
+
+from api.v1.all_serializers.muqavile_serializers import OdemeTarixSerializer
 
 # PATCH sorgusu
 def odeme_tarixi_patch(self, request, *args, **kwargs):
@@ -21,8 +22,29 @@ def odeme_tarixi_patch(self, request, *args, **kwargs):
     artiq_odeme_alt_status = request.data.get('artiq_odeme_alt_status')
     
     odemek_istediyi_mebleg = request.data.get("qiymet")
+
+    borcu_bagla_status = request.data.get("borcu_bagla_status")
     
-    try:        
+    try:
+        if(borcu_bagla_status == "BORCU BAĞLA"):
+            indiki_ay = self.get_object()
+            muqavile = indiki_ay.muqavile
+
+            odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+            odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
+            print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler} -- {len(odenmeyen_odemetarixler)}")
+
+            ay_ucun_olan_mebleg = 0
+            for i in odenmeyen_odemetarixler:
+                ay_ucun_olan_mebleg = ay_ucun_olan_mebleg + float(i.qiymet)
+                i.qiymet = 0
+                i.odenme_status = "ÖDƏNƏN"
+                i.save()
+            
+            muqavile.muqavile_status = "DAVAM EDƏN"
+            muqavile.save()
+            return Response({"detail": "Borc tam bağlandı"}, status=status.HTTP_200_OK)
+
         # GECIKDIRME ILE BAGLI EMELIYYATLAR
         if(odenme_status == "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ"):
             indiki_ay = self.get_object()
