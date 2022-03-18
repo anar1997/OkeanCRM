@@ -62,16 +62,19 @@ def holding_kassa_mexaric_create(self, request, *args, **kwargs):
     if(mexaric_tarixi == ""):
         mexaric_tarixi = datetime.today().strftime('%Y-%m-%d')
 
-    if(holding_kassa_balans != 0 and mebleg != ""):
-        if(float(mebleg) <= float(holding_kassa_balans)):
-            yekun_balans = float(holding_kassa_balans) - float(mebleg)
-            if(serializer.is_valid()):
-                holding_kassa.balans = yekun_balans
-                holding_kassa.save()
-                serializer.save(holding_kassa=holding_kassa, mexaric_tarixi=mexaric_tarixi)
-                return Response({"detail": f"{holding} holdinqindən {mebleg} azn məxaric edildi"}, status=status.HTTP_201_CREATED)
+    if(holding_kassa_balans != 0):
+        if(mebleg != ""):
+            if(float(mebleg) <= float(holding_kassa_balans)):
+                yekun_balans = float(holding_kassa_balans) - float(mebleg)
+                if(serializer.is_valid()):
+                    holding_kassa.balans = yekun_balans
+                    holding_kassa.save()
+                    serializer.save(holding_kassa=holding_kassa, mexaric_tarixi=mexaric_tarixi)
+                    return Response({"detail": f"{holding} holdinqindən {mebleg} azn məxaric edildi"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"detail": "Daxil etdiyiniz məbləğ holdinqin balansıdan böyük ola bilməz"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"detail": "Daxil etdiyiniz məbləğ holdinqin balansıdan böyük ola bilməz"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Məbləği doğru daxil edin"}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({"detail": "Holdinqin balansı 0-dır"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -132,16 +135,19 @@ def shirket_kassa_mexaric_create(self, request, *args, **kwargs):
     if(mexaric_tarixi == ""):
         mexaric_tarixi = datetime.today().strftime('%Y-%m-%d')
 
-    if(shirket_kassa_balans != 0 and mebleg != ""):
-        if(float(mebleg) <= float(shirket_kassa_balans)):
-            yekun_balans = float(shirket_kassa_balans) - float(mebleg)
-            if(serializer.is_valid()):
-                shirket_kassa.balans = yekun_balans
-                shirket_kassa.save()
-                serializer.save(shirket_kassa=shirket_kassa, mexaric_tarixi=mexaric_tarixi)
-                return Response({"detail": f"{shirket_kassa.shirket} şirkətindən {mebleg} azn məxaric edildi"}, status=status.HTTP_201_CREATED)
+    if(shirket_kassa_balans != 0):
+        if(mebleg != ""):
+            if(float(mebleg) <= float(shirket_kassa_balans)):
+                yekun_balans = float(shirket_kassa_balans) - float(mebleg)
+                if(serializer.is_valid()):
+                    shirket_kassa.balans = yekun_balans
+                    shirket_kassa.save()
+                    serializer.save(shirket_kassa=shirket_kassa, mexaric_tarixi=mexaric_tarixi)
+                    return Response({"detail": f"{shirket_kassa.shirket} şirkətindən {mebleg} azn məxaric edildi"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"detail": "Daxil etdiyiniz məbləğ şirkətinin balansıdan böyük ola bilməz"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"detail": "Daxil etdiyiniz məbləğ şirkətinin balansıdan böyük ola bilməz"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Məbləği doğru daxil edin"}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({"detail": "Şirkətin balansı 0-dır"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -201,15 +207,18 @@ def ofis_kassa_mexaric_create(self, request, *args, **kwargs):
     if(mexaric_tarixi == ""):
         mexaric_tarixi = datetime.today().strftime('%Y-%m-%d')
 
-    if(ofis_kassa_balans != 0 and mebleg != ""):
-        if(float(mebleg) <= float(ofis_kassa_balans)):
-            yekun_balans = float(ofis_kassa_balans) - float(mebleg)
-            if(serializer.is_valid()):
-                ofis_kassa.balans = yekun_balans
-                ofis_kassa.save()
-                serializer.save(ofis_kassa=ofis_kassa, mexaric_tarixi=mexaric_tarixi)
-                return Response({"detail": f"{ofis_kassa.ofis} ofisindən {mebleg} azn məxaric edildi"}, status=status.HTTP_201_CREATED)
+    if(ofis_kassa_balans != 0):
+        if(mebleg != ""):
+            if(float(mebleg) <= float(ofis_kassa_balans)):
+                yekun_balans = float(ofis_kassa_balans) - float(mebleg)
+                if(serializer.is_valid()):
+                    ofis_kassa.balans = yekun_balans
+                    ofis_kassa.save()
+                    serializer.save(ofis_kassa=ofis_kassa, mexaric_tarixi=mexaric_tarixi)
+                    return Response({"detail": f"{ofis_kassa.ofis} ofisindən {mebleg} azn məxaric edildi"}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"detail": "Daxil etdiyiniz məbləğ ofisin balansıdan böyük ola bilməz"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"detail": "Daxil etdiyiniz məbləğ ofisin balansıdan böyük ola bilməz"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Məbləği doğru daxil edin"}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({"detail": "Ofisin balansı 0-dır"}, status=status.HTTP_400_BAD_REQUEST)

@@ -3,25 +3,33 @@
   <component name="ChangeListManager">
     <list default="true" id="d2a51d58-35f9-44db-b7b9-e61dc9897ac8" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/account/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/v1/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/filters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/v1/serializers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/v1/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/all_serializers/company_serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/all_serializers/company_serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/all_views/company_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/all_views/company_views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/utils/medaxil_mexaric_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/utils/medaxil_mexaric_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/v1/utils/muqavile_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/utils/muqavile_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/v1/utils/odeme_tarixleri_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/utils/odeme_tarixleri_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/v1/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mehsullar/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/mehsullar/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mehsullar/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/mehsullar/signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/utils/stok_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/utils/stok_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/company/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/company/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/company/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/company/signals.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -37,7 +45,9 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RunManager">
     <configuration name="OkeanCRM" type="Python.DjangoServer" factoryName="Django server">
@@ -46,12 +56,23 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="core.settings" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
       <option name="launchJavascriptDebuger" value="false" />
       <option name="port" value="8000" />
       <option name="host" value="" />
@@ -64,7 +85,10 @@
       <method v="2" />
     </configuration>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="d2a51d58-35f9-44db-b7b9-e61dc9897ac8" name="Changes" comment="" />
@@ -75,11 +99,18 @@
       <workItem from="1645701809955" duration="842000" />
       <workItem from="1645789728964" duration="599000" />
       <workItem from="1647332883361" duration="1179000" />
+      <workItem from="1647498892229" duration="1000" />
+      <workItem from="1647499508531" duration="9000" />
+      <workItem from="1647499533507" duration="3038000" />
+      <workItem from="1647502645321" duration="28598000" />
+      <workItem from="1647584727848" duration="1472000" />
+      <workItem from="1647586210061" duration="2000" />
+      <workItem from="1647587639664" duration="237000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -91,5 +122,32 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="454" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1647587787736">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="454" y="211" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1848.1053@72.27.1848.1053" timestamp="1647587787736" />
+    <state width="1802" height="279" key="GridCell.Tab.0.bottom" timestamp="1647587877389">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="279" key="GridCell.Tab.0.bottom/72.27.1848.1053@72.27.1848.1053" timestamp="1647587877389" />
+    <state width="1802" height="279" key="GridCell.Tab.0.center" timestamp="1647587877388">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="279" key="GridCell.Tab.0.center/72.27.1848.1053@72.27.1848.1053" timestamp="1647587877388" />
+    <state width="1802" height="279" key="GridCell.Tab.0.left" timestamp="1647587877388">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="279" key="GridCell.Tab.0.left/72.27.1848.1053@72.27.1848.1053" timestamp="1647587877388" />
+    <state width="1802" height="279" key="GridCell.Tab.0.right" timestamp="1647587877389">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state width="1802" height="279" key="GridCell.Tab.0.right/72.27.1848.1053@72.27.1848.1053" timestamp="1647587877389" />
+    <state x="485" y="188" key="SettingsEditor" timestamp="1647587805372">
+      <screen x="72" y="27" width="1848" height="1053" />
+    </state>
+    <state x="485" y="188" key="SettingsEditor/72.27.1848.1053@72.27.1848.1053" timestamp="1647587805372" />
   </component>
 </project>

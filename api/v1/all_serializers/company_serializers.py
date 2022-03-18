@@ -13,7 +13,7 @@ from company.models import (
     HoldingdenShirketlereTransfer,
     OfisKassaMedaxil,
     OfisKassaMexaric,
-    
+
     Shirket,
     ShirketKassa,
     ShirketKassaMedaxil,
@@ -29,6 +29,7 @@ from company.models import (
     Shobe,
     Vezifeler
 )
+
 
 class ShirketSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,7 +57,6 @@ class KomandaSerializer(serializers.ModelSerializer):
             return super(KomandaSerializer, self).create(validated_data)
         except:
             raise ValidationError('Bu ad ilə komanda artıq qeydiyyatdan keçirilib')
-
 
 
 class OfisSerializer(serializers.ModelSerializer):
@@ -88,6 +88,7 @@ class ShobeSerializer(serializers.ModelSerializer):
         model = Shobe
         fields = "__all__"
 
+
 class VezifelerSerializer(serializers.ModelSerializer):
     shobe = ShobeSerializer(read_only=True)
     shirket = ShirketSerializer(read_only=True)
@@ -97,6 +98,7 @@ class VezifelerSerializer(serializers.ModelSerializer):
     shirket_id = serializers.PrimaryKeyRelatedField(
         queryset=Shirket.objects.all(), source='shirket', write_only=True
     )
+
     class Meta:
         model = Vezifeler
         fields = "__all__"
@@ -107,36 +109,38 @@ class VezifelerSerializer(serializers.ModelSerializer):
         return super(VezifelerSerializer, self).create(validated_data)
 
 
-
 class HoldingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Holding
         fields = "__all__"
 
+
 class HoldingKassaSerializer(serializers.ModelSerializer):
     holding = HoldingSerializer(read_only=True)
     holding_id = serializers.PrimaryKeyRelatedField(
-        queryset = Holding.objects.all(), source='holding', write_only=True
+        queryset=Holding.objects.all(), source='holding', write_only=True
     )
 
     class Meta:
         model = HoldingKassa
         fields = "__all__"
 
+
 class ShirketKassaSerializer(serializers.ModelSerializer):
     shirket = ShirketSerializer(read_only=True)
     shirket_id = serializers.PrimaryKeyRelatedField(
-        queryset = Shirket.objects.all(), source='shirket', write_only=True
+        queryset=Shirket.objects.all(), source='shirket', write_only=True
     )
-    
+
     class Meta:
         model = ShirketKassa
         fields = "__all__"
 
+
 class OfisKassaSerializer(serializers.ModelSerializer):
     ofis = OfisSerializer(read_only=True)
     ofis_id = serializers.PrimaryKeyRelatedField(
-        queryset = Ofis.objects.all(), source='ofis', write_only=True
+        queryset=Ofis.objects.all(), source='ofis', write_only=True
     )
 
     class Meta:
@@ -145,100 +149,137 @@ class OfisKassaSerializer(serializers.ModelSerializer):
 
 
 class HoldingdenShirketlereTransferSerializer(serializers.ModelSerializer):
+    transfer_eden = serializers.StringRelatedField()
+    transfer_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='transfer_eden', write_only=True, required=False, allow_null=True
+    )
     holding_kassa = HoldingKassaSerializer(read_only=True)
     holding_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = HoldingKassa.objects.all(), source='holding_kassa', write_only=True
+        queryset=HoldingKassa.objects.all(), source='holding_kassa', write_only=True
     )
 
-    shirket_kassa = ShirketKassaSerializer(read_only=True)
+    shirket_kassa = ShirketKassaSerializer(read_only=True, many=True)
     shirket_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
+        queryset=ShirketKassa.objects.all(), source='shirket_kassa', many=True, write_only=True
     )
 
     class Meta:
         model = HoldingdenShirketlereTransfer
         fields = "__all__"
 
+
 class ShirketdenHoldingeTransferSerializer(serializers.ModelSerializer):
+    transfer_eden = serializers.StringRelatedField()
+    transfer_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='transfer_eden', write_only=True, required=False, allow_null=True
+    )
     shirket_kassa = ShirketKassaSerializer(read_only=True)
     shirket_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
+        queryset=ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
     )
 
     holding_kassa = HoldingKassaSerializer(read_only=True)
     holding_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = HoldingKassa.objects.all(), source='holding_kassa', write_only=True
+        queryset=HoldingKassa.objects.all(), source='holding_kassa', write_only=True
     )
-    
 
     class Meta:
         model = ShirketdenHoldingeTransfer
         fields = "__all__"
 
+
 class OfisdenShirketeTransferSerializer(serializers.ModelSerializer):
+    transfer_eden = serializers.StringRelatedField()
+    transfer_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='transfer_eden', write_only=True, required=False, allow_null=True
+    )
     ofis_kassa = OfisKassaSerializer(read_only=True)
     ofis_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = OfisKassa.objects.all(), source='ofis_kassa', write_only=True
+        queryset=OfisKassa.objects.all(), source='ofis_kassa', write_only=True
     )
     shirket_kassa = ShirketKassaSerializer(read_only=True)
     shirket_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
+        queryset=ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
     )
 
     class Meta:
         model = OfisdenShirketeTransfer,
         fields = "__all__"
 
+
 class ShirketdenOfislereTransferSerializer(serializers.ModelSerializer):
+    transfer_eden = serializers.StringRelatedField()
+    transfer_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='transfer_eden', write_only=True, required=False, allow_null=True
+    )
     shirket_kassa = ShirketKassaSerializer(read_only=True)
     shirket_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
+        queryset=ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
     )
 
-    ofis_kassa = OfisKassaSerializer(read_only=True)
+    ofis_kassa = OfisKassaSerializer(read_only=True, many=True)
     ofis_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = OfisKassa.objects.all(), source='ofis_kassa', write_only=True
+        queryset=OfisKassa.objects.all(), source='ofis_kassa', many=True,  write_only=True
     )
-    
+
     class Meta:
         model = ShirketdenOfislereTransfer
-        fields = "__all__" 
+        fields = "__all__"
 
 
 class HoldingKassaMedaxilSerializer(serializers.ModelSerializer):
+    medaxil_eden = serializers.StringRelatedField()
+    medaxil_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='medaxil_eden', write_only=True, required=False, allow_null=True
+    )
     holding_kassa = HoldingKassaSerializer(read_only=True)
     holding_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = HoldingKassa.objects.all(), source='holding_kassa', write_only=True
+        queryset=HoldingKassa.objects.all(), source='holding_kassa', write_only=True
     )
 
     class Meta:
         model = HoldingKassaMedaxil
         fields = "__all__"
 
+
 class HoldingKassaMexaricSerializer(serializers.ModelSerializer):
+    mexaric_eden = serializers.StringRelatedField()
+    mexaric_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='mexaric_eden', write_only=True, required=False, allow_null=True
+    )
     holding_kassa = HoldingKassaSerializer(read_only=True)
     holding_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = HoldingKassa.objects.all(), source='holding_kassa', write_only=True
+        queryset=HoldingKassa.objects.all(), source='holding_kassa', write_only=True
     )
 
     class Meta:
         model = HoldingKassaMexaric
         fields = "__all__"
 
+
 class ShirketKassaMedaxilSerializer(serializers.ModelSerializer):
+    medaxil_eden = serializers.StringRelatedField()
+    medaxil_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='medaxil_eden', write_only=True, required=False, allow_null=True
+    )
     shirket_kassa = ShirketKassaSerializer(read_only=True)
     shirket_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
+        queryset=ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
     )
 
     class Meta:
         model = ShirketKassaMedaxil
         fields = "__all__"
 
+
 class ShirketKassaMexaricSerializer(serializers.ModelSerializer):
+    mexaric_eden = serializers.StringRelatedField()
+    mexaric_eden_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='mexaric_eden', write_only=True, required=False, allow_null=True
+    )
     shirket_kassa = ShirketKassaSerializer(read_only=True)
     shirket_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
+        queryset=ShirketKassa.objects.all(), source='shirket_kassa', write_only=True
     )
 
     class Meta:
@@ -253,12 +294,13 @@ class OfisKassaMedaxilSerializer(serializers.ModelSerializer):
     )
     ofis_kassa = OfisKassaSerializer(read_only=True)
     ofis_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = OfisKassa.objects.all(), source='ofis_kassa', write_only=True
+        queryset=OfisKassa.objects.all(), source='ofis_kassa', write_only=True
     )
 
     class Meta:
         model = OfisKassaMedaxil
         fields = '__all__'
+
 
 class OfisKassaMexaricSerializer(serializers.ModelSerializer):
     mexaric_eden = serializers.StringRelatedField()
@@ -267,7 +309,7 @@ class OfisKassaMexaricSerializer(serializers.ModelSerializer):
     )
     ofis_kassa = OfisKassaSerializer(read_only=True)
     ofis_kassa_id = serializers.PrimaryKeyRelatedField(
-        queryset = OfisKassa.objects.all(), source='ofis_kassa', write_only=True
+        queryset=OfisKassa.objects.all(), source='ofis_kassa', write_only=True
     )
 
     class Meta:

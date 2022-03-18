@@ -1,3 +1,4 @@
+from company.models import OfisKassa, OfisKassaMedaxil
 from mehsullar.models import Muqavile, OdemeTarix
 from rest_framework.exceptions import ValidationError
 import datetime
@@ -8,6 +9,22 @@ import math
 import pandas as pd
 
 from api.v1.all_serializers.muqavile_serializers import OdemeTarixSerializer
+
+def k_medaxil(company_kassa, daxil_edilecek_mebleg, vanleader, qeyd):
+    yekun_balans = float(daxil_edilecek_mebleg) + float(company_kassa.balans)
+    company_kassa.balans = yekun_balans
+    company_kassa.save()
+    tarix = datetime.date.today()
+
+    medaxil = OfisKassaMedaxil.objects.create(
+        medaxil_eden=vanleader,
+        ofis_kassa=company_kassa,
+        mebleg=daxil_edilecek_mebleg,
+        medaxil_tarixi=tarix,
+        qeyd=qeyd
+    )
+    medaxil.save()
+    return medaxil
 
 # PATCH sorgusu
 def odeme_tarixi_patch(self, request, *args, **kwargs):
@@ -27,7 +44,6 @@ def odeme_tarixi_patch(self, request, *args, **kwargs):
     
     try:
         if(borcu_bagla_status == "BORCU BAĞLA"):
-            indiki_ay = self.get_object()
             muqavile = indiki_ay.muqavile
 
             odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
@@ -114,7 +130,7 @@ def odeme_tarixi_patch(self, request, *args, **kwargs):
         elif(odenme_status != "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ"):
             raise ValidationError(detail={"detail": "Gecikdirmə ancaq ödənməmiş ay üçündür"}, code=status.HTTP_400_BAD_REQUEST)
     except:
-        return Response({"detail": "Gecikdirmə ancaq ödənməmiş ay üçündür"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Xəta baş verdi"}, status=status.HTTP_400_BAD_REQUEST)
     
     if(odenme_status == "ÖDƏNMƏYƏN" and float(odemek_istediyi_mebleg) == indiki_ay.qiymet):
         indiki_ay = self.get_object()

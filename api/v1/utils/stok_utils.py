@@ -3,12 +3,13 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from mehsullar.models import (
-    Anbar, 
+    Anbar,
     Mehsullar,
     Stok
 )
 
 from rest_framework.generics import get_object_or_404
+
 
 def stok_update(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
@@ -19,7 +20,7 @@ def stok_update(self, request, *args, **kwargs):
     print(f"anbar id ==> {anbar_id}")
     print(f"say ==> {say}")
 
-    mehsul = get_object_or_404(Mehsullar, pk = mehsul_id)
+    mehsul = get_object_or_404(Mehsullar, pk=mehsul_id)
     print(f"Mehsul ==> {mehsul}")
     anbar = get_object_or_404(Anbar, pk=anbar_id)
     print(f"anbar ==> {anbar}")

@@ -1,4 +1,5 @@
 from rest_framework import status, generics
+from rest_framework.generics import get_object_or_404
 
 from rest_framework.response import Response
 from rest_framework import generics
@@ -25,6 +26,8 @@ from api.v1.all_serializers.company_serializers import (
     HoldingKassaMexaricSerializer
 )
 
+from account.models import User
+
 from company.models import (
     Holding,
     HoldingKassa,
@@ -33,7 +36,7 @@ from company.models import (
     HoldingdenShirketlereTransfer,
     OfisKassaMedaxil,
     OfisKassaMexaric,
-    
+
     Shirket,
     ShirketKassa,
     ShirketKassaMedaxil,
@@ -52,7 +55,9 @@ from company.models import (
 
 from api.v1.utils import (
     medaxil_mexaric_utils,
+    kassa_transfer_utils
 )
+
 
 # ********************************** komanda get post put delete **********************************
 
@@ -66,12 +71,14 @@ class KomandaListCreateAPIView(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response({"detail": "Komanda müvəffəqiyyətlə düzəldildi"}, status=status.HTTP_201_CREATED, headers=headers)
+        return Response({"detail": "Komanda müvəffəqiyyətlə düzəldildi"}, status=status.HTTP_201_CREATED,
+                        headers=headers)
 
 
 class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Komanda.objects.all()
     serializer_class = KomandaSerializer
+
 
 # ********************************** ofisler put delete post get **********************************
 
@@ -98,6 +105,7 @@ class VezifelerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vezifeler.objects.all()
     serializer_class = VezifelerSerializer
 
+
 # ********************************** shirket put delete post get **********************************
 class ShirketListCreateAPIView(generics.ListCreateAPIView):
     queryset = Shirket.objects.all()
@@ -121,6 +129,7 @@ class ShobeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Shobe.objects.all()
     serializer_class = ShobeSerializer
 
+
 # ********************************** holding put delete post get **********************************
 
 class HoldingListCreateAPIView(generics.ListCreateAPIView):
@@ -131,6 +140,7 @@ class HoldingListCreateAPIView(generics.ListCreateAPIView):
 class HoldingDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Holding.objects.all()
     serializer_class = HoldingSerializer
+
 
 # ********************************** kassa put delete post get **********************************
 
@@ -143,6 +153,7 @@ class HoldingKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingKassa.objects.all()
     serializer_class = HoldingKassaSerializer
 
+
 # **********************************
 
 class ShirketKassaListCreateAPIView(generics.ListCreateAPIView):
@@ -153,6 +164,7 @@ class ShirketKassaListCreateAPIView(generics.ListCreateAPIView):
 class ShirketKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketKassa.objects.all()
     serializer_class = ShirketKassaSerializer
+
 
 # **********************************
 
@@ -165,16 +177,21 @@ class OfisKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OfisKassa.objects.all()
     serializer_class = OfisKassaSerializer
 
+
 # ********************************** transfer put delete post get **********************************
 
 class HoldingdenShirketlereTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingdenShirketlereTransfer.objects.all()
     serializer_class = HoldingdenShirketlereTransferSerializer
 
+    def create(self, request, *args, **kwargs):
+        return kassa_transfer_utils.holding_shirket_transfer_create(self, request, *args, **kwargs)
 
-class HoldingdenShirketlereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class HoldingdenShirketlereTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = HoldingdenShirketlereTransfer.objects.all()
     serializer_class = HoldingdenShirketlereTransferSerializer
+
 
 # **********************************
 
@@ -182,10 +199,14 @@ class ShirketdenHoldingeTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketdenHoldingeTransfer.objects.all()
     serializer_class = ShirketdenHoldingeTransferSerializer
 
+    def create(self, request, *args, **kwargs):
+        return kassa_transfer_utils.shirket_holding_transfer_create(self, request, *args, **kwargs)
 
-class ShirketdenHoldingeTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class ShirketdenHoldingeTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = ShirketdenHoldingeTransfer.objects.all()
     serializer_class = ShirketdenHoldingeTransferSerializer
+
 
 # **********************************
 
@@ -193,10 +214,14 @@ class OfisdenShirketeTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = OfisdenShirketeTransfer.objects.all()
     serializer_class = OfisdenShirketeTransferSerializer
 
+    def create(self, request, *args, **kwargs):
+        return kassa_transfer_utils.ofis_shirket_transfer_create(self, request, *args, **kwargs)
 
-class OfisdenShirketeTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class OfisdenShirketeTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = OfisdenShirketeTransfer.objects.all()
     serializer_class = OfisdenShirketeTransferSerializer
+
 
 # **********************************
 
@@ -204,8 +229,11 @@ class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketdenOfislereTransfer.objects.all()
     serializer_class = ShirketdenOfislereTransferSerializer
 
+    def create(self, request, *args, **kwargs):
+        return kassa_transfer_utils.shirket_ofis_transfer_create(self, request, *args, **kwargs)
 
-class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+
+class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = ShirketdenOfislereTransfer.objects.all()
     serializer_class = ShirketdenOfislereTransferSerializer
 
@@ -224,6 +252,7 @@ class HoldingKassaMedaxilDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingKassaMedaxil.objects.all()
     serializer_class = HoldingKassaMedaxilSerializer
 
+
 # **********************************
 
 class HoldingKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
@@ -237,6 +266,7 @@ class HoldingKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
 class HoldingKassaMexaricDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingKassaMexaric.objects.all()
     serializer_class = HoldingKassaMexaricSerializer
+
 
 # ********************************** shirket kassa medaxil, mexaric put delete post get **********************************
 
@@ -252,6 +282,7 @@ class ShirketKassaMedaxilDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketKassaMedaxil.objects.all()
     serializer_class = ShirketKassaMedaxilSerializer
 
+
 # **********************************
 
 class ShirketKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
@@ -266,6 +297,7 @@ class ShirketKassaMexaricDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketKassaMexaric.objects.all()
     serializer_class = ShirketKassaMexaricSerializer
 
+
 # ********************************** Ofis kassa medaxil, mexaric put delete post get **********************************
 
 class OfisKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
@@ -279,6 +311,7 @@ class OfisKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
 class OfisKassaMedaxilDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OfisKassaMedaxil.objects.all()
     serializer_class = OfisKassaMedaxilSerializer
+
 
 # **********************************
 
