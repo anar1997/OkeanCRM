@@ -197,6 +197,7 @@ class MuqavileHediyye(models.Model):
 class OdemeTarix(models.Model):
     ODENEN = "ÖDƏNƏN"
     ODENMEYEN = "ÖDƏNMƏYƏN"
+    
     BURAXILMIS_AY = "BURAXILMIŞ AY"
     NATAMAM_AY = "NATAMAM AY"
     RAZILASDIRILMIS_AZ_ODEME = "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"
@@ -222,6 +223,9 @@ class OdemeTarix(models.Model):
     ODEME_STATUS_CHOICES = [
         (ODENMEYEN,"ÖDƏNMƏYƏN"),
         (ODENEN, "ÖDƏNƏN"),
+    ]
+
+    SERTLI_ODEME_STATUSU = [
         (BURAXILMIS_AY, "BURAXILMIŞ AY"),
         (NATAMAM_AY, "NATAMAM AY"),
         (RAZILASDIRILMIS_AZ_ODEME, "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"),
@@ -263,6 +267,14 @@ class OdemeTarix(models.Model):
         max_length=30,
         choices=ODEME_STATUS_CHOICES,
         default=ODENMEYEN
+    )
+
+    sertli_odeme_status = models.CharField(
+        max_length=50,
+        choices=SERTLI_ODEME_STATUSU,
+        default=None,
+        null=True,
+        blank=True
     )
 
     borcu_bagla_status = models.CharField(

@@ -1,3 +1,4 @@
+from account.models import Musteri, User
 from company.models import OfisKassa, OfisKassaMedaxil
 from mehsullar.models import Muqavile, OdemeTarix
 from rest_framework.exceptions import ValidationError
@@ -610,96 +611,141 @@ def odeme_tarixi_patch(self, request, *args, **kwargs):
 def odeme_tarixi_update(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
     odenme_status = request.POST.get("odenme_status")
+    sertli_odeme_status = request.POST.get("sertli_odeme_status")
     gecikdirme_status = request.POST.get("gecikdirme_status")
     natamama_gore_odeme_status = request.POST.get("natamam_ay_alt_status")
     sifira_gore_odeme_status = request.POST.get("buraxilmis_ay_alt_status")
     artiq_odeme_alt_status = request.POST.get('artiq_odeme_alt_status')
 
-    print(f"sifira_gore_odeme_status ===> {sifira_gore_odeme_status} -- {type(sifira_gore_odeme_status)}")
-    
     indiki_ay = self.get_object()
     odemek_istediyi_mebleg = request.POST.get("qiymet")
+
+    today = datetime.date.today()
+
+    muqavile = indiki_ay.muqavile
+    print(f"muqavile ==> {muqavile}")
+    vanleader = muqavile.vanleader
+    musteri = muqavile.musteri
+    odenis_uslubu = muqavile.odenis_uslubu
+    ofis = muqavile.ofis
+
+    ofis_kassa = get_object_or_404(OfisKassa, ofis=ofis)
+    print(f"ofis_kassa ==> {ofis_kassa}")
+
+    print(f"sertli_odeme_status ==> {sertli_odeme_status}")
+
+    print(f"vanleader ==> {vanleader}")
+    print(f"musteri ==> {musteri}")
+    print(f"odenis_uslubu ==> {odenis_uslubu}")
+    print(f"ofis ==> {ofis}")
+    print(f"ofis_kassa ==> {ofis_kassa}")
+
+    borcu_bagla_status = request.data.get("borcu_bagla_status")
 
     def umumi_mebleg(mehsul_qiymeti, mehsul_sayi):
         muqavile_umumi_mebleg = mehsul_qiymeti * mehsul_sayi
         return muqavile_umumi_mebleg
-
     
-    try:        
-        # GECIKDIRME ILE BAGLI EMELIYYATLAR
-        if(odenme_status == "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ"):
-            indiki_ay = self.get_object()
-            muqavile = indiki_ay.muqavile
+    if(borcu_bagla_status == "BORCU BAĞLA"):
+        odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+        odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
+        print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler} -- {len(odenmeyen_odemetarixler)}")
 
-            my_time = datetime.datetime.min.time()
+        ay_ucun_olan_mebleg = 0
+        for i in odenmeyen_odemetarixler:
+            ay_ucun_olan_mebleg = ay_ucun_olan_mebleg + float(i.qiymet)
+            i.qiymet = 0
+            i.odenme_status = "ÖDƏNƏN"
+            i.save()
+        
+        muqavile.muqavile_status = "BİTMİŞ"
+        muqavile.save()
 
-            odeme_tarixi_date = indiki_ay.tarix
-            odeme_tarixi = datetime.datetime.combine(odeme_tarixi_date, my_time)
-            odeme_tarixi_san = datetime.datetime.timestamp(odeme_tarixi)
+        qeyd = f"Vanleader - {vanleader.asa}, müştəri - {musteri.asa}, tarix - {today}, ödəniş üslubu - {odenis_uslubu}. Borcu tam bağlandı"
+        k_medaxil(ofis_kassa, float(ay_ucun_olan_mebleg), vanleader, qeyd)
 
-            gecikdirmek_istediyi_tarix = request.POST.get("tarix")
-            gecikdirmek_istediyi_tarix_date = datetime.datetime.strptime(gecikdirmek_istediyi_tarix, "%Y-%m-%d")
-            gecikdirmek_istediyi_tarix_san = datetime.datetime.timestamp(gecikdirmek_istediyi_tarix_date)
+        return Response({"detail": "Borc tam bağlandı"}, status=status.HTTP_200_OK)
 
-            odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
-            odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
-            print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler}")
+    # GECIKDIRME ILE BAGLI EMELIYYATLAR
+    if(
+        (indiki_ay.odenme_status == "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ") 
+        or 
+        (indiki_ay.odenme_status == "ÖDƏNMƏYƏN" and request.POST.get("tarix") is not "") 
+        or 
+        (indiki_ay.odenme_status == "ÖDƏNMƏYƏN" and request.POST.get("tarix") is not None) 
+        or 
+        (odenme_status == "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ") 
+        or 
+        (odenme_status == "ÖDƏNMƏYƏN" and request.POST.get("tarix") is not "")
+        or 
+        (odenme_status == "ÖDƏNMƏYƏN" and request.POST.get("tarix") is not None)
+    ):
+        my_time = datetime.datetime.min.time()
 
-            if(indiki_ay == odenmeyen_odemetarixler[-1]):
-                try:
-                    if(gecikdirmek_istediyi_tarix_san < odeme_tarixi_san):
-                        raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
-                except:
-                    return Response({"detail": "Qeyd etdiyiniz tarix keçmiş tarixdir."}, status=status.HTTP_400_BAD_REQUEST)
+        odeme_tarixi_date = indiki_ay.tarix
+        odeme_tarixi = datetime.datetime.combine(odeme_tarixi_date, my_time)
+        odeme_tarixi_san = datetime.datetime.timestamp(odeme_tarixi)
 
-                try:
-                    if(odeme_tarixi_san < gecikdirmek_istediyi_tarix_san):
-                        indiki_ay.tarix = gecikdirmek_istediyi_tarix
-                        indiki_ay.gecikdirme_status = "GECİKDİRMƏ"
-                        indiki_ay.save()
-                        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-                except:
-                    return Response({"detail": "Yeni tarix hal-hazırki tarix ile növbəti ayın tarixi arasında olmalıdır"}, status=status.HTTP_400_BAD_REQUEST)
-            elif(indiki_ay != odenmeyen_odemetarixler[-1]):
-                novbeti_ay = OdemeTarix.objects.get(pk = indiki_ay.id+1)
-                novbeti_ay_tarix_date = novbeti_ay.tarix
-                novbeti_ay_tarix = datetime.datetime.combine(novbeti_ay_tarix_date, my_time)
-                novbeti_ay_tarix_san = datetime.datetime.timestamp(novbeti_ay_tarix)
+        gecikdirmek_istediyi_tarix = request.POST.get("tarix")
+        gecikdirmek_istediyi_tarix_date = datetime.datetime.strptime(gecikdirmek_istediyi_tarix, "%Y-%m-%d")
+        gecikdirmek_istediyi_tarix_san = datetime.datetime.timestamp(gecikdirmek_istediyi_tarix_date)
 
-                try:
-                    if(novbeti_ay_tarix_san == gecikdirmek_istediyi_tarix_san):
-                        raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
-                except:
-                    return Response({"detail": "Qeyd etdiyiniz tarix növbəti ayın tarixi ilə eynidir."}, status=status.HTTP_400_BAD_REQUEST)
+        odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
+        odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
+        print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler}")
 
-                try:
-                    if(gecikdirmek_istediyi_tarix_san < odeme_tarixi_san):
-                        raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
-                except:
-                    return Response({"detail": "Qeyd etdiyiniz tarix keçmiş tarixdir."}, status=status.HTTP_400_BAD_REQUEST)
+        if(indiki_ay == odenmeyen_odemetarixler[-1]):
+            try:
+                if(gecikdirmek_istediyi_tarix_san < odeme_tarixi_san):
+                    raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response({"detail": "Qeyd etdiyiniz tarix keçmiş tarixdir."}, status=status.HTTP_400_BAD_REQUEST)
 
-                try:
-                    if(gecikdirmek_istediyi_tarix_san > novbeti_ay_tarix_san):
-                        raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
-                except:
-                    return Response({"detail": "Qeyd etdiyiniz tarix növbəti ayın tarixindən böyükdür."}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                if(odeme_tarixi_san < gecikdirmek_istediyi_tarix_san):
+                    indiki_ay.tarix = gecikdirmek_istediyi_tarix
+                    indiki_ay.gecikdirme_status = "GECİKDİRMƏ"
+                    indiki_ay.save()
+                    return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            except:
+                return Response({"detail": "Yeni tarix hal-hazırki tarix ile növbəti ayın tarixi arasında olmalıdır"}, status=status.HTTP_400_BAD_REQUEST)
+        elif(indiki_ay != odenmeyen_odemetarixler[-1]):
+            novbeti_ay = OdemeTarix.objects.get(pk = indiki_ay.id+1)
+            novbeti_ay_tarix_date = novbeti_ay.tarix
+            novbeti_ay_tarix = datetime.datetime.combine(novbeti_ay_tarix_date, my_time)
+            novbeti_ay_tarix_san = datetime.datetime.timestamp(novbeti_ay_tarix)
 
-                try:
-                    if(odeme_tarixi_san < gecikdirmek_istediyi_tarix_san < novbeti_ay_tarix_san):
-                        indiki_ay.tarix = gecikdirmek_istediyi_tarix
-                        indiki_ay.gecikdirme_status = "GECİKDİRMƏ"
-                        indiki_ay.save()
-                        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-                except:
-                    return Response({"detail": "Yeni tarix hal-hazırki tarix ile növbəti ayın tarixi arasında olmalıdır"}, status=status.HTTP_400_BAD_REQUEST)
-        elif(odenme_status != "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ"):
-            raise ValidationError(detail={"detail": "Gecikdirmə ancaq ödənməmiş ay üçündür"}, code=status.HTTP_400_BAD_REQUEST)
-    except:
-        return Response({"detail": "Gecikdirmə ancaq ödənməmiş ay üçündür"}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                if(novbeti_ay_tarix_san == gecikdirmek_istediyi_tarix_san):
+                    raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response({"detail": "Qeyd etdiyiniz tarix növbəti ayın tarixi ilə eynidir."}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                if(gecikdirmek_istediyi_tarix_san < odeme_tarixi_san):
+                    raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response({"detail": "Qeyd etdiyiniz tarix keçmiş tarixdir."}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                if(gecikdirmek_istediyi_tarix_san > novbeti_ay_tarix_san):
+                    raise ValidationError(detail={"detail": "Tarixi doğru daxil edin!"}, code=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response({"detail": "Qeyd etdiyiniz tarix növbəti ayın tarixindən böyükdür."}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                if(odeme_tarixi_san < gecikdirmek_istediyi_tarix_san < novbeti_ay_tarix_san):
+                    indiki_ay.tarix = gecikdirmek_istediyi_tarix
+                    indiki_ay.gecikdirme_status = "GECİKDİRMƏ"
+                    indiki_ay.save()
+                    return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            except:
+                return Response({"detail": "Yeni tarix hal-hazırki tarix ile növbəti ayın tarixi arasında olmalıdır"}, status=status.HTTP_400_BAD_REQUEST)
+    elif(indiki_ay.odenme_status != "ÖDƏNMƏYƏN" and gecikdirme_status == "GECİKDİRMƏ"):
+        raise ValidationError(detail={"detail": "Gecikdirmə ancaq ödənməmiş ay üçündür"}, code=status.HTTP_400_BAD_REQUEST)
     
-    if(odenme_status == "ÖDƏNMƏYƏN" and float(odemek_istediyi_mebleg) == indiki_ay.qiymet):
-        indiki_ay = self.get_object()
-        muqavile = indiki_ay.muqavile
+    # Odenen ay ile bagli emeliyyat
+    if((indiki_ay.odenme_status == "ÖDƏNMƏYƏN" and float(odemek_istediyi_mebleg) == indiki_ay.qiymet)):
         odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
         odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
         print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler}")
@@ -710,24 +756,40 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             if(indiki_ay == odenmeyen_odemetarixler[-1]):
                 muqavile.muqavile_status = "BİTMİŞ"
                 muqavile.save()
+            
+            qeyd = f"Vanleader - {vanleader.asa}, müştəri - {musteri.asa}, tarix - {today}, ödəniş üslubu - {odenis_uslubu}. kredit ödəməsi"
+            k_medaxil(ofis_kassa, float(odemek_istediyi_mebleg), vanleader, qeyd)
             return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
         else:
             return ValidationError(detail={"detail": "Məlumatları doğru daxil edin"}, code=status.HTTP_400_BAD_REQUEST)
     # Natamam Ay odeme statusu ile bagli emeliyyatlar
-    elif(odenme_status == "NATAMAM AY"):
-        indiki_ay = self.get_object()
-        muqavile = indiki_ay.muqavile
+    elif(
+        indiki_ay.odenme_status == "ÖDƏNMƏYƏN" 
+        and 
+        sertli_odeme_status == "NATAMAM AY" 
+        and 
+        0 < float(odemek_istediyi_mebleg) < indiki_ay.qiymet 
+        and 
+        natamama_gore_odeme_status is not ""
+        and 
+        natamama_gore_odeme_status is not None
+    ):
         ilkin_odenis = muqavile.ilkin_odenis
         ilkin_odenis_qaliq = muqavile.ilkin_odenis_qaliq
         ilkin_odenis_tam = ilkin_odenis + ilkin_odenis_qaliq
         print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
         mehsulun_qiymeti = muqavile.muqavile_umumi_mebleg
         print(f"mehsulun ==> {mehsulun_qiymeti}")
-        indiki_ay.odenme_status = "NATAMAM AY"
+        indiki_ay.odenme_status = "ÖDƏNƏN"
+        indiki_ay.sertli_odeme_status = "NATAMAM AY"
         indiki_ay.save()
 
         odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
         odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
+        
+        qeyd = f"Vanleader - {vanleader.asa}, müştəri - {musteri.asa}, tarix - {today}, ödəniş üslubu - {odenis_uslubu}, şərtli ödəmə - {indiki_ay.sertli_odeme_status}"
+        k_medaxil(ofis_kassa, float(odemek_istediyi_mebleg), vanleader, qeyd)
+        
         if(natamama_gore_odeme_status == "NATAMAM DİGƏR AYLAR"):
             print(f"indiki_ay.qiymet ==> {indiki_ay.qiymet}")
             odenmeyen_pul = indiki_ay.qiymet - odemek_istediyi_mebleg
@@ -745,6 +807,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             indiki_ay.qiymet = odemek_istediyi_mebleg
             indiki_ay.natamam_ay_alt_status = "NATAMAM DİGƏR AYLAR"
             indiki_ay.save()
+
             i = 0
             while(i<=(odenmeyen_aylar-1)):
                 print(f"odenmeyen_aylar-1===>{odenmeyen_aylar-1}")
@@ -765,7 +828,6 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             novbeti_ay.save()
 
             indiki_ay.qiymet = odemek_istediyi_mebleg
-            indiki_ay.odenme_status = "NATAMAM AY"
             indiki_ay.natamam_ay_alt_status = "NATAMAM NÖVBƏTİ AY"
             indiki_ay.save()
             return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
@@ -779,13 +841,12 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             sonuncu_ay.save()
 
             indiki_ay.qiymet = odemek_istediyi_mebleg
-            indiki_ay.odenme_status = "NATAMAM AY"
             indiki_ay.natamam_ay_alt_status = "NATAMAM SONUNCU AY"
             indiki_ay.save()
             return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
 
     # Buraxilmis Ay odeme statusu ile bagli emeliyyatlar
-    elif((odenme_status == "BURAXILMIŞ AY" and sifira_gore_odeme_status != "") or (float(odemek_istediyi_mebleg) == 0 and sifira_gore_odeme_status != "")):
+    elif((sertli_odeme_status == "BURAXILMIŞ AY" and sifira_gore_odeme_status != "") or (float(odemek_istediyi_mebleg) == 0 and sifira_gore_odeme_status != "")):
         indiki_ay = self.get_object()
         muqavile = indiki_ay.muqavile
         ilkin_odenis = muqavile.ilkin_odenis
@@ -794,7 +855,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
         print(f"mehsulun ==> {mehsulun_qiymeti}")
         ilkin_odenis_tam = ilkin_odenis + ilkin_odenis_qaliq
         print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
-        indiki_ay.odenme_status = "BURAXILMIŞ AY"
+        indiki_ay.sertli_odeme_status = "BURAXILMIŞ AY"
         indiki_ay.save()
         odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
         odemek_istediyi_mebleg = float(request.POST.get("qiymet"))
@@ -804,7 +865,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             novbeti_ay.qiymet = novbeti_ay.qiymet + indiki_ay.qiymet
             novbeti_ay.save()
             indiki_ay.qiymet = 0
-            indiki_ay.odenme_status = "BURAXILMIŞ AY"
+            indiki_ay.sertli_odeme_status = "BURAXILMIŞ AY"
             indiki_ay.buraxilmis_ay_alt_status = "SIFIR NÖVBƏTİ AY"
             indiki_ay.save()
             return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
@@ -813,7 +874,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             sonuncu_ay.qiymet = sonuncu_ay.qiymet + indiki_ay.qiymet
             sonuncu_ay.save()
             indiki_ay.qiymet = 0
-            indiki_ay.odenme_status = "BURAXILMIŞ AY"
+            indiki_ay.sertli_odeme_status = "BURAXILMIŞ AY"
             indiki_ay.buraxilmis_ay_alt_status = "SIFIR SONUNCU AY"
             indiki_ay.save()
             return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
@@ -936,7 +997,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     
     # RAZILASDIRILMIS AZ ODEME ile bagli emeliyyatlar
-    elif(odenme_status == "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"):
+    elif(sertli_odeme_status == "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"):
         indiki_ay = self.get_object()
         muqavile = indiki_ay.muqavile
         ilkin_odenis = muqavile.ilkin_odenis
@@ -945,7 +1006,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
         print(f"ilkin_odenis_tam ==> {ilkin_odenis_tam}")
         mehsulun_qiymeti = muqavile.muqavile_umumi_mebleg
         print(f"mehsulun ==> {mehsulun_qiymeti}")
-        indiki_ay.odenme_status = "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"
+        indiki_ay.sertli_odeme_status = "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"
         indiki_ay.save()
 
         odenmeyen_odemetarixler = OdemeTarix.objects.filter(muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
@@ -964,6 +1025,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
         sonuncu_aya_elave_olunacaq_mebleg = odenmeyen_pul - b
         print(f"sonuncu_aya_elave_olunacaq_mebleg ==> {sonuncu_aya_elave_olunacaq_mebleg}")
         
+        indiki_ay.odenme_statusu = "ÖDƏNƏN"
         indiki_ay.qiymet = odemek_istediyi_mebleg
         indiki_ay.save()
         i = 0
@@ -979,7 +1041,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
 
     # ARTIQ ODEME ile bagli emeliyyatlar
-    elif(odenme_status == "ARTIQ ÖDƏMƏ"):
+    elif(sertli_odeme_status == "ARTIQ ÖDƏMƏ"):
         if(artiq_odeme_alt_status == "ARTIQ_BİR_AY"):
             indiki_ay = self.get_object()
             print(f"indiki ay ===> {indiki_ay}")
@@ -997,7 +1059,8 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             print(f"odenmeyen_odemetarixler ===> {odenmeyen_odemetarixler}")
 
             indiki_ay.qiymet = odemek_istediyi_mebleg
-            indiki_ay.odenme_status = "ARTIQ ÖDƏMƏ"
+            indiki_ay.odenme_statusu = "ÖDƏNƏN"
+            indiki_ay.sertli_odeme_status = "ARTIQ ÖDƏMƏ"
             indiki_ay.artiq_odeme_alt_status = "ARTIQ_BİR_AY"
             indiki_ay.save()
 
@@ -1068,7 +1131,8 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             print(f"son_aya_elave_edilecek_mebleg ==> {son_aya_elave_edilecek_mebleg}")
 
             indiki_ay.qiymet = odemek_istediyi_mebleg
-            indiki_ay.odenme_status = "ARTIQ ÖDƏMƏ"
+            indiki_ay.odenme_statusu = "ÖDƏNƏN"
+            indiki_ay.sertli_odeme_status = "ARTIQ ÖDƏMƏ"
             indiki_ay.artiq_odeme_alt_status = "ARTIQ_BÜTÜN_AYLAR"
             indiki_ay.save()
 
@@ -1093,7 +1157,7 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
             return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     
     # SON AYIN BOLUNMESI
-    elif(odenme_status == "SON AYIN BÖLÜNMƏSİ"):
+    elif(sertli_odeme_status == "SON AYIN BÖLÜNMƏSİ"):
         indiki_ay = self.get_object()
         print(f"indiki ay ===> {indiki_ay}")
         muqavile = indiki_ay.muqavile
@@ -1118,7 +1182,8 @@ def odeme_tarixi_update(self, request, *args, **kwargs):
         print(f"create_olunacaq_ay_qiymet ===> {create_olunacaq_ay_qiymet}")
 
         sonuncu_ay.qiymet = odemek_istediyi_mebleg
-        sonuncu_ay.odenme_status = "SON AYIN BÖLÜNMƏSİ"
+        sonuncu_ay.odenme_statusu = "ÖDƏNƏN"
+        sonuncu_ay.sertli_odeme_status = "SON AYIN BÖLÜNMƏSİ"
         sonuncu_ay.save()
 
         inc_month = pd.date_range(sonuncu_ay.tarix, periods = 2, freq='M')
