@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import path
 
-from api.v1.all_views import account_views, company_views, muqavile_views
+from api.v1.all_views import account_views, company_views, muqavile_views, maas_views
 
 from rest_framework_simplejwt.views import token_refresh
 from django.conf.urls.static import static
@@ -21,17 +21,27 @@ urlpatterns=[
     path('musteri-qeydler/', account_views.MusteriQeydlerListCreateAPIView.as_view(), name="musteri_qeydler"),
     path('musteri-qeydler/<int:pk>', account_views.MusteriQeydlerDetailAPIView.as_view(), name="musteri_qeydler_detail"),
 
-    path('maas/', account_views.MaasListCreateAPIView.as_view(), name="maas"),
-    path('maas/<int:pk>', account_views.MaasDetailAPIView.as_view(), name="maas_detail"),
-
-    path('bonus/', account_views.BonusListCreateAPIView.as_view(), name="bonus"),
-    path('bonus/<int:pk>', account_views.BonusDetailAPIView.as_view(), name="bonus_detail"),
-
     path('bolge/', account_views.BolgeListCreateAPIView.as_view(), name="bolge"),
     path('bolge/<int:pk>', account_views.BolgeDetailAPIView.as_view(), name="bolge_detail"),
 
     path('isci-satis-sayi/', account_views.IsciSatisSayiListCreateAPIView.as_view(), name="isci_satis_sayi"),
     path('isci-satis-sayi/<int:pk>', account_views.IsciSatisSayiDetailAPIView.as_view(), name="isci_satis_sayi"),
+
+    path('isci-status/', account_views.IsciStatusListCreateAPIView.as_view(), name="isci_status"),
+    path('isci-status/<int:pk>', account_views.IsciStatusDetailAPIView.as_view(), name="isci_status_detail"),
+
+    # maas views *****************************************
+    path('maas-goruntuleme/', maas_views.MaasGoruntulemeListCreateAPIView.as_view(), name="maas_goruntuleme"),
+    path('maas-goruntuleme/<int:pk>', maas_views.MaasGoruntulemeDetailAPIView.as_view(), name="maas_goruntuleme_detail"),
+    
+    # path('prim/', maas_views.PrimListCreateAPIView.as_view(), name="prim"),
+    # path('prim/<int:pk>', maas_views.PrimDetailAPIView.as_view(), name="prim_detail"),
+    
+    path('avans/', maas_views.AvansListCreateAPIView.as_view(), name="avans"),
+    path('avans/<int:pk>', maas_views.AvansDetailAPIView.as_view(), name="avans_detail"),
+    
+    path('kesinti/', maas_views.KesintiListCreateAPIView.as_view(), name="kesinti"),
+    path('kesinti/<int:pk>', maas_views.KesintiDetailAPIView.as_view(), name="kesinti_detail"),
 
     # company views *****************************************
     path('komanda/', company_views.KomandaListCreateAPIView.as_view(), name="komanda"),

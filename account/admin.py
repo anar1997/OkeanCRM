@@ -3,10 +3,9 @@ from account.models import (
     MusteriQeydler, 
     User, 
     Musteri, 
-    Maas,
-    Bonus,
     Bolge,
-    IsciSatisSayi
+    IsciSatisSayi,
+    IsciStatus
 )
 from django.contrib.auth.models import Permission
 
@@ -17,9 +16,9 @@ admin.site.register(IsciSatisSayi)
 admin.site.register(Musteri)
 admin.site.register(MusteriQeydler)
 
-admin.site.register(Maas)
-admin.site.register(Bonus)
 admin.site.register(Bolge)
+admin.site.register(IsciStatus)
+
 
 
 

@@ -2,7 +2,6 @@ from rest_framework import status, generics
 from rest_framework.generics import get_object_or_404
 
 from rest_framework.response import Response
-from rest_framework import generics
 
 from api.v1.all_serializers.company_serializers import (
     OfisKassaMedaxilSerializer,

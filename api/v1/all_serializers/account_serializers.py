@@ -6,9 +6,8 @@ from account.models import (
     MusteriQeydler, 
     User, 
     Musteri,
-    Maas,
-    Bonus,
-    Bolge
+    Bolge,
+    IsciStatus
 )
 
 from api.v1.all_serializers.company_serializers import (
@@ -27,6 +26,10 @@ from company.models import (
     Vezifeler
 )
 
+class IsciStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IsciStatus
+        fields = "__all__"
 
 class BolgeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,14 +40,17 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
-                  'sv_image', 'shirket', 'status', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
+                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
     def create(self, validated_data):
         user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'], password=validated_data['password'],
-                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], komanda=validated_data['komanda'], shobe=validated_data['shobe'])
+                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], 
+                                        tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], 
+                                        shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], 
+                                        komanda=validated_data['komanda'], shobe=validated_data['shobe'], isci_status=validated_data['isci_status'])
         return user
 
 class UserSerializer(serializers.ModelSerializer):
@@ -72,6 +78,11 @@ class UserSerializer(serializers.ModelSerializer):
         queryset=Komanda.objects.all(), source='komanda', write_only=True, required=False, allow_null=True
     )
 
+    isci_status = IsciStatusSerializer(read_only=True)
+    isci_status_id = serializers.PrimaryKeyRelatedField(
+        queryset=IsciStatus.objects.all(), source='isci_status', write_only=True, required=False, allow_null=True
+    )
+
     class Meta:
         model = User
         fields = "__all__"
@@ -96,15 +107,6 @@ class MusteriQeydlerSerializer(serializers.ModelSerializer):
         model = MusteriQeydler
         fields = "__all__"
 
-class MaasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Maas
-        fields = "__all__"
-
-class BonusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bonus
-        fields = "__all__"
 
 class IsciSatisSayiSerializer(serializers.ModelSerializer):
     isci = UserSerializer(read_only=True)

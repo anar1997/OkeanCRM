@@ -80,6 +80,11 @@ class Muqavile(models.Model):
     DAVAM_EDEN = "DAVAM EDƏN"
     DUSEN = "DÜŞƏN"
     YOXDUR = "YOXDUR"
+    YENI_QRAFIK = "YENİ QRAFİK"
+
+    YENI_QRAFIK_CHOICES = [
+        (YENI_QRAFIK, "YENİ QRAFİK")
+    ]
 
     MUQAVILE_STATUS_CHOICES = [
         (DAVAM_EDEN,"DAVAM EDƏN"),
@@ -137,6 +142,15 @@ class Muqavile(models.Model):
     
     negd_odenis_1_tarix = models.DateField(blank=True, null=True)
     negd_odenis_2_tarix = models.DateField(blank=True, null=True)
+
+    yeni_qrafik_mebleg = models.FloatField(default=0, blank=True)
+    yeni_qrafik_status = models.CharField(
+        max_length=50,
+        choices=YENI_QRAFIK_CHOICES,
+        default=None,
+        null=True,
+        blank=True
+    )
 
     negd_odenis_1_status = models.CharField(
         max_length=20,
@@ -201,7 +215,6 @@ class OdemeTarix(models.Model):
     BURAXILMIS_AY = "BURAXILMIŞ AY"
     NATAMAM_AY = "NATAMAM AY"
     RAZILASDIRILMIS_AZ_ODEME = "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"
-    YENI_QRAFIK = "YENİ QRAFİK"
     ARTIQ_ODEME = "ARTIQ ÖDƏMƏ"
     SON_AYIN_BOLUNMESI = "SON AYIN BÖLÜNMƏSİ"
 
@@ -229,7 +242,6 @@ class OdemeTarix(models.Model):
         (BURAXILMIS_AY, "BURAXILMIŞ AY"),
         (NATAMAM_AY, "NATAMAM AY"),
         (RAZILASDIRILMIS_AZ_ODEME, "RAZILAŞDIRILMIŞ AZ ÖDƏMƏ"),
-        (YENI_QRAFIK, "YENİ QRAFİK"),
         (ARTIQ_ODEME, "ARTIQ ÖDƏMƏ"),
         (SON_AYIN_BOLUNMESI, "SON AYIN BÖLÜNMƏSİ")
     ]

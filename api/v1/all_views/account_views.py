@@ -10,9 +10,8 @@ from api.v1.all_serializers.account_serializers import (
     UserSerializer,
     MusteriSerializer,
     MusteriQeydlerSerializer,
-    MaasSerializer,
-    BonusSerializer,
-    IsciSatisSayiSerializer
+    IsciSatisSayiSerializer,
+    IsciStatusSerializer
 )
 
 from account.models import (
@@ -21,8 +20,7 @@ from account.models import (
     MusteriQeydler, 
     User, 
     Musteri,
-    Maas,
-    Bonus,
+    IsciStatus
 )
 
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -40,6 +38,19 @@ class RegisterApi(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if(serializer.is_valid()):
+            isci_status = serializer.validated_data.get('isci_status')
+            standart_status = IsciStatus.objects.get(status_adi="STANDART")
+            print("isci_status=",isci_status)
+            if isci_status == "" or isci_status == None:
+                if standart_status is not None:
+                    serializer.save(isci_status=standart_status)
+            else:
+                serializer.save()
+            return Response({"detail": "İşçi qeydiyyatdan keçirildi"}, status=status.HTTP_201_CREATED)
+
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -49,6 +60,18 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def patch(self, request, *args, **kwargs):
+        isci=self.get_object()
+        print("isci=",isci)
+        serializer = self.get_serializer(data=request.data, partial=True)
+        if(serializer.is_valid()):
+            isci_status = serializer.validated_data.get('isci_status')
+            print("isci_status=",isci_status)
+            isci.isci_status = isci_status
+            isci.save()
+
+            return Response({"detail": "İşçi update olundu"}, status=status.HTTP_200_OK)
 
 
 class Login(TokenObtainPairView):
@@ -93,27 +116,6 @@ class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MusteriQeydler.objects.all()
     serializer_class = MusteriQeydlerSerializer
 
-
-# ********************************** ishci maas put delete post get **********************************
-
-class MaasListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Maas.objects.all()
-    serializer_class = MaasSerializer
-
-class MaasDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Maas.objects.all()
-    serializer_class = MaasSerializer
-
-# ********************************** ishci elave bonus put delete post get **********************************
-
-class BonusListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Bonus.objects.all()
-    serializer_class = BonusSerializer
-
-class BonusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Bonus.objects.all()
-    serializer_class = BonusSerializer
-
 # ********************************** bolge put delete post get **********************************
 
 class BolgeListCreateAPIView(generics.ListCreateAPIView):
@@ -136,3 +138,15 @@ class IsciSatisSayiListCreateAPIView(generics.ListCreateAPIView):
 class IsciSatisSayiDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = IsciSatisSayi.objects.all()
     serializer_class = IsciSatisSayiSerializer
+
+
+# ********************************** status put delete post get **********************************
+
+class IsciStatusListCreateAPIView(generics.ListCreateAPIView):
+    queryset = IsciStatus.objects.all()
+    serializer_class = IsciStatusSerializer
+
+
+class IsciStatusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = IsciStatus.objects.all()
+    serializer_class = IsciStatusSerializer

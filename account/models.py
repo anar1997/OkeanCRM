@@ -14,31 +14,11 @@ from company.models import (
 from .managers import CustomUserManager
 
 
-class Bonus(models.Model):
-    KREDIT = 'KREDIT'
-    NAGD = 'NAGD'
-    ODENIS_USLUBU_CHOICES = [
-        (KREDIT, "KREDIT"),
-        (NAGD, "NAGD"),
-    ]
-
-    status = models.CharField(max_length=250, null=True)
-    stok = models.ForeignKey('mehsullar.Stok', on_delete=models.CASCADE, null=True, related_name="stok_bonus")
-    satis_meblegi = models.FloatField(default=0)
-    odenis_uslubu =  models.CharField(
-        max_length=20,
-        choices=ODENIS_USLUBU_CHOICES,
-        default=NAGD
-    )
-    vezife = models.ForeignKey(Vezifeler, on_delete=models.SET_NULL, null=True, related_name="vezife_bonus")
-    komandaya_gore_bonus = models.FloatField(default=0, null=True, blank=True)
-    ofise_gore_bonus = models.FloatField(default=0, null=True, blank=True)
-
-    class Meta:
-        ordering = ("pk",)
+class IsciStatus(models.Model):
+    status_adi = models.CharField(max_length=200)
 
     def __str__(self) -> str:
-        return f"{self.status} - {self.komandaya_gore_bonus}"
+        return self.status_adi
 
 class User(AbstractUser):
     first_name = None
@@ -56,7 +36,7 @@ class User(AbstractUser):
     shobe=models.ForeignKey(Shobe, on_delete=models.SET_NULL, null=True, related_name="ishci")
     vezife = models.ForeignKey(Vezifeler, on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
     komanda = models.OneToOneField(Komanda, on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
-    status = models.ForeignKey(Bonus, on_delete=models.SET_NULL, null=True, blank=True)
+    isci_status = models.ForeignKey(IsciStatus, on_delete=models.SET_NULL, null=True, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
@@ -104,37 +84,6 @@ class MusteriQeydler(models.Model):
 
     def __str__(self):
         return f"{self.musteri} -- {self.qeyd[:20]}"
-
-#  Maas ve Bonus **************************
-
-class Maas(models.Model):
-    FIX = 'FIX'
-    BONUS = 'BONUS'
-    BONUS_FIX = 'BONUS-FIX'
-    MAAS_USLUBU_CHOICES = [
-        (FIX, "FIX"), 
-        (BONUS, "BONUS"),
-        (BONUS_FIX, 'BONUS-FIX')
-    ]
-
-    maas_uslubu = models.CharField(
-        max_length=20,
-        choices=MAAS_USLUBU_CHOICES,
-        default=FIX
-    )
-
-    isci = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="isci_maas")
-    verilecek_maas = models.FloatField(null=True, blank=True)
-    maas_tarixi = models.DateField(null=True, blank=True)
-
-    odenme_status = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ("pk",)
-
-    def __str__(self) -> str:
-        return self.maas_uslubu
- 
 
 class IsciSatisSayi(models.Model):
     tarix = models.DateField()
