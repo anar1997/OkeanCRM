@@ -16,12 +16,10 @@ def maas_goruntuleme_create_task():
             tarix__month = indi.month
         )
         print(f"Celery isci_maas ==> {isci_maas}")
-        if isci_maas or len(isci_maas) != 0 or isci_maas is not None:
+        if len(isci_maas) != 0:
             continue
         else:
             MaasGoruntuleme.objects.create(isci=user).save()
-    
-    return True
 
 @shared_task(name='maas_goruntuleme_create_task_15')
 def maas_goruntuleme_create_task_15():
@@ -36,11 +34,9 @@ def maas_goruntuleme_create_task_15():
             tarix__month = indi.month
         )
         print(f"Celery isci_maas ==> {isci_maas}")
-        if isci_maas or len(isci_maas) != 0 or isci_maas is not None:
+        if len(isci_maas) != 0:
             print("Iscinin bu ay ucun maas karti var")
             continue
         else:
             print("Isci maas karti create oldu")
             MaasGoruntuleme.objects.create(isci=user).save()
-    
-    return True

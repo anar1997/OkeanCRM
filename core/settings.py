@@ -35,6 +35,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    # 'django_crontab',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -224,10 +226,72 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERYBEAT_SCHEDULE = {
     "maas_goruntuleme_create_task": {
         "task": "maas_goruntuleme_create_task",
-        "schedule": crontab(0, 0, '*', day_of_month="1"),
+        "schedule": crontab(0,0,'*', day_of_month="1"),
     },
     "maas_goruntuleme_create_task_15": {
         "task": "maas_goruntuleme_create_task_15",
-        "schedule": crontab(0, 0, '*', day_of_month="15"),
-    }
+        "schedule": crontab(0,0,'*', day_of_month="15"),
+    },
+    "work_day_creater_task20": {
+        "task": "work_day_creater_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_task25": {
+        "task": "work_day_creater_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
+
+    "work_day_creater_holding_task20": {
+        "task": "work_day_creater_holding_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_holding_task25": {
+        "task": "work_day_creater_holding_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
+
+    "work_day_creater_shirket_task20": {
+        "task": "work_day_creater_shirket_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_shirket_task25": {
+        "task": "work_day_creater_shirket_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
+
+    "work_day_creater_ofis_task20": {
+        "task": "work_day_creater_ofis_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_ofis_task25": {
+        "task": "work_day_creater_ofis_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
+
+    "work_day_creater_shobe_task20": {
+        "task": "work_day_creater_shobe_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_shobe_task25": {
+        "task": "work_day_creater_shobe_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
+
+    "work_day_creater_komanda_task20": {
+        "task": "work_day_creater_komanda_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_komanda_task25": {
+        "task": "work_day_creater_komanda_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
+
+    "work_day_creater_vezife_task20": {
+        "task": "work_day_creater_vezife_task20",
+        "schedule": crontab(0, 0, '*', day_of_month="20"),
+    },
+    "work_day_creater_vezife_task25": {
+        "task": "work_day_creater_vezife_task25",
+        "schedule": crontab(0, 0, '*', day_of_month="25"),
+    },
 }

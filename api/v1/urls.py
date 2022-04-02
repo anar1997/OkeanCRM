@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls import path
 
-from api.v1.all_views import account_views, company_views, muqavile_views, maas_views
+from api.v1.all_views import account_views, company_views, muqavile_views, maas_views, gunler_views
 
 from rest_framework_simplejwt.views import token_refresh
 from django.conf.urls.static import static
@@ -42,6 +42,31 @@ urlpatterns=[
     
     path('kesinti/', maas_views.KesintiListCreateAPIView.as_view(), name="kesinti"),
     path('kesinti/<int:pk>', maas_views.KesintiDetailAPIView.as_view(), name="kesinti_detail"),
+
+    # gunler views *****************************************
+    path('holding-gunler/', gunler_views.HoldingGunlerListCreateAPIView.as_view()),
+    path('holding-gunler/<int:pk>', gunler_views.HoldingGunlerDetailAPIView.as_view()),
+    
+    path('holding-istisna-isci/', gunler_views.HoldingIstisnaIsciListCreateAPIView.as_view()),
+    path('holding-istisna-isci/<int:pk>', gunler_views.HoldingIstisnaIsciDetailAPIView.as_view()),
+    
+    path('shirket-gunler/', gunler_views.ShirketGunlerListCreateAPIView.as_view()),
+    path('shirket-gunler/<int:pk>', gunler_views.ShirketGunlerDetailAPIView.as_view()),
+
+    path('ofis-gunler/', gunler_views.OfisGunlerListCreateAPIView.as_view()),
+    path('ofis-gunler/<int:pk>', gunler_views.OfisGunlerDetailAPIView.as_view()),
+    
+    path('shobe-gunler/', gunler_views.ShobeGunlerListCreateAPIView.as_view()),
+    path('shobe-gunler/<int:pk>', gunler_views.ShobeGunlerDetailAPIView.as_view()),
+
+    path('komanda-gunler/', gunler_views.KomandaGunlerListCreateAPIView.as_view()),
+    path('komanda-gunler/<int:pk>', gunler_views.KomandaGunlerDetailAPIView.as_view()),
+    
+    path('vezife-gunler/', gunler_views.VezifeGunlerListCreateAPIView.as_view()),
+    path('vezife-gunler/<int:pk>', gunler_views.VezifeGunlerDetailAPIView.as_view()),
+
+    path('isci-gunler/', gunler_views.IsciGunlerListCreateAPIView.as_view()),
+    path('isci-gunler/<int:pk>', gunler_views.IsciGunlerDetailAPIView.as_view()),
 
     # company views *****************************************
     path('komanda/', company_views.KomandaListCreateAPIView.as_view(), name="komanda"),
