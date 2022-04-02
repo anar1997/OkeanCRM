@@ -34,8 +34,8 @@ urlpatterns=[
     path('maas-goruntuleme/', maas_views.MaasGoruntulemeListCreateAPIView.as_view(), name="maas_goruntuleme"),
     path('maas-goruntuleme/<int:pk>', maas_views.MaasGoruntulemeDetailAPIView.as_view(), name="maas_goruntuleme_detail"),
     
-    # path('prim/', maas_views.PrimListCreateAPIView.as_view(), name="prim"),
-    # path('prim/<int:pk>', maas_views.PrimDetailAPIView.as_view(), name="prim_detail"),
+    path('bonus/', maas_views.BonusListCreateAPIView.as_view(), name="bonus"),
+    path('bonus/<int:pk>', maas_views.BonusDetailAPIView.as_view(), name="bonus_detail"),
     
     path('avans/', maas_views.AvansListCreateAPIView.as_view(), name="avans"),
     path('avans/<int:pk>', maas_views.AvansDetailAPIView.as_view(), name="avans_detail"),

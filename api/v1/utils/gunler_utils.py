@@ -425,6 +425,29 @@ def isci_tetil_gunleri_calc(serializer, obj):
     serializer.save( is_gunleri_count=is_gunleri_count, qeyri_is_gunu_count=qeyri_is_gunu_count)
     return True
 
+def isci_tetil_gunleri_delete(obj_gunler):
+    print(f"{obj_gunler=}")
+    
+    indi = datetime.date.today()
+    print(f"{indi=}")
+
+    d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+    print(f"{d=}")
+
+    next_m = d + pd.offsets.MonthBegin(1)
+    print(f"{next_m=}")
+
+    days_in_mont = pd.Period(f"{next_m.year}-{next_m.month}-{1}").days_in_month
+    print(f"{days_in_mont=}")
+
+    obj_gunler.tetil_gunleri = None
+    obj_gunler.icaze_gunleri_odenisli = None
+    obj_gunler.icaze_gunleri_odenissiz = None
+    obj_gunler.is_gunleri_count = float(days_in_mont)
+    obj_gunler.qeyri_is_gunu_count = 0
+    obj_gunler.save()
+    
+
 def gunler_update(serializer, company, company_name, obj_gunler):
     print(f"obj_gunler==>{obj_gunler}----{type(obj_gunler)}")
 
@@ -804,6 +827,17 @@ def user_gunler_patch(self, request, *args, **kwargs):
         isci_tetil_gunleri_calc(serializer, user_gunler)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
+
+def user_gunler_delete(self, request, *args, **kwargs):
+    user_gunler = self.get_object()
+    print(f"{user_gunler=}")
+    try:
+        isci_tetil_gunleri_delete(
+            obj_gunler=user_gunler
+        )
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ------------------------------------------------------------------------------------------------
 

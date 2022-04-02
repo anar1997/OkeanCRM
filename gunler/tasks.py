@@ -15,8 +15,8 @@ from gunler.models import (
 )
 
 # Isci gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_task20')
-def work_day_creater_task20():
+@shared_task(name='work_day_creater_task1')
+def work_day_creater_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -53,8 +53,8 @@ def work_day_creater_task20():
             isci_gunler.save()
 
 
-@shared_task(name='work_day_creater_task25')
-def work_day_creater_task25():
+@shared_task(name='work_day_creater_task15')
+def work_day_creater_task15():
     """
     İş və tətil günlərini create edən task
     """
@@ -91,8 +91,8 @@ def work_day_creater_task25():
             isci_gunler.save()
 
 # Holding gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_holding_task20')
-def work_day_creater_holding_task20():
+@shared_task(name='work_day_creater_holding_task1')
+def work_day_creater_holding_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -128,8 +128,8 @@ def work_day_creater_holding_task20():
             )
             holding_gunler.save()
 
-@shared_task(name='work_day_creater_holding_task25')
-def work_day_creater_holding_task25():
+@shared_task(name='work_day_creater_holding_task15')
+def work_day_creater_holding_task15():
     """
     İş və tətil günlərini create edən task
     """
@@ -166,8 +166,8 @@ def work_day_creater_holding_task25():
             holding_gunler.save()
 
 # Shirket gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_shirket_task20')
-def work_day_creater_shirket_task20():
+@shared_task(name='work_day_creater_shirket_task1')
+def work_day_creater_shirket_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -203,8 +203,8 @@ def work_day_creater_shirket_task20():
             )
             shirket_gunler.save()
 
-@shared_task(name='work_day_creater_shirket_task25')
-def work_day_creater_shirket_task25():
+@shared_task(name='work_day_creater_shirket_task15')
+def work_day_creater_shirket_task15():
     """
     İş və tətil günlərini create edən task
     """
@@ -242,8 +242,8 @@ def work_day_creater_shirket_task25():
 
 
 # Ofis gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_ofis_task20')
-def work_day_creater_ofis_task20():
+@shared_task(name='work_day_creater_ofis_task1')
+def work_day_creater_ofis_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -279,8 +279,8 @@ def work_day_creater_ofis_task20():
             )
             ofis_gunler.save()
 
-@shared_task(name='work_day_creater_ofis_task25')
-def work_day_creater_ofis_task25():
+@shared_task(name='work_day_creater_ofis_task15')
+def work_day_creater_ofis_task15():
     """
     İş və tətil günlərini create edən task
     """
@@ -317,8 +317,8 @@ def work_day_creater_ofis_task25():
             ofis_gunler.save()
 
 # Shobe gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_shobe_task20')
-def work_day_creater_shobe_task20():
+@shared_task(name='work_day_creater_shobe_task1')
+def work_day_creater_shobe_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -354,8 +354,8 @@ def work_day_creater_shobe_task20():
             )
             shobe_gunler.save()
 
-@shared_task(name='work_day_creater_shobe_task25')
-def work_day_creater_shobe_task25():
+@shared_task(name='work_day_creater_shobe_task15')
+def work_day_creater_shobe_task15():
     """
     İş və tətil günlərini create edən task
     """
@@ -393,8 +393,8 @@ def work_day_creater_shobe_task25():
 
 
 # Komanda gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_komanda_task20')
-def work_day_creater_komanda_task20():
+@shared_task(name='work_day_creater_komanda_task1')
+def work_day_creater_komanda_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -433,8 +433,8 @@ def work_day_creater_komanda_task20():
             )
             komanda_gunler.save()
 
-@shared_task(name='work_day_creater_komanda_task25')
-def work_day_creater_komanda_task25():
+@shared_task(name='work_day_creater_komanda_task15')
+def work_day_creater_komanda_task15():
     """
     İş və tətil günlərini create edən task
     """
@@ -472,8 +472,8 @@ def work_day_creater_komanda_task25():
 
 
 # Vezife gunler ---------------------------------------------------
-@shared_task(name='work_day_creater_vezife_task20')
-def work_day_creater_vezife_task20():
+@shared_task(name='work_day_creater_vezife_task1')
+def work_day_creater_vezife_task1():
     """
     İş və tətil günlərini create edən task
     """
@@ -509,8 +509,8 @@ def work_day_creater_vezife_task20():
             )
             vezife_gunler.save()
 
-@shared_task(name='work_day_creater_vezife_task25')
-def work_day_creater_vezife_task25():
+@shared_task(name='work_day_creater_vezife_task15')
+def work_day_creater_vezife_task15():
     """
     İş və tətil günlərini create edən task
     """

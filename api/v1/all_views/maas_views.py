@@ -1,5 +1,23 @@
-from maas.models import Avans,Kesinti,MaasGoruntuleme
-from api.v1.all_serializers.maas_serializers import AvansSerializer,KesintiSerializer,MaasGoruntulemeSerializer
+from maas.models import (
+    Avans,
+    Kesinti,
+    Bonus,
+    MaasGoruntuleme, 
+    VanLeaderPrim, 
+    DealerPrim, 
+    OfficeLeaderPrim,
+    CanvasserPrim
+)
+from api.v1.all_serializers.maas_serializers import (
+    AvansSerializer, 
+    BonusSerializer,
+    KesintiSerializer,
+    MaasGoruntulemeSerializer,
+    CanvasserPrimSerializer,
+    DealerPrimSerializer,
+    OfficeLeaderPrimSerializer,
+    VanLeaderPrimSerializer,
+)
 from rest_framework import status, generics
 from rest_framework.generics import get_object_or_404
 
@@ -39,15 +57,55 @@ class MaasGoruntulemeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MaasGoruntuleme.objects.all()
     serializer_class = MaasGoruntulemeSerializer
 
-# ********************************** Prim get post put delete **********************************
-# class PrimListCreateAPIView(generics.ListCreateAPIView):
-#     queryset = Prim.objects.all()
-#     serializer_class = PrimSerializer
+# ********************************** Bonus get post put delete **********************************
+class BonusListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Bonus.objects.all()
+    serializer_class = BonusSerializer
 
-#     def create(self, request, *args, **kwargs):
-#         return maas_utils.prim_create(self, request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        return maas_utils.bonus_create(self, request, *args, **kwargs)
 
 
-# class PrimDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Prim.objects.all()
-#     serializer_class = PrimSerializer
+class BonusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bonus.objects.all()
+    serializer_class = BonusSerializer
+
+# ********************************** Office Leader Prim get post put delete **********************************
+class OfficeLeaderPrimListCreateAPIView(generics.ListCreateAPIView):
+    queryset = OfficeLeaderPrim.objects.all()
+    serializer_class = OfficeLeaderPrimSerializer
+
+
+class OfficeLeaderPrimDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OfficeLeaderPrim.objects.all()
+    serializer_class = OfficeLeaderPrimSerializer
+
+# ********************************** VanLeader Prim get post put delete **********************************
+class VanLeaderPrimListCreateAPIView(generics.ListCreateAPIView):
+    queryset = VanLeaderPrim.objects.all()
+    serializer_class = VanLeaderPrimSerializer
+
+
+class VanLeaderPrimDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = VanLeaderPrim.objects.all()
+    serializer_class = VanLeaderPrimSerializer
+
+# ********************************** Canvasser Prim get post put delete **********************************
+class CanvasserPrimListCreateAPIView(generics.ListCreateAPIView):
+    queryset = CanvasserPrim.objects.all()
+    serializer_class = CanvasserPrimSerializer
+
+
+class CanvasserPrimDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CanvasserPrim.objects.all()
+    serializer_class = CanvasserPrimSerializer
+
+# ********************************** Dealer Prim get post put delete **********************************
+class DealerPrimListCreateAPIView(generics.ListCreateAPIView):
+    queryset = DealerPrim.objects.all()
+    serializer_class = DealerPrimSerializer
+
+
+class DealerPrimDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DealerPrim.objects.all()
+    serializer_class = DealerPrimSerializer

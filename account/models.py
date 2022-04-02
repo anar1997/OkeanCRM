@@ -12,6 +12,16 @@ class IsciStatus(models.Model):
         return self.status_adi
 
 class User(AbstractUser):
+    PRIM = 'PRİM'
+    FIX = "FİX"
+    PRIM_FIX = "FİX+PRİM"
+
+    MAAS_USLUBU_CHOICES = [
+        (PRIM, "PRİM"),
+        (FIX, "FİX"),
+        (PRIM_FIX, "FİX+PRİM"),
+    ]
+
     first_name = None
     last_name = None
 
@@ -22,12 +32,18 @@ class User(AbstractUser):
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
     sv_image=models.ImageField(upload_to="media/%Y/%m/%d/", null=True, blank=True)
-    shirket=models.ForeignKey("company.Shirket", on_delete=models.SET_NULL, null=True, related_name="ishci")
-    ofis=models.ForeignKey("company.Ofis", on_delete=models.SET_NULL, null=True, related_name="ishci")
-    shobe=models.ForeignKey("company.Shobe", on_delete=models.SET_NULL, null=True, related_name="ishci")
+    shirket=models.ForeignKey("company.Shirket", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
+    ofis=models.ForeignKey("company.Ofis", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
+    shobe=models.ForeignKey("company.Shobe", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
     vezife = models.ForeignKey("company.Vezifeler", on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
     komanda = models.OneToOneField("company.Komanda", on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
     isci_status = models.ForeignKey(IsciStatus, on_delete=models.SET_NULL, null=True, blank=True)
+    maas_uslubu = models.CharField(
+        max_length=50,
+        choices=MAAS_USLUBU_CHOICES,
+        default=FIX
+    )
+    maas = models.FloatField(default=0, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []

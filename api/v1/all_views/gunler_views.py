@@ -233,3 +233,6 @@ class IsciGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def patch(self, request, *args, **kwargs):
         return gunler_utils.user_gunler_patch(self, request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.user_gunler_delete(self, request, *args, **kwargs)

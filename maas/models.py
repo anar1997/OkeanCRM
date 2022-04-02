@@ -1,5 +1,6 @@
-from datetime import datetime
+import django
 from django.db import models
+import datetime
 
 class AbstractPrim(models.Model):
     KREDIT = 'KREDİT'
@@ -47,7 +48,6 @@ class CanvasserPrim(AbstractPrim):
     komandaya_gore_prim = models.FloatField(default=0, null=True, blank=True)
     ofise_gore_prim = models.FloatField(default=0, null=True, blank=True)
 
-
     def __str__(self) -> str:
         return f"{self.prim_status} - {self.ofise_gore_prim}"
 
@@ -77,18 +77,30 @@ class Kesinti(models.Model):
 
     def __str__(self) -> str:
         return f"{self.isci} {self.kesinti_tarixi}"
+
+class Bonus(models.Model):
+    isci = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="isci_bonus")
+    mebleg = models.FloatField(default=0, blank=True)
+    qeyd = models.TextField()
+    bonus_tarixi = models.DateField(default=django.utils.timezone.now, null=True, blank=True)
+    
+    class Meta:
+        ordering = ("bonus_tarixi",)
+
+    def __str__(self) -> str:
+        return f"{self.isci} {self.mebleg} {self.bonus_tarixi}"
  
 class MaasGoruntuleme(models.Model):
     isci = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="isci_maas_goruntuleme")
     satis_sayi = models.PositiveBigIntegerField(default=0, blank=True)
     satis_meblegi = models.FloatField(default=0, blank=True)
     yekun_maas = models.FloatField(default=0, blank=True)
-    tarix = models.DateField(auto_now_add=True, blank=True, null=True)
+    tarix = models.DateField(null=True, blank=True)
 
     class Meta:
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return f"{self.isci} {self.yekun_maas}"
+        return f"{self.isci} {self.yekun_maas} {self.tarix}"
     
     
