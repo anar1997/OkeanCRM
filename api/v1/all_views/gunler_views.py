@@ -1,22 +1,32 @@
 from api.v1.all_serializers.gunler_serializers import (
     HoldingGunlerSerializer, 
     IsciGunlerSerializer, 
-    KomandaGunlerSerializer, 
-    OfisGunlerSerializer, 
-    ShirketGunlerSerializer, 
-    ShobeGunlerSerializer, 
+    KomandaGunlerSerializer,
+    KomandaIstisnaIsciSerializer, 
+    OfisGunlerSerializer,
+    OfisIstisnaIsciSerializer, 
+    ShirketGunlerSerializer,
+    ShirketIstisnaIsciSerializer, 
+    ShobeGunlerSerializer,
+    ShobeIstisnaIsciSerializer, 
     VezifeGunlerSerializer,
-    HoldingIstisnaIsciSerializer
+    HoldingIstisnaIsciSerializer,
+    VezifeIstisnaIsciSerializer
 )
 from gunler.models import (
     HoldingGunler,
     IsciGunler,
     KomandaGunler,
+    KomandaIstisnaIsci,
     OfisGunler,
+    OfisIstisnaIsci,
     ShirketGunler,
+    ShirketIstisnaIsci,
     ShobeGunler,
+    ShobeIstisnaIsci,
     VezifeGunler,
-    HoldingIstisnaIsci
+    HoldingIstisnaIsci,
+    VezifeIstisnaIsci
 )
 
 from api.v1.utils import gunler_utils
@@ -27,108 +37,129 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 # ********************************** Holding Gunler get post put delete **********************************
-class HoldingGunlerListCreateAPIView(generics.ListCreateAPIView):
+class HoldingGunlerListCreateAPIView(generics.ListAPIView):
     queryset = HoldingGunler.objects.all()
     serializer_class = HoldingGunlerSerializer
 
-class HoldingGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class HoldingGunlerDetailAPIView(generics.RetrieveAPIView):
     queryset = HoldingGunler.objects.all()
     serializer_class = HoldingGunlerSerializer
-
-    def update(self, request, *args, **kwargs):
-        return gunler_utils.holding_gunler_update(self, request, *args, **kwargs)
-
-    def patch(self, request, *args, **kwargs):
-        return gunler_utils.holding_gunler_patch(self, request, *args, **kwargs)
 
 class HoldingIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingIstisnaIsci.objects.all()
     serializer_class = HoldingIstisnaIsciSerializer
+
+    def create(self, request, *args, **kwargs):
+        return gunler_utils.holding_istisna_isci_gunler_create(self, request, *args, **kwargs)
 
 class HoldingIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingIstisnaIsci.objects.all()
     serializer_class = HoldingIstisnaIsciSerializer
 
 # ********************************** Shirket Gunler get post put delete **********************************
-class ShirketGunlerListCreateAPIView(generics.ListCreateAPIView):
+class ShirketGunlerListCreateAPIView(generics.ListAPIView):
     queryset = ShirketGunler.objects.all()
     serializer_class = ShirketGunlerSerializer
 
 
-class ShirketGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ShirketGunlerDetailAPIView(generics.RetrieveAPIView):
     queryset = ShirketGunler.objects.all()
     serializer_class = ShirketGunlerSerializer
 
-    def update(self, request, *args, **kwargs):
-        return gunler_utils.shirket_gunler_update(self, request, *args, **kwargs)
+class ShirketIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
+    queryset = ShirketIstisnaIsci.objects.all()
+    serializer_class = ShirketIstisnaIsciSerializer
 
-    def patch(self, request, *args, **kwargs):
-        return gunler_utils.shirket_gunler_patch(self, request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        return gunler_utils.shirket_istisna_isci_gunler_create(self, request, *args, **kwargs)
+
+class ShirketIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ShirketIstisnaIsci.objects.all()
+    serializer_class = ShirketIstisnaIsciSerializer
 
 # ********************************** Ofis Gunler get post put delete **********************************
-class OfisGunlerListCreateAPIView(generics.ListCreateAPIView):
+class OfisGunlerListCreateAPIView(generics.ListAPIView):
     queryset = OfisGunler.objects.all()
     serializer_class = OfisGunlerSerializer
 
 
-class OfisGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class OfisGunlerDetailAPIView(generics.RetrieveAPIView):
     queryset = OfisGunler.objects.all()
     serializer_class = OfisGunlerSerializer
 
-    def update(self, request, *args, **kwargs):
-        return gunler_utils.ofis_gunler_update(self, request, *args, **kwargs)
+class OfisIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
+    queryset = OfisIstisnaIsci.objects.all()
+    serializer_class = OfisIstisnaIsciSerializer
 
-    def patch(self, request, *args, **kwargs):
-        return gunler_utils.ofis_gunler_patch(self, request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        return gunler_utils.ofis_istisna_isci_gunler_create(self, request, *args, **kwargs)
+
+class OfisIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OfisIstisnaIsci.objects.all()
+    serializer_class = OfisIstisnaIsciSerializer
 
 # ********************************** Shobe Gunler get post put delete **********************************
-class ShobeGunlerListCreateAPIView(generics.ListCreateAPIView):
+class ShobeGunlerListCreateAPIView(generics.ListAPIView):
     queryset = ShobeGunler.objects.all()
     serializer_class = ShobeGunlerSerializer
 
 
-class ShobeGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ShobeGunlerDetailAPIView(generics.RetrieveAPIView):
     queryset = ShobeGunler.objects.all()
     serializer_class = ShobeGunlerSerializer
 
-    def update(self, request, *args, **kwargs):
-        return gunler_utils.shobe_gunler_update(self, request, *args, **kwargs)
+class ShobeIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
+    queryset = ShobeIstisnaIsci.objects.all()
+    serializer_class = ShobeIstisnaIsciSerializer
 
-    def patch(self, request, *args, **kwargs):
-        return gunler_utils.shobe_gunler_patch(self, request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        return gunler_utils.shobe_istisna_isci_gunler_create(self, request, *args, **kwargs)
+
+class ShobeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ShobeIstisnaIsci.objects.all()
+    serializer_class = ShobeIstisnaIsciSerializer
 
 # ********************************** Komanda Gunler get post put delete **********************************
-class KomandaGunlerListCreateAPIView(generics.ListCreateAPIView):
+class KomandaGunlerListCreateAPIView(generics.ListAPIView):
     queryset = KomandaGunler.objects.all()
     serializer_class = KomandaGunlerSerializer
 
 
-class KomandaGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class KomandaGunlerDetailAPIView(generics.RetrieveAPIView):
     queryset = KomandaGunler.objects.all()
     serializer_class = KomandaGunlerSerializer
 
-    def update(self, request, *args, **kwargs):
-        return gunler_utils.komanda_gunler_update(self, request, *args, **kwargs)
+class KomandaIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
+    queryset = KomandaIstisnaIsci.objects.all()
+    serializer_class = KomandaIstisnaIsciSerializer
 
-    def patch(self, request, *args, **kwargs):
-        return gunler_utils.komanda_gunler_patch(self, request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        return gunler_utils.komanda_istisna_isci_gunler_create(self, request, *args, **kwargs)
+
+class KomandaIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = KomandaIstisnaIsci.objects.all()
+    serializer_class = KomandaIstisnaIsciSerializer
 
 # ********************************** Vezife Gunler get post put delete **********************************
-class VezifeGunlerListCreateAPIView(generics.ListCreateAPIView):
+class VezifeGunlerListCreateAPIView(generics.ListAPIView):
     queryset = VezifeGunler.objects.all()
     serializer_class = VezifeGunlerSerializer
 
-
-class VezifeGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class VezifeGunlerDetailAPIView(generics.RetrieveAPIView):
     queryset = VezifeGunler.objects.all()
     serializer_class = VezifeGunlerSerializer
 
-    def update(self, request, *args, **kwargs):
-        return gunler_utils.vezife_gunler_update(self, request, *args, **kwargs)
+class VezifeIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
+    queryset = VezifeIstisnaIsci.objects.all()
+    serializer_class = VezifeIstisnaIsciSerializer
 
-    def patch(self, request, *args, **kwargs):
-        return gunler_utils.vezife_gunler_patch(self, request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        return gunler_utils.vezife_istisna_isci_gunler_create(self, request, *args, **kwargs)
 
+class VezifeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = VezifeIstisnaIsci.objects.all()
+    serializer_class = VezifeIstisnaIsciSerializer
+    
 # ********************************** Isci Gunler get post put delete **********************************
 class IsciGunlerListCreateAPIView(generics.ListCreateAPIView):
     queryset = IsciGunler.objects.all()

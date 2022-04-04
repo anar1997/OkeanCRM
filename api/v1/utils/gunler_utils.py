@@ -145,134 +145,90 @@ def isci_tetil_gunleri_calc(serializer, obj):
 
 # --------------------------------------------------------------------------------------------------------------------------
 
-def holding_istisna_isci_gunler_update(self, request, *args, **kwargs):
+def holding_istisna_isci_gunler_create(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
     
-    print(f"holding_gunler==>{holding_gunler}")
     if serializer.is_valid():
         holding_gunler = serializer.validated_data.get("holding_gunler")
 
+        print(f"holding_gunler==>{holding_gunler}")
+        
         instisna_isci_create(serializer=serializer, company="holding", company_name=holding_gunler.holding, obj_gunler=holding_gunler)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
-def holding_istisna_isci_gunler_patch(self, request, *args, **kwargs):
-    holding_gunler = self.get_object()
-    serializer = HoldingGunlerSerializer(holding_gunler, data=request.data)
+# ------------------------------------------------------------------------------------------------
+
+def ofis_istisna_isci_gunler_create(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
     
-    print(f"holding_gunler==>{holding_gunler}")
-    if serializer.is_valid():
-        holding_gunler = serializer.validated_data.get("holding_gunler")
-        instisna_isci_create(serializer=serializer, company="holding", company_name=holding_gunler.holding, obj_gunler=holding_gunler)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-# ------------------------------------------------------------------------------------------------
-
-def ofis_gunler_update(self, request, *args, **kwargs):
-    ofis_gunler = self.get_object()
-    serializer = OfisGunlerSerializer(ofis_gunler, data=request.data)
-    print(f"ofis_gunler==>{ofis_gunler}")
     if serializer.is_valid():
         ofis_gunler = serializer.validated_data.get("ofis_gunler")
 
-        instisna_isci_create(serializer=serializer, company="ofis", company_name=ofis_gunler.holding, obj_gunler=ofis_gunler)
+        print(f"ofis_gunler==>{ofis_gunler}")
+        
+        instisna_isci_create(serializer=serializer, company="ofis", company_name=ofis_gunler.ofis, obj_gunler=ofis_gunler)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
-def ofis_gunler_patch(self, request, *args, **kwargs):
-    ofis_gunler = self.get_object()
-    serializer = OfisGunlerSerializer(ofis_gunler, data=request.data)
-    print(f"ofis_gunler==>{ofis_gunler}")
-    if serializer.is_valid():
-        ofis_gunler = serializer.validated_data.get("ofis_gunler")
 
-        instisna_isci_create(serializer=serializer, company="ofis", company_name=ofis_gunler.holding, obj_gunler=ofis_gunler)
+# ------------------------------------------------------------------------------------------------
+
+def shirket_istisna_isci_gunler_create(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
+    
+    if serializer.is_valid():
+        shirket_gunler = serializer.validated_data.get("shirket_gunler")
+
+        print(f"shirket_gunler==>{shirket_gunler}")
+        
+        instisna_isci_create(serializer=serializer, company="shirket", company_name=shirket_gunler.shirket, obj_gunler=shirket_gunler)
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ------------------------------------------------------------------------------------------------
+
+def shobe_istisna_isci_gunler_create(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
+    
+    if serializer.is_valid():
+        shobe_gunler = serializer.validated_data.get("shobe_gunler")
+
+        print(f"shobe_gunler==>{shobe_gunler}")
+        
+        instisna_isci_create(serializer=serializer, company="shobe", company_name=shobe_gunler.shobe, obj_gunler=shobe_gunler)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ------------------------------------------------------------------------------------------------
 
-def shirket_gunler_update(self, request, *args, **kwargs):
-    shirket_gunler = self.get_object()
-    serializer = ShirketGunlerSerializer(shirket_gunler, data=request.data)
-    print(f"shirket_gunler==>{shirket_gunler}")
+def komanda_istisna_isci_gunler_create(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
+    
     if serializer.is_valid():
-        ofis_gunler = serializer.validated_data.get("ofis_gunler")
+        komanda_gunler = serializer.validated_data.get("komanda_gunler")
 
-        instisna_isci_create(serializer=serializer, company="ofis", company_name=ofis_gunler.holding, obj_gunler=ofis_gunler)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-def shirket_gunler_patch(self, request, *args, **kwargs):
-    shirket_gunler = self.get_object()
-    serializer = ShirketGunlerSerializer(shirket_gunler, data=request.data)
-    print(f"shirket_gunler==>{shirket_gunler}")
-    if serializer.is_valid():
-        tetil_gunleri_calc(shirket_gunler, serializer, "shirket", shirket_gunler.shirket, shirket_gunler.tarix)
+        print(f"komanda_gunler==>{komanda_gunler}")
+        
+        instisna_isci_create(serializer=serializer, company="komanda", company_name=komanda_gunler.komanda, obj_gunler=komanda_gunler)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ------------------------------------------------------------------------------------------------
 
-def shobe_gunler_update(self, request, *args, **kwargs):
-    shobe_gunler = self.get_object()
-    serializer = ShobeGunlerSerializer(shobe_gunler, data=request.data)
-    print(f"shobe_gunler==>{shobe_gunler}")
+def vezife_istisna_isci_gunler_create(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
+    
     if serializer.is_valid():
-        tetil_gunleri_calc(shobe_gunler, serializer, "shobe", shobe_gunler.shobe, shobe_gunler.tarix)
+        vezife_gunler = serializer.validated_data.get("vezife_gunler")
+
+        print(f"vezife_gunler==>{vezife_gunler}")
+        
+        instisna_isci_create(serializer=serializer, company="vezife", company_name=vezife_gunler.vezife, obj_gunler=vezife_gunler)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-def shobe_gunler_patch(self, request, *args, **kwargs):
-    shobe_gunler = self.get_object()
-    serializer = ShobeGunlerSerializer(shobe_gunler, data=request.data)
-    print(f"shobe_gunler==>{shobe_gunler}")
-    if serializer.is_valid():
-        tetil_gunleri_calc(shobe_gunler, serializer, "shobe", shobe_gunler.shobe, shobe_gunler.tarix)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-# ------------------------------------------------------------------------------------------------
-
-def komanda_gunler_update(self, request, *args, **kwargs):
-    komanda_gunler = self.get_object()
-    serializer = KomandaGunlerSerializer(komanda_gunler, data=request.data)
-    print(f"komanda_gunler==>{komanda_gunler}")
-    if serializer.is_valid():
-        tetil_gunleri_calc(komanda_gunler, serializer, "komanda", komanda_gunler.komanda, komanda_gunler.tarix)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-def komanda_gunler_patch(self, request, *args, **kwargs):
-    komanda_gunler = self.get_object()
-    serializer = KomandaGunlerSerializer(komanda_gunler, data=request.data)
-    print(f"komanda_gunler==>{komanda_gunler}")
-    if serializer.is_valid():
-        tetil_gunleri_calc(komanda_gunler, serializer, "komanda", komanda_gunler.komanda, komanda_gunler.tarix)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-# ------------------------------------------------------------------------------------------------
-
-def vezife_gunler_update(self, request, *args, **kwargs):
-    vezife_gunler = self.get_object()
-    serializer = VezifeGunlerSerializer(vezife_gunler, data=request.data)
-    print(f"vezife_gunler==>{vezife_gunler}")
-    if serializer.is_valid():
-        tetil_gunleri_calc(vezife_gunler, serializer, "vezife", vezife_gunler.vezife, vezife_gunler.tarix)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-def vezife_gunler_patch(self, request, *args, **kwargs):
-    vezife_gunler = self.get_object()
-    serializer = VezifeGunlerSerializer(vezife_gunler, data=request.data)
-    print(f"vezife_gunler==>{vezife_gunler}")
-    if serializer.is_valid():
-        tetil_gunleri_calc(vezife_gunler, serializer, "vezife", vezife_gunler.vezife, vezife_gunler.tarix)
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
+    
 # ------------------------------------------------------------------------------------------------
 
 def user_gunler_update(self, request, *args, **kwargs):
@@ -295,21 +251,4 @@ def user_gunler_patch(self, request, *args, **kwargs):
 
 # ------------------------------------------------------------------------------------------------
 
-def holding_istisna_isci_update(self, request, *args, **kwargs):
-    holding_istisna_isci = self.get_object()
-    serializer = HoldingIstisnaIsciSerializer(holding_istisna_isci, data=request.data)
-    print(f"holding_istisna_isci==>{holding_istisna_isci}")
-    if serializer.is_valid():
-        
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
-
-def holding_istisna_isci_patch(self, request, *args, **kwargs):
-    holding_istisna_isci = self.get_object()
-    serializer = HoldingIstisnaIsciSerializer(holding_istisna_isci, data=request.data)
-    print(f"holding_istisna_isci==>{holding_istisna_isci}")
-    if serializer.is_valid():
-        
-        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 

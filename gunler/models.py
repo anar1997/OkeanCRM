@@ -7,7 +7,7 @@ import datetime
 # Create your models here.
 
 class IstisnaIsci(models.Model):
-    istisna_isciler = models.ManyToManyField('account.User', related_name="holding_istisna_isciler")
+    istisna_isciler = models.ManyToManyField('account.User')
     tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
@@ -63,15 +63,6 @@ class HoldingGunler(models.Model):
     def __str__(self) -> str:
         return f"{self.holding} - {self.is_gunleri_count} - {self.tarix}"
 
-
-class HoldingIstisnaIsci(IstisnaIsci):
-    holding_gunler = models.ForeignKey(HoldingGunler, on_delete=models.CASCADE, related_name="holding_istisna_isci")
-
-    class Meta:
-        ordering = ("pk",)
-
-    def __str__(self) -> str:
-        return f"{self.holding_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"
 
 class ShirketGunler(models.Model):
     shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, related_name="is_gunleri")
@@ -197,3 +188,60 @@ class ShobeGunler(models.Model):
 
     def __str__(self) -> str:
         return f"{self.shobe} - {self.is_gunleri_count} - {self.tarix}"
+
+
+# ----------------------------------------------------------------------------------
+
+class HoldingIstisnaIsci(IstisnaIsci):
+    holding_gunler = models.ForeignKey(HoldingGunler, on_delete=models.CASCADE, related_name="istisna_isci")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"{self.holding_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"
+
+class ShirketIstisnaIsci(IstisnaIsci):
+    shirket_gunler = models.ForeignKey(ShirketGunler, on_delete=models.CASCADE, related_name="istisna_isci")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"{self.shirket_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"
+
+class OfisIstisnaIsci(IstisnaIsci):
+    ofis_gunler = models.ForeignKey(OfisGunler, on_delete=models.CASCADE, related_name="istisna_isci")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"{self.ofis_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"
+
+class ShobeIstisnaIsci(IstisnaIsci):
+    shobe_gunler = models.ForeignKey(ShobeGunler, on_delete=models.CASCADE, related_name="istisna_isci")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"{self.shobe_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"
+
+class KomandaIstisnaIsci(IstisnaIsci):
+    komanda_gunler = models.ForeignKey(KomandaGunler, on_delete=models.CASCADE, related_name="istisna_isci")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"{self.komanda_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"
+
+class VezifeIstisnaIsci(IstisnaIsci):
+    vezife_gunler = models.ForeignKey(VezifeGunler, on_delete=models.CASCADE, related_name="istisna_isci")
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"{self.vezife_gunler} - {self.istisna_isciler} - {self.tetil_gunleri}"

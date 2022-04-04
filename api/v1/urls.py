@@ -46,24 +46,33 @@ urlpatterns=[
     # gunler views *****************************************
     path('holding-gunler/', gunler_views.HoldingGunlerListCreateAPIView.as_view()),
     path('holding-gunler/<int:pk>', gunler_views.HoldingGunlerDetailAPIView.as_view()),
-    
     path('holding-istisna-isci/', gunler_views.HoldingIstisnaIsciListCreateAPIView.as_view()),
     path('holding-istisna-isci/<int:pk>', gunler_views.HoldingIstisnaIsciDetailAPIView.as_view()),
     
     path('shirket-gunler/', gunler_views.ShirketGunlerListCreateAPIView.as_view()),
     path('shirket-gunler/<int:pk>', gunler_views.ShirketGunlerDetailAPIView.as_view()),
+    path('shirket-istisna-isci/', gunler_views.ShirketIstisnaIsciListCreateAPIView.as_view()),
+    path('shirket-istisna-isci/<int:pk>', gunler_views.ShirketIstisnaIsciDetailAPIView.as_view()),   
 
     path('ofis-gunler/', gunler_views.OfisGunlerListCreateAPIView.as_view()),
     path('ofis-gunler/<int:pk>', gunler_views.OfisGunlerDetailAPIView.as_view()),
+    path('ofis-istisna-isci/', gunler_views.OfisIstisnaIsciListCreateAPIView.as_view()),
+    path('ofis-istisna-isci/<int:pk>', gunler_views.OfisIstisnaIsciDetailAPIView.as_view()),
     
     path('shobe-gunler/', gunler_views.ShobeGunlerListCreateAPIView.as_view()),
     path('shobe-gunler/<int:pk>', gunler_views.ShobeGunlerDetailAPIView.as_view()),
+    path('shobe-istisna-isci/', gunler_views.ShobeIstisnaIsciListCreateAPIView.as_view()),
+    path('shobe-istisna-isci/<int:pk>', gunler_views.ShobeIstisnaIsciDetailAPIView.as_view()),
 
     path('komanda-gunler/', gunler_views.KomandaGunlerListCreateAPIView.as_view()),
     path('komanda-gunler/<int:pk>', gunler_views.KomandaGunlerDetailAPIView.as_view()),
+    path('komanda-istisna-isci/', gunler_views.KomandaIstisnaIsciListCreateAPIView.as_view()),
+    path('komanda-istisna-isci/<int:pk>', gunler_views.KomandaIstisnaIsciDetailAPIView.as_view()),
     
     path('vezife-gunler/', gunler_views.VezifeGunlerListCreateAPIView.as_view()),
     path('vezife-gunler/<int:pk>', gunler_views.VezifeGunlerDetailAPIView.as_view()),
+    path('vezife-istisna-isci/', gunler_views.VezifeIstisnaIsciListCreateAPIView.as_view()),
+    path('vezife-istisna-isci/<int:pk>', gunler_views.VezifeIstisnaIsciDetailAPIView.as_view()),
 
     path('isci-gunler/', gunler_views.IsciGunlerListCreateAPIView.as_view()),
     path('isci-gunler/<int:pk>', gunler_views.IsciGunlerDetailAPIView.as_view()),

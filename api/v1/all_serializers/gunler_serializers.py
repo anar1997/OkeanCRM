@@ -9,11 +9,15 @@ from gunler.models import (
     HoldingGunler,
     IsciGunler,
     KomandaGunler,
+    KomandaIstisnaIsci,
     OfisGunler,
+    OfisIstisnaIsci,
     ShirketGunler,
+    ShirketIstisnaIsci,
     ShobeGunler,
     VezifeGunler,
-    HoldingIstisnaIsci
+    HoldingIstisnaIsci,
+    VezifeIstisnaIsci
 )
 
 class HoldingGunlerSerializer(serializers.ModelSerializer):
@@ -87,6 +91,8 @@ class VezifeGunlerSerializer(serializers.ModelSerializer):
         model = VezifeGunler
         fields = "__all__"
 
+# ------------------------------------------------------------------
+
 class HoldingIstisnaIsciSerializer(serializers.ModelSerializer):
     holding_gunler = HoldingGunlerSerializer(read_only=True)
     holding_gunler_id = serializers.PrimaryKeyRelatedField(
@@ -95,4 +101,54 @@ class HoldingIstisnaIsciSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = HoldingIstisnaIsci
+        fields = "__all__"
+
+class ShirketIstisnaIsciSerializer(serializers.ModelSerializer):
+    shirket_gunler = ShirketGunlerSerializer(read_only=True)
+    shirket_gunler_id = serializers.PrimaryKeyRelatedField(
+        queryset=ShirketGunler.objects.all(), source='shirket_gunler', write_only=True,
+    )
+    
+    class Meta:
+        model = ShirketIstisnaIsci
+        fields = "__all__"
+
+class OfisIstisnaIsciSerializer(serializers.ModelSerializer):
+    ofis_gunler = OfisGunlerSerializer(read_only=True)
+    ofis_gunler_id = serializers.PrimaryKeyRelatedField(
+        queryset=OfisGunler.objects.all(), source='ofis_gunler', write_only=True,
+    )
+    
+    class Meta:
+        model = OfisIstisnaIsci
+        fields = "__all__"
+
+class ShobeIstisnaIsciSerializer(serializers.ModelSerializer):
+    shobe_gunler = OfisGunlerSerializer(read_only=True)
+    shobe_gunler_id = serializers.PrimaryKeyRelatedField(
+        queryset=OfisGunler.objects.all(), source='shobe_gunler', write_only=True,
+    )
+    
+    class Meta:
+        model = OfisIstisnaIsci
+        fields = "__all__"
+
+class KomandaIstisnaIsciSerializer(serializers.ModelSerializer):
+    komanda_gunler = KomandaGunlerSerializer(read_only=True)
+    komanda_gunler_id = serializers.PrimaryKeyRelatedField(
+        queryset=KomandaGunler.objects.all(), source='komanda_gunler', write_only=True,
+    )
+    
+    class Meta:
+        model = KomandaIstisnaIsci
+        fields = "__all__"
+
+class VezifeIstisnaIsciSerializer(serializers.ModelSerializer):
+    vezife_gunler = VezifeGunlerSerializer(read_only=True)
+    vezife_gunler_id = serializers.PrimaryKeyRelatedField(
+        queryset=VezifeGunler.objects.all(), source='vezife_gunler', write_only=True,
+    )
+    
+    class Meta:
+        model = VezifeIstisnaIsci
         fields = "__all__"
