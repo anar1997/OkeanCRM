@@ -7,7 +7,7 @@ import datetime
 # Create your models here.
 
 class IstisnaIsci(models.Model):
-    istisna_isciler = models.ManyToManyField('account.User')
+    istisna_isciler = models.ManyToManyField('account.User', blank=True)
     tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
 
     class Meta:
@@ -44,6 +44,7 @@ class HoldingGunler(models.Model):
     holding = models.ForeignKey('company.Holding', on_delete=models.CASCADE, related_name="is_gunleri")
     is_gunleri_count = models.PositiveBigIntegerField(default=0)
     qeyri_is_gunu_count = models.PositiveBigIntegerField(default=0)
+    tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
     tarix = models.DateField(editable=False)
     
     class Meta:
@@ -68,9 +69,8 @@ class ShirketGunler(models.Model):
     shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, related_name="is_gunleri")
     is_gunleri_count = models.PositiveBigIntegerField(default=0)
     qeyri_is_gunu_count = models.PositiveBigIntegerField(default=0)
-    # tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
+    tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
     tarix = models.DateField(editable=False)
-    # istisna_isciler = models.ManyToManyField('account.User', related_name="shirket_istisna_isciler")
 
     class Meta:
         ordering = ("pk",)
@@ -93,9 +93,8 @@ class OfisGunler(models.Model):
     ofis = models.ForeignKey('company.Ofis', on_delete=models.CASCADE, related_name="is_gunleri")
     is_gunleri_count = models.PositiveBigIntegerField(default=0)
     qeyri_is_gunu_count = models.PositiveBigIntegerField(default=0)
-    # tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
+    tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
     tarix = models.DateField(editable=False)
-    # istisna_isciler = models.ManyToManyField('account.User', related_name="ofis_istisna_isciler")
 
     class Meta:
         ordering = ("pk",)
@@ -118,9 +117,8 @@ class KomandaGunler(models.Model):
     komanda = models.ForeignKey('company.Komanda', on_delete=models.CASCADE, related_name="is_gunleri")
     is_gunleri_count = models.PositiveBigIntegerField(default=0)
     qeyri_is_gunu_count = models.PositiveBigIntegerField(default=0)
-    # tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
+    tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
     tarix = models.DateField(editable=False)
-    # istisna_isciler = models.ManyToManyField('account.User', related_name="komanda_istisna_isciler")
 
     class Meta:
         ordering = ("pk",)
@@ -143,9 +141,8 @@ class VezifeGunler(models.Model):
     vezife = models.ForeignKey('company.Vezifeler', on_delete=models.CASCADE, related_name="is_gunleri")
     is_gunleri_count = models.PositiveBigIntegerField(default=0)
     qeyri_is_gunu_count = models.PositiveBigIntegerField(default=0)
-    # tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
+    tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
     tarix = models.DateField(editable=False)
-    # istisna_isciler = models.ManyToManyField('account.User', related_name="vezife_istisna_isciler")
 
     class Meta:
         ordering = ("pk",)
@@ -168,9 +165,8 @@ class ShobeGunler(models.Model):
     shobe = models.ForeignKey('company.Shobe', on_delete=models.CASCADE, related_name="is_gunleri")
     is_gunleri_count = models.PositiveBigIntegerField(default=0)
     qeyri_is_gunu_count = models.PositiveBigIntegerField(default=0)
-    # tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
+    tetil_gunleri = models.CharField(max_length=500, null=True, blank=True)
     tarix = models.DateField(editable=False)
-    # istisna_isciler = models.ManyToManyField('account.User', related_name="shobe_istisna_isciler")
 
     class Meta:
         ordering = ("pk",)

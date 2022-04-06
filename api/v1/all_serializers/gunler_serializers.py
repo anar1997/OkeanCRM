@@ -2,7 +2,14 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from account.models import User
 from api.v1.all_serializers.account_serializers import UserSerializer
-from api.v1.all_serializers.company_serializers import HoldingSerializer, KomandaSerializer, OfisSerializer, ShirketSerializer, ShobeSerializer, VezifelerSerializer
+from api.v1.all_serializers.company_serializers import (
+    HoldingSerializer, 
+    KomandaSerializer, 
+    OfisSerializer, 
+    ShirketSerializer, 
+    ShobeSerializer, 
+    VezifelerSerializer
+)
 from company.models import Holding, Komanda, Ofis, Shirket, Shobe, Vezifeler
 
 from gunler.models import (

@@ -8,7 +8,12 @@ from gunler.models import (
     ShirketGunler,
     ShobeGunler,
     VezifeGunler,
-    HoldingIstisnaIsci
+    HoldingIstisnaIsci,
+    KomandaIstisnaIsci,
+    ShirketIstisnaIsci,
+    ShobeIstisnaIsci,
+    OfisIstisnaIsci,
+    VezifeIstisnaIsci
 )
 
 # Register your models here.
@@ -20,5 +25,10 @@ admin.site.register(ShirketGunler)
 admin.site.register(ShobeGunler)
 admin.site.register(VezifeGunler)
 admin.site.register(HoldingIstisnaIsci)
+admin.site.register(KomandaIstisnaIsci)
+admin.site.register(ShirketIstisnaIsci)
+admin.site.register(ShobeIstisnaIsci)
+admin.site.register(OfisIstisnaIsci)
+admin.site.register(VezifeIstisnaIsci)
 
 
