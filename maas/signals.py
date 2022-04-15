@@ -26,22 +26,34 @@ def create_prim(sender, instance, created, **kwargs):
 
         vanleader = instance.vanleader
         print(f"{vanleader=}")
-        vanleader_status = vanleader.isci_status
-        print(f"{vanleader_status=}")
+        if vanleader is not None:
+            vanleader_status = vanleader.isci_status
+            print(f"{vanleader_status=}")
+        else:
+            vanleader_status = None
 
         dealer = instance.dealer
         print(f"{dealer=}")
-        dealer_status = dealer.isci_status
-        print(f"{dealer_status=}")
-        dealer_vezife = dealer.vezife.vezife_adi
-        print(f"{dealer_vezife=} -- {type(dealer_vezife)}")
+        if dealer is not None:
+            dealer_status = dealer.isci_status
+            print(f"{dealer_status=}")
+            dealer_vezife = dealer.vezife.vezife_adi
+            print(f"{dealer_vezife=} -- {type(dealer_vezife)}")
+        else:
+            dealer_status = None
+            dealer_vezife = None
+
 
         canvesser = instance.canvesser
         print(f"{canvesser=}")
-        canvesser_status = canvesser.isci_status
-        print(f"{canvesser_status=}")
-        canvesser_vezife = canvesser.vezife.vezife_adi
-        print(f"{canvesser_vezife=} -- {type(canvesser_vezife)}")
+        if canvesser is not None:
+            canvesser_status = canvesser.isci_status
+            print(f"{canvesser_status=}")
+            canvesser_vezife = canvesser.vezife.vezife_adi
+            print(f"{canvesser_vezife=} -- {type(canvesser_vezife)}")
+        else:
+            canvesser_status = None
+            canvesser_vezife = None
 
         ofis = instance.ofis
         print(f"{ofis=}")

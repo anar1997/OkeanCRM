@@ -1,9 +1,10 @@
 import math
 from rest_framework import status
 from rest_framework.response import Response
-from account.models import IsciSatisSayi, User, Musteri
+from account.models import User, Musteri
 from api.v1.all_serializers.muqavile_serializers import MuqavileSerializer
-from company.models import Ofis, OfisKassa, OfisKassaMedaxil, OfisKassaMexaric, Shirket, Shobe
+from company.models import Ofis, OfisKassa, OfisKassaMedaxil, OfisKassaMexaric, Shirket, Shobe, Vezifeler
+from maas.models import DealerPrim, MaasGoruntuleme, OfficeLeaderPrim, VanLeaderPrim
 from mehsullar.models import (
     Anbar,
     Mehsullar,
@@ -857,38 +858,6 @@ def muqavile_patch(self, request, *args, **kwargs):
         tarix = datetime.date(year=year, month=month, day=1)
         print(f"tarix ==> {tarix} -- {type(tarix)}")
 
-        vanleader_satis_sayi_model = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_vanleader.id, tarix=tarix))
-        print(f"vanleader_satis_sayi_model ==> {vanleader_satis_sayi_model}")
-
-        dealer_satis_sayi_model = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_dealer.id, tarix=tarix))
-        print(f"dealer_satis_sayi_model ==> {dealer_satis_sayi_model}")
-
-        if (len(vanleader_satis_sayi_model) == 0):
-            vanleader_satis_sayi = IsciSatisSayi.objects.create(tarix=tarix, isci=muqavile_vanleader,
-                                                                satis_sayi=mehsul_sayi)
-            vanleader_satis_sayi.save()
-            print(f"vanleader_satis_sayi -- {vanleader_satis_sayi}")
-        elif (len(vanleader_satis_sayi_model) != 0):
-            vanleader_satis_sayi = vanleader_satis_sayi_model[0]
-            print(f"vanleader_satis_sayi -- {vanleader_satis_sayi}")
-            vanleader_satis_sayi.satis_sayi = float(
-                vanleader_satis_sayi.satis_sayi) + float(mehsul_sayi)
-            vanleader_satis_sayi.save()
-
-        if (len(dealer_satis_sayi_model) == 0):
-            dealer_satis_sayi = IsciSatisSayi.objects.create(
-                tarix=tarix, isci=muqavile_dealer, satis_sayi=mehsul_sayi)
-            dealer_satis_sayi.save()
-            print(f"dealer_satis_sayi -- {dealer_satis_sayi}")
-        elif (len(dealer_satis_sayi_model) != 0):
-            dealer_satis_sayi = dealer_satis_sayi_model[0]
-            print(f"dealer_satis_sayi -- {dealer_satis_sayi}")
-            dealer_satis_sayi.satis_sayi = float(
-                dealer_satis_sayi.satis_sayi) + float(mehsul_sayi)
-            dealer_satis_sayi.save()
-
         odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(
             muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
         odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
@@ -980,27 +949,6 @@ def muqavile_patch(self, request, *args, **kwargs):
         print(f"{stok.say} {type(stok.say)}")
 
         stok_mehsul_elave(stok, mehsul_sayi)
-
-        print(f"muqavile_vanleader ==> {muqavile_vanleader.id}")
-        vanleader_satis_sayi = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_vanleader.id, tarix=tarix))
-        print(f"vanleader_satis_sayi ==> {vanleader_satis_sayi}")
-
-        dealer_satis_sayi = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_dealer.id, tarix=tarix))
-        print(f"dealer_satis_sayi ==> {dealer_satis_sayi}")
-
-        if (len(vanleader_satis_sayi) != 0):
-            vanleader_satis_sayi[0].satis_sayi = vanleader_satis_sayi[0].satis_sayi - mehsul_sayi
-            vanleader_satis_sayi[0].save()
-            if (vanleader_satis_sayi[0].satis_sayi == 0):
-                vanleader_satis_sayi[0].delete()
-
-        if (len(dealer_satis_sayi) != 0):
-            dealer_satis_sayi[0].satis_sayi = dealer_satis_sayi[0].satis_sayi - mehsul_sayi
-            dealer_satis_sayi[0].save()
-            if (dealer_satis_sayi[0].satis_sayi == 0):
-                dealer_satis_sayi[0].delete()
 
         return Response({"detail": "Müqavilə düşən statusuna keçirildi"}, status=status.HTTP_200_OK)
 
@@ -1225,6 +1173,9 @@ def muqavile_update(self, request, *args, **kwargs):
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
 
     if (muqavile.muqavile_status == "DÜŞƏN" and request.data.get("muqavile_status") == "DAVAM EDƏN"):
+        """
+        Müqavilə düşən statusundan davam edən statusuna qaytarılarkən bu hissə işə düşür
+        """
         muqavile.muqavile_status = "DAVAM EDƏN"
         muqavile.save()
 
@@ -1256,38 +1207,6 @@ def muqavile_update(self, request, *args, **kwargs):
         tarix = datetime.date(year=year, month=month, day=1)
         print(f"tarix ==> {tarix} -- {type(tarix)}")
 
-        vanleader_satis_sayi_model = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_vanleader.id, tarix=tarix))
-        print(f"vanleader_satis_sayi_model ==> {vanleader_satis_sayi_model}")
-
-        dealer_satis_sayi_model = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_dealer.id, tarix=tarix))
-        print(f"dealer_satis_sayi_model ==> {dealer_satis_sayi_model}")
-
-        if (len(vanleader_satis_sayi_model) == 0):
-            vanleader_satis_sayi = IsciSatisSayi.objects.create(tarix=tarix, isci=muqavile_vanleader,
-                                                                satis_sayi=mehsul_sayi)
-            vanleader_satis_sayi.save()
-            print(f"vanleader_satis_sayi -- {vanleader_satis_sayi}")
-        elif (len(vanleader_satis_sayi_model) != 0):
-            vanleader_satis_sayi = vanleader_satis_sayi_model[0]
-            print(f"vanleader_satis_sayi -- {vanleader_satis_sayi}")
-            vanleader_satis_sayi.satis_sayi = float(
-                vanleader_satis_sayi.satis_sayi) + float(mehsul_sayi)
-            vanleader_satis_sayi.save()
-
-        if (len(dealer_satis_sayi_model) == 0):
-            dealer_satis_sayi = IsciSatisSayi.objects.create(
-                tarix=tarix, isci=muqavile_dealer, satis_sayi=mehsul_sayi)
-            dealer_satis_sayi.save()
-            print(f"dealer_satis_sayi -- {dealer_satis_sayi}")
-        elif (len(dealer_satis_sayi_model) != 0):
-            dealer_satis_sayi = dealer_satis_sayi_model[0]
-            print(f"dealer_satis_sayi -- {dealer_satis_sayi}")
-            dealer_satis_sayi.satis_sayi = float(
-                dealer_satis_sayi.satis_sayi) + float(mehsul_sayi)
-            dealer_satis_sayi.save()
-
         odenmeyen_odemetarixler_qs = OdemeTarix.objects.filter(
             muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
         odenmeyen_odemetarixler = list(odenmeyen_odemetarixler_qs)
@@ -1316,6 +1235,9 @@ def muqavile_update(self, request, *args, **kwargs):
                         status=status.HTTP_200_OK)
 
     if (muqavile.muqavile_status == "DAVAM EDƏN" and request.data.get("muqavile_status") == "DÜŞƏN"):
+        """
+        Müqavilə düşən statusuna keçərkən bu hissə işə düşür
+        """
         muqavile_tarixi = muqavile.muqavile_tarixi
         print(
             f"muqavile_tarixi ==> {muqavile_tarixi} -- {type(muqavile_tarixi)}")
@@ -1381,25 +1303,89 @@ def muqavile_update(self, request, *args, **kwargs):
         stok_mehsul_elave(stok, mehsul_sayi)
 
         print(f"muqavile_vanleader ==> {muqavile_vanleader.id}")
-        vanleader_satis_sayi = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_vanleader.id, tarix=tarix))
-        print(f"vanleader_satis_sayi ==> {vanleader_satis_sayi}")
 
-        dealer_satis_sayi = list(IsciSatisSayi.objects.filter(
-            isci=muqavile_dealer.id, tarix=tarix))
-        print(f"dealer_satis_sayi ==> {dealer_satis_sayi}")
+        indi = datetime.date.today()
+        print(f"Celery indi ==> {indi}")
+        d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+        print(f"d ==> {d}")
+        next_m = d + pd.offsets.MonthBegin(1)
+        print(f"next_m ==> {next_m}")
 
-        if (len(vanleader_satis_sayi) != 0):
-            vanleader_satis_sayi[0].satis_sayi = vanleader_satis_sayi[0].satis_sayi - mehsul_sayi
-            vanleader_satis_sayi[0].save()
-            if (vanleader_satis_sayi[0].satis_sayi == 0):
-                vanleader_satis_sayi[0].delete()
+        # -------------------- Maaslarin geri qaytarilmasi --------------------
+        muqavile_odenis_uslubu = muqavile.odenis_uslubu
+        print(f"{muqavile_odenis_uslubu=}") 
 
-        if (len(dealer_satis_sayi) != 0):
-            dealer_satis_sayi[0].satis_sayi = dealer_satis_sayi[0].satis_sayi - mehsul_sayi
-            dealer_satis_sayi[0].save()
-            if (dealer_satis_sayi[0].satis_sayi == 0):
-                dealer_satis_sayi[0].delete()
+        vanleader = muqavile.vanleader
+        print(f"{vanleader=}")
+        if vanleader is not None:
+            vanleader_status = vanleader.isci_status
+            print(f"{vanleader_status=}")
+            vanleader_vezife = vanleader.vezife.vezife_adi
+            print(f"{vanleader_vezife=} -- {type(vanleader_vezife)}")
+            if (vanleader_status is not None):
+                vanleader_prim = VanLeaderPrim.objects.get(prim_status=vanleader_status, odenis_uslubu=muqavile_odenis_uslubu)
+                print(f"{vanleader_prim=}")
+
+                vanleader_mg_indiki_ay = MaasGoruntuleme.objects.get(isci=muqavile_vanleader, tarix=f"{indi.year}-{indi.month}-{1}")
+                vanleader_mg_novbeti_ay = MaasGoruntuleme.objects.get(isci=muqavile_vanleader, tarix=next_m)
+
+                vanleader_mg_indiki_ay.satis_sayi = float(vanleader_mg_indiki_ay.satis_sayi) - float(mehsul_sayi)
+                vanleader_mg_indiki_ay.satis_meblegi = float(vanleader_mg_indiki_ay.satis_meblegi) - float(muqavile.mehsul.qiymet)
+
+                vanleader_mg_novbeti_ay.yekun_maas = float(vanleader_mg_novbeti_ay.yekun_maas) - float(vanleader_prim.komandaya_gore_prim)
+
+                vanleader_mg_indiki_ay.save()
+                vanleader_mg_novbeti_ay.save()
+        
+        dealer = muqavile.dealer
+        print(f"{dealer=}")
+        if dealer is not None:
+            dealer_status = dealer.isci_status
+            print(f"{dealer_status=}")
+            dealer_vezife = dealer.vezife.vezife_adi
+            print(f"{dealer_vezife=} -- {type(dealer_vezife)}")
+            if (dealer_vezife == "DEALER"):
+                dealer_prim = DealerPrim.objects.get(prim_status=dealer_status, odenis_uslubu=muqavile_odenis_uslubu)
+                print(f"{dealer_prim=}")
+
+                dealer_mg_indiki_ay = MaasGoruntuleme.objects.get(isci=muqavile_dealer, tarix=f"{indi.year}-{indi.month}-{1}")
+                dealer_mg_novbeti_ay = MaasGoruntuleme.objects.get(isci=muqavile_dealer, tarix=next_m)
+
+                dealer_mg_indiki_ay.satis_sayi = float(vanleader_mg_indiki_ay.satis_sayi) - float(mehsul_sayi)
+                dealer_mg_indiki_ay.satis_meblegi = float(dealer_mg_indiki_ay.satis_meblegi) - float(muqavile.mehsul.qiymet)
+                dealer_mg_novbeti_ay.yekun_maas = float(vanleader_mg_novbeti_ay.yekun_maas) - float(vanleader_prim.komandaya_gore_prim)
+
+                dealer_mg_indiki_ay.save()
+                dealer_mg_novbeti_ay.save()
+
+        ofis = muqavile.ofis
+        print(f"{ofis=}")
+        if ofis is not None:
+            officeLeaderVezife = Vezifeler.objects.get(vezife_adi="OFFICE LEADER")
+            print(f"{officeLeaderVezife=}")
+            officeLeaders = User.objects.filter(ofis=ofis, vezife=officeLeaderVezife)
+            print(f"{officeLeaders=}")
+            for officeLeader in officeLeaders:
+                officeLeader_status = officeLeader.isci_status
+                print(f"{officeLeader_status=}")
+                ofisleader_prim = OfficeLeaderPrim.objects.get(prim_status=officeLeader_status)
+                print(f"{ofisleader_prim=}")
+
+                officeLeader_maas_goruntulenme_bu_ay = MaasGoruntuleme.objects.get(isci=officeLeader, tarix=f"{indi.year}-{indi.month}-{1}")
+                officeLeader_maas_goruntulenme_novbeti_ay = MaasGoruntuleme.objects.get(isci=officeLeader, tarix=next_m)
+                print(f"{officeLeader_maas_goruntulenme_bu_ay=}")
+                print(f"{officeLeader_maas_goruntulenme_novbeti_ay=}")
+
+                officeLeader_maas_goruntulenme_bu_ay.satis_sayi = float(officeLeader_maas_goruntulenme_bu_ay.satis_sayi) - float(mehsul_sayi)
+                officeLeader_maas_goruntulenme_bu_ay.satis_meblegi = float(officeLeader_maas_goruntulenme_bu_ay.satis_meblegi) - float(muqavile.mehsul.qiymet)
+                print(f"{officeLeader_maas_goruntulenme_bu_ay.satis_sayi=}")
+                print(f"{officeLeader_maas_goruntulenme_bu_ay.satis_meblegi=}")
+                officeLeader_maas_goruntulenme_bu_ay.save()
+
+                officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas = float(officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas) - float(ofisleader_prim.komandaya_gore_prim)
+                print(f"{officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas=}")
+                officeLeader_maas_goruntulenme_novbeti_ay.save()
+        # -------------------- -------------------- --------------------
 
         return Response({"detail": "Müqavilə düşən statusuna keçirildi"}, status=status.HTTP_200_OK)
 

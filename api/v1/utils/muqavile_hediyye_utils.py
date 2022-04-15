@@ -9,8 +9,7 @@ from mehsullar.models import (
     Stok
 )
 
-from rest_framework_simplejwt.views import TokenObtainPairView
-from api.v1.utils.muqavile_utils import stok_mehsul_ciximi
+from api.v1.utils.muqavile_utils import stok_mehsul_ciximi, stok_mehsul_elave
 from rest_framework.generics import get_object_or_404
 
 
@@ -46,3 +45,25 @@ def muqavile_hediyye_create(self, request, *args, **kwargs):
 
     except:
         return Response({"detail": "Bu adlı məhsul tapılmadı"}, status=status.HTTP_400_BAD_REQUEST)
+
+def muqavile_hediyye_destroy(self, request, *args, **kwargs):
+    serializer = self.get_serializer(data=request.data)
+    muqavile_hediyye =  self.get_object()
+
+    mehsul = muqavile_hediyye.mehsul
+    muqavile = muqavile_hediyye.muqavile
+    vanleader = muqavile.vanleader
+    print(f"vanleader ==> {vanleader}")
+    anbar = get_object_or_404(Anbar, ofis=muqavile.ofis)
+    print(f"anbar ==> {anbar}")
+    try:
+        stok = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul)
+        print(f"stok ==> {stok}")
+        stok_mehsul_elave(stok, 1)
+        self.perform_destroy(muqavile_hediyye)
+        return Response({"detail": "Hədiyyə stok-a geri qaytarıldı"}, status=status.HTTP_200_OK)
+    except:
+        stok = Stok.objects.create(anbar=anbar, mehsul=mehsul, say=1)
+        stok.save()
+        self.perform_destroy(muqavile_hediyye)
+        return Response({"detail": "Hədiyyə stok-a geri qaytarıldı"}, status=status.HTTP_200_OK)

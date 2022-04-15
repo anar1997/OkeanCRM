@@ -58,6 +58,9 @@ class Vezifeler(models.Model):
 
 class Komanda(models.Model):
     komanda_adi = models.CharField(max_length=50, unique=True)
+    is_active = models.BooleanField(
+        default=True,
+    )
 
     class Meta:
         ordering = ("pk",)

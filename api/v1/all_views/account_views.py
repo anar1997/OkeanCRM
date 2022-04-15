@@ -65,17 +65,11 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [account_permissions.UserPermissions]
 
-    def patch(self, request, *args, **kwargs):
-        isci=self.get_object()
-        print("isci=",isci)
-        serializer = self.get_serializer(data=request.data, partial=True)
-        if(serializer.is_valid()):
-            isci_status = serializer.validated_data.get('isci_status')
-            print("isci_status=",isci_status)
-            isci.isci_status = isci_status
-            isci.save()
-
-            return Response({"detail": "İşçi update olundu"}, status=status.HTTP_200_OK)
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_active = False
+        user.save()
+        return Response({"detail": "İşçi qeyri-atkiv edildi"}, status=status.HTTP_200_OK)
 
 
 class Login(TokenObtainPairView):
@@ -110,6 +104,11 @@ class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MusteriSerializer
     permission_classes = [account_permissions.MusteriPermissions]
 
+    def destroy(self, request, *args, **kwargs):
+        musteri = self.get_object()
+        musteri.is_active = False
+        musteri.save()
+        return Response({"detail": "Müştəri qeyri-atkiv edildi"}, status=status.HTTP_200_OK)
 
 # ********************************** musteriqeydlerin put delete post get **********************************
 
@@ -160,7 +159,7 @@ class IsciStatusListCreateAPIView(generics.ListCreateAPIView):
     permission_classes = [account_permissions.IsciStatusPermissions]
 
 
-class IsciStatusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class IsciStatusDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = IsciStatus.objects.all()
     serializer_class = IsciStatusSerializer
     permission_classes = [account_permissions.IsciStatusPermissions]

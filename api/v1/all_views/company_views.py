@@ -82,6 +82,12 @@ class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = KomandaSerializer
     permission_classes = [company_permissions.KomandaPermissions]
 
+    def destroy(self, request, *args, **kwargs):
+        komanda = self.get_object()
+        komanda.is_active = False
+        komanda.save()
+        return Response({"detail": "Komanda qeyri-atkiv edildi"}, status=status.HTTP_200_OK)
+
 
 
 # ********************************** ofisler put delete post get **********************************

@@ -65,7 +65,7 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
         return muqavile_utils.muqavile_create(self, request, *args, **kwargs)
 
 
-class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class MuqavileDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Muqavile.objects.all()
     serializer_class = MuqavileSerializer
     filter_backends = [DjangoFilterBackend]
@@ -89,7 +89,7 @@ class OdemeTarixListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = OdemeTarixFilter
     permission_classes = [muqavile_permissions.OdemeTarixleriPermissions]
 
-class OdemeTarixDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class OdemeTarixDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = OdemeTarix.objects.all()
     serializer_class = OdemeTarixSerializer
     filter_backends = [DjangoFilterBackend]
@@ -184,6 +184,9 @@ class MuqavileHediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MuqavileHediyye.objects.all()
     serializer_class = MuqavileHediyyeSerializer
     permission_classes = [muqavile_permissions.MuqavileHediyyePermissions]
+
+    def destroy(self, request, *args, **kwargs):
+        return muqavile_hediyye_utils.muqavile_hediyye_destroy(self, request, *args, **kwargs)
 
 
 # ********************************** servis put delete post get **********************************

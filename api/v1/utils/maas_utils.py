@@ -256,6 +256,7 @@ def avans_create(self, request, *args, **kwargs):
         if yarim_ay_emek_haqqi is not None:
             mebleg = float(maas_goruntuleme.yekun_maas) % int(yarim_ay_emek_haqqi)
 
+        maas_goruntuleme.mebleg = mebleg
         maas_goruntuleme.yekun_maas = maas_goruntuleme.yekun_maas - float(mebleg)
 
         ofis = isci.ofis
