@@ -1,6 +1,7 @@
 from numpy import delete
 from api.v1.all_serializers.gunler_serializers import (
-    HoldingGunlerSerializer, 
+    HoldingGunlerSerializer,
+    IsciGelibGetmeVaxtlariSerializer, 
     IsciGunlerSerializer, 
     KomandaGunlerSerializer,
     KomandaIstisnaIsciSerializer, 
@@ -16,6 +17,7 @@ from api.v1.all_serializers.gunler_serializers import (
 )
 from gunler.models import (
     HoldingGunler,
+    IsciGelibGetmeVaxtlari,
     IsciGunler,
     KomandaGunler,
     KomandaIstisnaIsci,
@@ -263,3 +265,14 @@ class IsciGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         return gunler_utils.user_gunler_delete(self, request, *args, **kwargs)
+
+# ********************************** Isci Gelib getme vaxtlari get post put delete **********************************
+class IsciGelibGetmeVaxtlariListCreateAPIView(generics.ListCreateAPIView):
+    queryset = IsciGelibGetmeVaxtlari.objects.all()
+    serializer_class = IsciGelibGetmeVaxtlariSerializer
+    permission_classes = [gunler_permissions.IsciGelibGetmeVaxtlariPermissions]
+
+class IsciGelibGetmeVaxtlariDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = IsciGelibGetmeVaxtlari.objects.all()
+    serializer_class = IsciGelibGetmeVaxtlariSerializer
+    permission_classes = [gunler_permissions.IsciGelibGetmeVaxtlariPermissions]

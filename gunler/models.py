@@ -11,6 +11,14 @@ class IstisnaIsci(models.Model):
     class Meta:
         abstract = True
 
+class IsciGelibGetmeVaxtlari(models.Model):
+    isci = models.ManyToManyField('account.User', related_name="isci_gelib_getme_vaxtlari")
+    gelme_vaxti = models.TimeField()
+    getme_vaxti = models.TimeField()
+
+    def __str__(self) -> str:
+        return f"{self.isci} - {self.gelme_vaxti} - {self.getme_vaxti}"
+
 
 class IsciGunler(models.Model):
     isci = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="is_gunleri")

@@ -162,7 +162,7 @@ class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         return anbar_emeliyyat_utils.emeliyyat_create(self, request, *args, **kwargs)
 
-class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class EmeliyyatDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Emeliyyat.objects.all()
     serializer_class = EmeliyyatSerializer
     permission_classes = [muqavile_permissions.EmeliyyatPermissions]

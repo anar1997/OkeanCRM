@@ -308,7 +308,7 @@ class HoldingKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
         return medaxil_mexaric_utils.holding_kassa_medaxil_create(self, request, *args, **kwargs)
 
 
-class HoldingKassaMedaxilDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class HoldingKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = HoldingKassaMedaxil.objects.all()
     serializer_class = HoldingKassaMedaxilSerializer
     permission_classes = [company_permissions.HoldingKassaMedaxilPermissions]
@@ -327,7 +327,7 @@ class HoldingKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
         return medaxil_mexaric_utils.holding_kassa_mexaric_create(self, request, *args, **kwargs)
 
 
-class HoldingKassaMexaricDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class HoldingKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = HoldingKassaMexaric.objects.all()
     serializer_class = HoldingKassaMexaricSerializer
     permission_classes = [company_permissions.HoldingKassaMexaricPermissions]
@@ -346,7 +346,7 @@ class ShirketKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
         return medaxil_mexaric_utils.shirket_kassa_medaxil_create(self, request, *args, **kwargs)
 
 
-class ShirketKassaMedaxilDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ShirketKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = ShirketKassaMedaxil.objects.all()
     serializer_class = ShirketKassaMedaxilSerializer
     permission_classes = [company_permissions.ShirketKassaMedaxilPermissions]
@@ -365,7 +365,7 @@ class ShirketKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
         return medaxil_mexaric_utils.shirket_kassa_mexaric_create(self, request, *args, **kwargs)
 
 
-class ShirketKassaMexaricDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ShirketKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = ShirketKassaMexaric.objects.all()
     serializer_class = ShirketKassaMexaricSerializer
     permission_classes = [company_permissions.ShirketKassaMexaricPermissions]
@@ -384,7 +384,7 @@ class OfisKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
         return medaxil_mexaric_utils.ofis_kassa_medaxil_create(self, request, *args, **kwargs)
 
 
-class OfisKassaMedaxilDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class OfisKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = OfisKassaMedaxil.objects.all()
     serializer_class = OfisKassaMedaxilSerializer
     permission_classes = [company_permissions.OfisKassaMedaxilPermissions]
@@ -403,7 +403,7 @@ class OfisKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
         return medaxil_mexaric_utils.ofis_kassa_mexaric_create(self, request, *args, **kwargs)
 
 
-class OfisKassaMexaricDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+class OfisKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = OfisKassaMexaric.objects.all()
     serializer_class = OfisKassaMexaricSerializer
     permission_classes = [company_permissions.OfisKassaMexaricPermissions]

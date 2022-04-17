@@ -31,19 +31,22 @@ class User(AbstractUser):
     last_login = models.DateTimeField(auto_now = True, null=True, blank=True)
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
-    sv_image=models.ImageField(upload_to="media/%Y/%m/%d/", null=True, blank=True)
+    sv_image=models.ImageField(upload_to="media/account/%Y/%m/%d/", null=True, blank=True)
     shirket=models.ForeignKey("company.Shirket", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
     ofis=models.ForeignKey("company.Ofis", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
     shobe=models.ForeignKey("company.Shobe", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
-    vezife = models.ForeignKey("company.Vezifeler", on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
+    # vezife = models.ForeignKey("company.Vezifeler", on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
+    vezife = models.ManyToManyField("company.Vezifeler",related_name="user_vezife", blank=True)
     komanda = models.OneToOneField("company.Komanda", on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
     isci_status = models.ForeignKey(IsciStatus, on_delete=models.SET_NULL, null=True, blank=True)
+    elektron_imza = models.ImageField(upload_to="media/account", null=True, blank=True)
     maas_uslubu = models.CharField(
         max_length=50,
         choices=MAAS_USLUBU_CHOICES,
         default=FIX
     )
     maas = models.FloatField(default=0, blank=True)
+    qeyd = models.TextField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []

@@ -36,6 +36,9 @@ urlpatterns=[
     
     path('bonus/', maas_views.BonusListCreateAPIView.as_view(), name="bonus"),
     path('bonus/<int:pk>', maas_views.BonusDetailAPIView.as_view(), name="bonus_detail"),
+
+    path('maas-ode/', maas_views.MaasOdeListCreateAPIView.as_view()),
+    path('maas-ode/<int:pk>', maas_views.MaasOdeDetailAPIView.as_view()),
     
     path('avans/', maas_views.AvansListCreateAPIView.as_view(), name="avans"),
     path('avans/<int:pk>', maas_views.AvansDetailAPIView.as_view(), name="avans_detail"),
@@ -88,6 +91,9 @@ urlpatterns=[
 
     path('isci-gunler/', gunler_views.IsciGunlerListCreateAPIView.as_view()),
     path('isci-gunler/<int:pk>', gunler_views.IsciGunlerDetailAPIView.as_view()),
+
+    path('isci-gelib-getme-vaxtlari/', gunler_views.IsciGelibGetmeVaxtlariListCreateAPIView.as_view()),
+    path('isci-gelib-getme-vaxtlari/<int:pk>', gunler_views.IsciGelibGetmeVaxtlariDetailAPIView.as_view()),
 
     # company views *****************************************
     path('komanda/', company_views.KomandaListCreateAPIView.as_view(), name="komanda"),

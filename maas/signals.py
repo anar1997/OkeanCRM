@@ -75,12 +75,12 @@ def create_prim(sender, instance, created, **kwargs):
                 print(f"{officeLeader_maas_goruntulenme_novbeti_ay=}")
 
                 officeLeader_maas_goruntulenme_bu_ay.satis_sayi = float(officeLeader_maas_goruntulenme_bu_ay.satis_sayi) + float(instance.mehsul_sayi)
-                officeLeader_maas_goruntulenme_bu_ay.satis_meblegi = float(officeLeader_maas_goruntulenme_bu_ay.satis_meblegi) + float(instance.mehsul.qiymet)
+                officeLeader_maas_goruntulenme_bu_ay.satis_meblegi = float(officeLeader_maas_goruntulenme_bu_ay.satis_meblegi) + (float(instance.mehsul.qiymet) * float(instance.mehsul_sayi))
                 print(f"{officeLeader_maas_goruntulenme_bu_ay.satis_sayi=}")
                 print(f"{officeLeader_maas_goruntulenme_bu_ay.satis_meblegi=}")
                 officeLeader_maas_goruntulenme_bu_ay.save()
 
-                officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas = float(officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas) + float(ofisleader_prim.komandaya_gore_prim)
+                officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas = float(officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(ofisleader_prim.komandaya_gore_prim) * float(instance.mehsul_sayi))
                 print(f"{officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas=}")
                 officeLeader_maas_goruntulenme_novbeti_ay.save()
 
@@ -95,11 +95,11 @@ def create_prim(sender, instance, created, **kwargs):
             print(f"{vanleader_maas_goruntulenme_novbeti_ay=}")
 
             vanleader_maas_goruntulenme_bu_ay.satis_sayi = float(vanleader_maas_goruntulenme_bu_ay.satis_sayi) + float(instance.mehsul_sayi)
-            vanleader_maas_goruntulenme_bu_ay.satis_meblegi = float(vanleader_maas_goruntulenme_bu_ay.satis_meblegi) + float(instance.mehsul.qiymet)
+            vanleader_maas_goruntulenme_bu_ay.satis_meblegi = float(vanleader_maas_goruntulenme_bu_ay.satis_meblegi) +  (float(instance.mehsul.qiymet) * float(instance.mehsul_sayi))
             print(f"{vanleader_maas_goruntulenme_bu_ay.satis_sayi=}")
             print(f"{vanleader_maas_goruntulenme_bu_ay.satis_meblegi=}")
 
-            vanleader_maas_goruntulenme_novbeti_ay.yekun_maas = float(vanleader_maas_goruntulenme_novbeti_ay.yekun_maas) + float(vanleader_prim.komandaya_gore_prim)
+            vanleader_maas_goruntulenme_novbeti_ay.yekun_maas = float(vanleader_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(vanleader_prim.komandaya_gore_prim) * float(instance.mehsul_sayi))
             print(f"{vanleader_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
             vanleader_maas_goruntulenme_bu_ay.save()
@@ -117,11 +117,11 @@ def create_prim(sender, instance, created, **kwargs):
             print(f"{dealer_maas_goruntulenme_novbeti_ay=}")
 
             dealer_maas_goruntulenme_bu_ay.satis_sayi = float(dealer_maas_goruntulenme_bu_ay.satis_sayi) + float(instance.mehsul_sayi)
-            dealer_maas_goruntulenme_bu_ay.satis_meblegi = float(dealer_maas_goruntulenme_bu_ay.satis_meblegi) + float(instance.mehsul.qiymet)
+            dealer_maas_goruntulenme_bu_ay.satis_meblegi = float(dealer_maas_goruntulenme_bu_ay.satis_meblegi) +  (float(instance.mehsul.qiymet) * float(instance.mehsul_sayi))
             print(f"{dealer_maas_goruntulenme_bu_ay.satis_sayi=}")
             print(f"{dealer_maas_goruntulenme_bu_ay.satis_meblegi=}")
 
-            dealer_maas_goruntulenme_novbeti_ay.yekun_maas = float(dealer_maas_goruntulenme_novbeti_ay.yekun_maas) + float(dealer_prim.komandaya_gore_prim)
+            dealer_maas_goruntulenme_novbeti_ay.yekun_maas = float(dealer_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(dealer_prim.komandaya_gore_prim) * float(instance.mehsul_sayi))
             print(f"{dealer_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
             dealer_maas_goruntulenme_bu_ay.save()
@@ -139,7 +139,7 @@ def create_prim(sender, instance, created, **kwargs):
             print(f"{canvesser_maas_goruntulenme_novbeti_ay=}")
 
             canvesser_maas_goruntulenme_bu_ay.satis_sayi = float(canvesser_maas_goruntulenme_bu_ay.satis_sayi) + float(instance.mehsul_sayi)
-            canvesser_maas_goruntulenme_bu_ay.satis_meblegi = float(canvesser_maas_goruntulenme_bu_ay.satis_meblegi) + float(instance.mehsul.qiymet)
+            canvesser_maas_goruntulenme_bu_ay.satis_meblegi = float(canvesser_maas_goruntulenme_bu_ay.satis_meblegi) +  (float(instance.mehsul.qiymet) * float(instance.mehsul_sayi))
             print(f"{canvesser_maas_goruntulenme_bu_ay.satis_sayi=}")
             print(f"{canvesser_maas_goruntulenme_bu_ay.satis_meblegi=}")
 
@@ -152,7 +152,7 @@ def create_prim(sender, instance, created, **kwargs):
             elif (canvesser_maas_goruntulenme_bu_ay.satis_sayi >= 20):
                 satis_sayina_gore_prim = canvesser_prim.satis20p
 
-            canvesser_maas_goruntulenme_novbeti_ay.yekun_maas = float(canvesser_maas_goruntulenme_novbeti_ay.yekun_maas) + float(canvesser_prim.komandaya_gore_prim) + float(satis_sayina_gore_prim)
+            canvesser_maas_goruntulenme_novbeti_ay.yekun_maas = float(canvesser_maas_goruntulenme_novbeti_ay.yekun_maas) + float(canvesser_prim.komandaya_gore_prim) + (float(satis_sayina_gore_prim)* float(instance.mehsul_sayi))
             print(f"{canvesser_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
             canvesser_maas_goruntulenme_bu_ay.save()
@@ -173,7 +173,7 @@ def create_prim(sender, instance, created, **kwargs):
             canvesser_maas_goruntulenme_novbeti_ay = MaasGoruntuleme.objects.get(isci=canvesser, tarix=next_m)
             print(f"{canvesser_maas_goruntulenme_novbeti_ay=}")
 
-            canvesser_maas_goruntulenme_novbeti_ay.yekun_maas = float(canvesser_maas_goruntulenme_novbeti_ay.yekun_maas) + float(canvesser_prim.ofise_gore_prim)
+            canvesser_maas_goruntulenme_novbeti_ay.yekun_maas = float(canvesser_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(canvesser_prim.ofise_gore_prim) * float(instance.mehsul_sayi))
             print(f"{canvesser_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
             canvesser_maas_goruntulenme_novbeti_ay.save()

@@ -74,6 +74,18 @@ class Avans(models.Model):
     def __str__(self) -> str:
         return f"{self.isci} {self.avans_tarixi}"
 
+class MaasOde(models.Model):
+    isci = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="maas_ode")
+    mebleg = models.FloatField(default=0, blank=True)
+    qeyd = models.TextField()
+    odeme_tarixi = models.DateField(default=django.utils.timezone.now, null=True, blank=True)
+    
+    class Meta:
+        ordering = ("odeme_tarixi",)
+
+    def __str__(self) -> str:
+        return f"{self.isci} {self.odeme_tarixi}"
+
 class Kesinti(models.Model):
     isci = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="isci_kesinti")
     mebleg = models.FloatField(default=0, blank=True)

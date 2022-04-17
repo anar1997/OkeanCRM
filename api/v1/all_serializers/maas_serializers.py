@@ -12,7 +12,8 @@ from maas.models import (
     Avans,
     Kesinti,
     Bonus,
-    MaasGoruntuleme, 
+    MaasGoruntuleme,
+    MaasOde, 
     VanLeaderPrim, 
     DealerPrim, 
     OfficeLeaderPrim,
@@ -57,6 +58,16 @@ class BonusSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bonus
+        fields = "__all__"
+
+class MaasOdeSerializer(serializers.ModelSerializer):
+    isci = UserSerializer(read_only=True)
+    isci_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='isci', write_only=True
+    )
+
+    class Meta:
+        model = MaasOde
         fields = "__all__"
 
 class OfficeLeaderPrimSerializer(serializers.ModelSerializer):

@@ -9,7 +9,7 @@ class MuqavilePermissions(permissions.IsAdminUser):
 
 class OdemeTarixleriPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="odeme_tarixleri", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="odemetarixleri", view=view)
         return perm_util.add_user_permission_to_list()
 
 class ServisPermissions(permissions.IsAdminUser):
@@ -19,7 +19,7 @@ class ServisPermissions(permissions.IsAdminUser):
 
 class MuqavileHediyyePermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="muqavile_hediyye", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="muqavilehediyye", view=view)
         return perm_util.add_user_permission_to_list()
 
 class EmeliyyatPermissions(permissions.IsAdminUser):
@@ -39,7 +39,7 @@ class MehsullarPermissions(permissions.IsAdminUser):
 
 class AnbarQeydlerPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="anbar_qeydler", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="anbarqeydler", view=view)
         return perm_util.add_user_permission_to_list()
 
 class AnbarPermissions(permissions.IsAdminUser):

@@ -19,6 +19,105 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 import datetime
 
+def maas_ode_create(self, request, *args, **kwargs):
+    """
+    İşçilərə maas vermək funksiyası
+    """
+    serializer = self.get_serializer(data=request.data)
+    user = self.request.user
+    print(f"login olan user ==> {user}")
+    if serializer.is_valid():
+        isci = serializer.validated_data.get("isci")
+        print(f"{isci=}")
+        
+        qeyd = serializer.validated_data.get("qeyd")
+        print(f"{qeyd=}")
+        odeme_tarixi = serializer.validated_data.get("odeme_tarixi")
+        if (serializer.validated_data.get("odeme_tarixi") == None):
+            odeme_tarixi = datetime.date.today()
+        elif (serializer.validated_data.get("odeme_tarixi") == ""):
+            odeme_tarixi = datetime.date.today()
+        print(f"{odeme_tarixi=}")
+
+        indi = datetime.date.today()
+        print(f"indi ==> {indi}")
+        d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+        print(f"d ==> {d}")
+        next_m = d + pd.offsets.MonthBegin(1)
+        print(f"next_m ==> {next_m}")
+
+        maas_goruntuleme = MaasGoruntuleme.objects.get(isci=isci, tarix=f"{indi.year}-{indi.month}-{1}")
+        print(f"{maas_goruntuleme=}")
+        mebleg = maas_goruntuleme.yekun_maas
+        print(f"{mebleg=}")
+        maas_goruntuleme.yekun_maas = 0
+
+        ofis = isci.ofis
+        print(f"{ofis=}")
+
+        shirket = isci.shirket
+        print(f"{shirket=}")
+
+        holding = Holding.objects.all()[0]
+        print(f"{holding=}")
+
+        qeyd = f"{user.asa} tərəfindən {isci.asa} adlı işçiyə {mebleg} AZN maaş ödəndi"
+
+        if ofis is not None:
+            ofis_kassa = OfisKassa.objects.get(ofis=ofis)
+            print(f"{ofis_kassa=}")
+            print(f"{ofis_kassa.balans=}")
+            if float(ofis_kassa.balans) < float(mebleg):
+                return Response({"detail": "Ofisin kassasında yetəri qədər məbləğ yoxdur"})
+            ofis_kassa.balans = float(ofis_kassa.balans) - float(mebleg)
+            ofis_kassa.save()
+            print(f"{ofis_kassa.balans=}")
+            ofis_kassa_mexaric = OfisKassaMexaric.objects.create(
+                mexaric_eden=user,
+                ofis_kassa=ofis_kassa,
+                mebleg=mebleg,
+                mexaric_tarixi=odeme_tarixi,
+                qeyd=qeyd
+            )
+            ofis_kassa_mexaric.save()
+        elif ofis == None and shirket is not None:
+            shirket_kassa = ShirketKassa.objects.get(shirket=shirket)
+            print(f"{shirket_kassa=}")
+            print(f"{shirket_kassa.balans=}")
+            if float(shirket_kassa.balans) < float(mebleg):
+                return Response({"detail": "Şirkətin kassasında yetəri qədər məbləğ yoxdur"})
+            shirket_kassa.balans = float(shirket_kassa.balans) - float(mebleg)
+            shirket_kassa.save()
+            print(f"{shirket_kassa.balans=}")
+            shirket_kassa_mexaric = ShirketKassaMexaric.objects.create(
+                mexaric_eden=user,
+                shirket_kassa=shirket_kassa,
+                mebleg=mebleg,
+                mexaric_tarixi=odeme_tarixi,
+                qeyd=qeyd
+            )
+            shirket_kassa_mexaric.save()
+        elif ofis == None and shirket == None and holding is not None:
+            holding_kassa = HoldingKassa.objects.get(holding=holding)
+            print(f"{holding_kassa=}")
+            print(f"{holding_kassa.balans=}")
+            if float(holding_kassa.balans) < float(mebleg):
+                return Response({"detail": "Holdingin kassasında yetəri qədər məbləğ yoxdur"})
+            holding_kassa.balans = float(holding_kassa.balans) - float(mebleg)
+            holding_kassa.save()
+            print(f"{holding_kassa.balans=}")
+            holding_kassa_mexaric = HoldingKassaMexaric.objects.create(
+                mexaric_eden=user,
+                holding_kassa=holding_kassa,
+                mebleg=mebleg,
+                mexaric_tarixi=odeme_tarixi,
+                qeyd=qeyd
+            )
+            holding_kassa_mexaric.save()
+
+        maas_goruntuleme.save()
+        serializer.save(mebleg=mebleg)
+
 def bonus_create(self, request, *args, **kwargs):
     """
     İşçilərə bonus vermək funksiyası
@@ -63,57 +162,57 @@ def bonus_create(self, request, *args, **kwargs):
 
         qeyd = f"{user.asa} tərəfindən {isci.asa} adlı işçiyə {mebleg} AZN bonus"
 
-        if ofis is not None:
-            ofis_kassa = OfisKassa.objects.get(ofis=ofis)
-            print(f"{ofis_kassa=}")
-            print(f"{ofis_kassa.balans=}")
-            if float(ofis_kassa.balans) < float(mebleg):
-                return Response({"detail": "Ofisin kassasında yetəri qədər məbləğ yoxdur"})
-            ofis_kassa.balans = float(ofis_kassa.balans) - float(mebleg)
-            ofis_kassa.save()
-            print(f"{ofis_kassa.balans=}")
-            ofis_kassa_mexaric = OfisKassaMexaric.objects.create(
-                mexaric_eden=user,
-                ofis_kassa=ofis_kassa,
-                mebleg=mebleg,
-                mexaric_tarixi=bonus_tarixi,
-                qeyd=qeyd
-            )
-            ofis_kassa_mexaric.save()
-        elif ofis == None and shirket is not None:
-            shirket_kassa = ShirketKassa.objects.get(shirket=shirket)
-            print(f"{shirket_kassa=}")
-            print(f"{shirket_kassa.balans=}")
-            if float(shirket_kassa.balans) < float(mebleg):
-                return Response({"detail": "Şirkətin kassasında yetəri qədər məbləğ yoxdur"})
-            shirket_kassa.balans = float(shirket_kassa.balans) - float(mebleg)
-            shirket_kassa.save()
-            print(f"{shirket_kassa.balans=}")
-            shirket_kassa_mexaric = ShirketKassaMexaric.objects.create(
-                mexaric_eden=user,
-                shirket_kassa=shirket_kassa,
-                mebleg=mebleg,
-                mexaric_tarixi=bonus_tarixi,
-                qeyd=qeyd
-            )
-            shirket_kassa_mexaric.save()
-        elif ofis == None and shirket == None and holding is not None:
-            holding_kassa = HoldingKassa.objects.get(holding=holding)
-            print(f"{holding_kassa=}")
-            print(f"{holding_kassa.balans=}")
-            if float(holding_kassa.balans) < float(mebleg):
-                return Response({"detail": "Holdingin kassasında yetəri qədər məbləğ yoxdur"})
-            holding_kassa.balans = float(holding_kassa.balans) - float(mebleg)
-            holding_kassa.save()
-            print(f"{holding_kassa.balans=}")
-            holding_kassa_mexaric = HoldingKassaMexaric.objects.create(
-                mexaric_eden=user,
-                holding_kassa=holding_kassa,
-                mebleg=mebleg,
-                mexaric_tarixi=bonus_tarixi,
-                qeyd=qeyd
-            )
-            holding_kassa_mexaric.save()
+        # if ofis is not None:
+        #     ofis_kassa = OfisKassa.objects.get(ofis=ofis)
+        #     print(f"{ofis_kassa=}")
+        #     print(f"{ofis_kassa.balans=}")
+        #     if float(ofis_kassa.balans) < float(mebleg):
+        #         return Response({"detail": "Ofisin kassasında yetəri qədər məbləğ yoxdur"})
+        #     ofis_kassa.balans = float(ofis_kassa.balans) - float(mebleg)
+        #     ofis_kassa.save()
+        #     print(f"{ofis_kassa.balans=}")
+        #     ofis_kassa_mexaric = OfisKassaMexaric.objects.create(
+        #         mexaric_eden=user,
+        #         ofis_kassa=ofis_kassa,
+        #         mebleg=mebleg,
+        #         mexaric_tarixi=bonus_tarixi,
+        #         qeyd=qeyd
+        #     )
+        #     ofis_kassa_mexaric.save()
+        # elif ofis == None and shirket is not None:
+        #     shirket_kassa = ShirketKassa.objects.get(shirket=shirket)
+        #     print(f"{shirket_kassa=}")
+        #     print(f"{shirket_kassa.balans=}")
+        #     if float(shirket_kassa.balans) < float(mebleg):
+        #         return Response({"detail": "Şirkətin kassasında yetəri qədər məbləğ yoxdur"})
+        #     shirket_kassa.balans = float(shirket_kassa.balans) - float(mebleg)
+        #     shirket_kassa.save()
+        #     print(f"{shirket_kassa.balans=}")
+        #     shirket_kassa_mexaric = ShirketKassaMexaric.objects.create(
+        #         mexaric_eden=user,
+        #         shirket_kassa=shirket_kassa,
+        #         mebleg=mebleg,
+        #         mexaric_tarixi=bonus_tarixi,
+        #         qeyd=qeyd
+        #     )
+        #     shirket_kassa_mexaric.save()
+        # elif ofis == None and shirket == None and holding is not None:
+        #     holding_kassa = HoldingKassa.objects.get(holding=holding)
+        #     print(f"{holding_kassa=}")
+        #     print(f"{holding_kassa.balans=}")
+        #     if float(holding_kassa.balans) < float(mebleg):
+        #         return Response({"detail": "Holdingin kassasında yetəri qədər məbləğ yoxdur"})
+        #     holding_kassa.balans = float(holding_kassa.balans) - float(mebleg)
+        #     holding_kassa.save()
+        #     print(f"{holding_kassa.balans=}")
+        #     holding_kassa_mexaric = HoldingKassaMexaric.objects.create(
+        #         mexaric_eden=user,
+        #         holding_kassa=holding_kassa,
+        #         mebleg=mebleg,
+        #         mexaric_tarixi=bonus_tarixi,
+        #         qeyd=qeyd
+        #     )
+        #     holding_kassa_mexaric.save()
 
         maas_goruntuleme.save()
         serializer.save()
@@ -166,51 +265,51 @@ def kesinti_create(self, request, *args, **kwargs):
 
         qeyd = f"{user.asa} tərəfindən {isci.asa} adlı işçinin maaşından {mebleg} AZN kəsinti"
 
-        if ofis is not None:
-            ofis_kassa = OfisKassa.objects.get(ofis=ofis)
-            print(f"{ofis_kassa=}")
-            print(f"{ofis_kassa.balans=}")
-            ofis_kassa.balans = float(ofis_kassa.balans) + float(mebleg)
-            ofis_kassa.save()
-            print(f"{ofis_kassa.balans=}")
-            ofis_kassa_medaxil = OfisKassaMedaxil.objects.create(
-                medaxil_eden=user,
-                ofis_kassa=ofis_kassa,
-                mebleg=mebleg,
-                medaxil_tarixi=kesinti_tarixi,
-                qeyd=qeyd
-            )
-            ofis_kassa_medaxil.save()
-        elif ofis == None and shirket is not None:
-            shirket_kassa = ShirketKassa.objects.get(shirket=shirket)
-            print(f"{shirket_kassa=}")
-            print(f"{shirket_kassa.balans=}")
-            shirket_kassa.balans = float(shirket_kassa.balans) + float(mebleg)
-            shirket_kassa.save()
-            print(f"{shirket_kassa.balans=}")
-            shirket_kassa_medaxil = ShirketKassaMedaxil.objects.create(
-                medaxil_eden=user,
-                shirket_kassa=shirket_kassa,
-                mebleg=mebleg,
-                medaxil_tarixi=kesinti_tarixi,
-                qeyd=qeyd
-            )
-            shirket_kassa_medaxil.save()
-        elif ofis == None and shirket == None and holding is not None:
-            holding_kassa = HoldingKassa.objects.get(holding=holding)
-            print(f"{holding_kassa=}")
-            print(f"{holding_kassa.balans=}")
-            holding_kassa.balans = float(holding_kassa.balans) + float(mebleg)
-            holding_kassa.save()
-            print(f"{holding_kassa.balans=}")
-            holding_kassa_medaxil = HoldingKassaMedaxil.objects.create(
-                medaxil_eden=user,
-                holding_kassa=holding_kassa,
-                mebleg=mebleg,
-                medaxil_tarixi=kesinti_tarixi,
-                qeyd=qeyd
-            )
-            holding_kassa_medaxil.save()
+        # if ofis is not None:
+        #     ofis_kassa = OfisKassa.objects.get(ofis=ofis)
+        #     print(f"{ofis_kassa=}")
+        #     print(f"{ofis_kassa.balans=}")
+        #     ofis_kassa.balans = float(ofis_kassa.balans) + float(mebleg)
+        #     ofis_kassa.save()
+        #     print(f"{ofis_kassa.balans=}")
+        #     ofis_kassa_medaxil = OfisKassaMedaxil.objects.create(
+        #         medaxil_eden=user,
+        #         ofis_kassa=ofis_kassa,
+        #         mebleg=mebleg,
+        #         medaxil_tarixi=kesinti_tarixi,
+        #         qeyd=qeyd
+        #     )
+        #     ofis_kassa_medaxil.save()
+        # elif ofis == None and shirket is not None:
+        #     shirket_kassa = ShirketKassa.objects.get(shirket=shirket)
+        #     print(f"{shirket_kassa=}")
+        #     print(f"{shirket_kassa.balans=}")
+        #     shirket_kassa.balans = float(shirket_kassa.balans) + float(mebleg)
+        #     shirket_kassa.save()
+        #     print(f"{shirket_kassa.balans=}")
+        #     shirket_kassa_medaxil = ShirketKassaMedaxil.objects.create(
+        #         medaxil_eden=user,
+        #         shirket_kassa=shirket_kassa,
+        #         mebleg=mebleg,
+        #         medaxil_tarixi=kesinti_tarixi,
+        #         qeyd=qeyd
+        #     )
+        #     shirket_kassa_medaxil.save()
+        # elif ofis == None and shirket == None and holding is not None:
+        #     holding_kassa = HoldingKassa.objects.get(holding=holding)
+        #     print(f"{holding_kassa=}")
+        #     print(f"{holding_kassa.balans=}")
+        #     holding_kassa.balans = float(holding_kassa.balans) + float(mebleg)
+        #     holding_kassa.save()
+        #     print(f"{holding_kassa.balans=}")
+        #     holding_kassa_medaxil = HoldingKassaMedaxil.objects.create(
+        #         medaxil_eden=user,
+        #         holding_kassa=holding_kassa,
+        #         mebleg=mebleg,
+        #         medaxil_tarixi=kesinti_tarixi,
+        #         qeyd=qeyd
+        #     )
+        #     holding_kassa_medaxil.save()
 
         maas_goruntuleme.save()
         serializer.save()

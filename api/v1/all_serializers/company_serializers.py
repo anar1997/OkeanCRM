@@ -54,6 +54,9 @@ class KomandaSerializer(serializers.ModelSerializer):
         komanda_adi = validated_data.get('komanda_adi')
         validated_data['komanda_adi'] = komanda_adi.upper()
         try:
+            k = Komanda.objects.filter(komanda_adi=komanda_adi.upper(), is_active=True)
+            if len(k) > 0:
+                raise ValidationError
             return super(KomandaSerializer, self).create(validated_data)
         except:
             raise ValidationError('Bu ad ilə komanda artıq qeydiyyatdan keçirilib')
@@ -72,10 +75,16 @@ class OfisSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ofis_adi = validated_data.get('ofis_adi')
         validated_data['ofis_adi'] = ofis_adi.upper()
+        shirket = validated_data['shirket']
+        print(f"{shirket=}")
         try:
+            ofiss = Ofis.objects.filter(ofis_adi=ofis_adi.upper(), shirket=shirket)
+            print(f"{ofiss=}")
+            if len(ofiss)>0:
+                raise ValidationError
             return super(OfisSerializer, self).create(validated_data)
         except:
-            raise ValidationError('Bu ad ilə ofis artıq qeydiyyatdan keçirilib')
+            raise ValidationError({"detail": 'Bu ad ilə ofis artıq qeydiyyatdan keçirilib'})
 
 
 class ShobeSerializer(serializers.ModelSerializer):
@@ -113,6 +122,14 @@ class HoldingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Holding
         fields = "__all__"
+
+    def create(self, validated_data):
+        holding_adi = validated_data.get('holding_adi')
+        validated_data['holding_adi'] = holding_adi.upper()
+        try:
+            return super(HoldingSerializer, self).create(validated_data)
+        except:
+            raise ValidationError('Bu ad ilə holding artıq qeydiyyatdan keçirilib')
 
 
 class HoldingKassaSerializer(serializers.ModelSerializer):

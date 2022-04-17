@@ -14,6 +14,7 @@ from company.models import Holding, Komanda, Ofis, Shirket, Shobe, Vezifeler
 
 from gunler.models import (
     HoldingGunler,
+    IsciGelibGetmeVaxtlari,
     IsciGunler,
     KomandaGunler,
     KomandaIstisnaIsci,
@@ -45,6 +46,16 @@ class IsciGunlerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = IsciGunler
+        fields = "__all__"
+
+class IsciGelibGetmeVaxtlariSerializer(serializers.ModelSerializer):
+    isci = UserSerializer(read_only=True)
+    isci_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='isci', write_only=True,
+    )
+    
+    class Meta:
+        model = IsciGelibGetmeVaxtlari
         fields = "__all__"
 
 

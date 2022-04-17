@@ -9,7 +9,7 @@ class UserPermissions(permissions.IsAdminUser):
 
 class IsciStatusPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="isci_status", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="iscistatus", view=view)
         return perm_util.add_user_permission_to_list()
 
 class BolgePermissions(permissions.IsAdminUser):
@@ -24,10 +24,10 @@ class MusteriPermissions(permissions.IsAdminUser):
 
 class MusteriQeydlerPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="musteri_qeydler", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="musteriqeydler", view=view)
         return perm_util.add_user_permission_to_list()
 
 class IsciSatisSayiPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="isci_satis_sayi", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="iscisatissayi", view=view)
         return perm_util.add_user_permission_to_list()

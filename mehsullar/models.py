@@ -115,6 +115,12 @@ class Muqavile(models.Model):
         (DAVAM_EDEN,"DAVAM EDƏN"),   
     ]
 
+    DEYISMIS_MEHSUL = "DƏYİŞİLMİŞ MƏHSUL"
+
+    DEYISMIS_MEHSUL_STATUS_CHOICES = [
+        (DEYISMIS_MEHSUL, "DƏYİŞİLMİŞ MƏHSUL")
+    ]
+
     vanleader = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="vanleader", null=True, blank=True)
     dealer = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="dealer", null=True, blank=True)
     canvesser = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="canvesser", null=True, blank=True)
@@ -124,7 +130,7 @@ class Muqavile(models.Model):
                                blank=True)
     mehsul_sayi = models.PositiveIntegerField(default=1, blank=True)
     muqavile_umumi_mebleg = models.FloatField(default=0, blank=True)
-    elektron_imza = models.ImageField(upload_to="media/", null=True, blank=True)
+    elektron_imza = models.ImageField(upload_to="media/muqavile", null=True, blank=True)
     muqavile_tarixi = models.DateField(auto_now_add=True, null=True, blank=True)
     shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     ofis = models.ForeignKey('company.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
@@ -150,6 +156,15 @@ class Muqavile(models.Model):
         null=True,
         blank=True
     )
+
+    deyisilmis_mehsul_status = models.CharField(
+        max_length=50,
+        choices=DEYISMIS_MEHSUL_STATUS_CHOICES,
+        default=None,
+        null=True,
+        blank=True
+    )
+
 
     negd_odenis_1_status = models.CharField(
         max_length=20,

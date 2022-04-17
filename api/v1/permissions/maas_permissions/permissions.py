@@ -3,22 +3,22 @@ from api.v1.permissions.utils.permission_utils import PermissionUtil
        
 class VanLeaderPrimPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="vanLeader_prim", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="vanLeaderprim", view=view)
         return perm_util.add_user_permission_to_list()
 
 class DealerPrimPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="dealer_prim", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="dealerprim", view=view)
         return perm_util.add_user_permission_to_list()
 
 class OfficeLeaderPrimPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="office_leader_prim", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="officeleaderprim", view=view)
         return perm_util.add_user_permission_to_list()
 
 class CanvasserPrimPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="canvasser_prim", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="canvasserprim", view=view)
         return perm_util.add_user_permission_to_list()
 
 class AvansPermissions(permissions.IsAdminUser):
@@ -38,5 +38,10 @@ class BonusPermissions(permissions.IsAdminUser):
 
 class MaasGoruntulemePermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
-        perm_util = PermissionUtil(user=request.user, request=request, object_name="maas_goruntuleme", view=view)
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="maasgoruntuleme", view=view)
+        return perm_util.add_user_permission_to_list()
+
+class MaasOdePermissions(permissions.IsAdminUser):
+    def has_permission(self, request, view):
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="maasode", view=view)
         return perm_util.add_user_permission_to_list()

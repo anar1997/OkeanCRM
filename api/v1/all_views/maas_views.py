@@ -2,7 +2,8 @@ from maas.models import (
     Avans,
     Kesinti,
     Bonus,
-    MaasGoruntuleme, 
+    MaasGoruntuleme,
+    MaasOde, 
     VanLeaderPrim, 
     DealerPrim, 
     OfficeLeaderPrim,
@@ -15,6 +16,7 @@ from api.v1.all_serializers.maas_serializers import (
     MaasGoruntulemeSerializer,
     CanvasserPrimSerializer,
     DealerPrimSerializer,
+    MaasOdeSerializer,
     OfficeLeaderPrimSerializer,
     VanLeaderPrimSerializer,
 )
@@ -72,6 +74,21 @@ class BonusDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Bonus.objects.all()
     serializer_class = BonusSerializer
     permission_classes = [maas_permissions.BonusPermissions]
+
+# ********************************** Maas Ode get post put delete **********************************
+class MaasOdeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = MaasOde.objects.all()
+    serializer_class = MaasOdeSerializer
+    permission_classes = [maas_permissions.MaasOdePermissions]
+
+    def create(self, request, *args, **kwargs):
+        return maas_utils.maas_ode_create(self, request, *args, **kwargs)
+
+
+class MaasOdeDetailAPIView(generics.RetrieveUpdateAPIView):
+    queryset = MaasOde.objects.all()
+    serializer_class = MaasOdeSerializer
+    permission_classes = [maas_permissions.MaasOdePermissions]
 
 # ********************************** MaasGoruntuleme get post put delete **********************************
 class MaasGoruntulemeListCreateAPIView(generics.ListCreateAPIView):
