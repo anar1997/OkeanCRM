@@ -70,7 +70,7 @@ class UserSerializer(serializers.ModelSerializer):
         write_only=True, required=False, allow_null=True
     )
 
-    vezife = VezifelerSerializer(read_only=True)
+    vezife = VezifelerSerializer(read_only=True, many=True)
     vezife_id = serializers.PrimaryKeyRelatedField(
         queryset=Vezifeler.objects.all(), source='vezife', write_only=True, required=False, allow_null=True
     )

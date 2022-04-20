@@ -1,6 +1,4 @@
 import datetime
-from functools import partial
-from django.shortcuts import get_object_or_404
 import pandas as pd
 from rest_framework import status
 from rest_framework.response import Response

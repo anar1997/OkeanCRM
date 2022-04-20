@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from mehsullar.models import Emeliyyat, MuqavileHediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, Stok
+from mehsullar.models import Emeliyyat, MuqavileHediyye, Muqavile, OdemeTarix, Anbar, Mehsullar, AnbarQeydler, Servis, ServisOdeme, Stok
 
 from account.models import (
     User, 
@@ -174,37 +174,27 @@ class OdemeTarixSerializer(serializers.ModelSerializer):
 
 class ServisSerializer(serializers.ModelSerializer):
     muqavile = MuqavileSerializer(read_only=True)
-    kartric1 = MehsullarSerializer(read_only=True)
-    kartric2 = MehsullarSerializer(read_only=True)
-    kartric3 = MehsullarSerializer(read_only=True)
-    kartric4 = MehsullarSerializer(read_only=True)
-    kartric5 = MehsullarSerializer(read_only=True)
-    kartric6 = MehsullarSerializer(read_only=True)
+    mehsullar = MehsullarSerializer(read_only=True, many=True)
 
     muqavile_id = serializers.PrimaryKeyRelatedField(
         queryset=Muqavile.objects.all(), source='muqavile', write_only=True, required=False, allow_null=True
     )
-    kartric1_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric1', write_only=True, required=False, allow_null=True
-    )
-    kartric2_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric2', write_only=True, required=False, allow_null=True
-    )
-    kartric3_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric3', write_only=True, required=False, allow_null=True
-    )
-    kartric4_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric4', write_only=True, required=False, allow_null=True
-    )
-    kartric5_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric5', write_only=True, required=False, allow_null=True
-    )
-    kartric6_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source='kartric6', write_only=True, required=False, allow_null=True
+    mehsullar_id = serializers.PrimaryKeyRelatedField(
+        queryset=Mehsullar.objects.all(), source='mehsullar', write_only=True, required=False, allow_null=True
     )
 
     class Meta:
         model = Servis
+        fields = "__all__"
+
+class ServisOdemeSerializer(serializers.ModelSerializer):
+    servis = ServisSerializer(read_only=True)
+    servis_id = serializers.PrimaryKeyRelatedField(
+        queryset=Servis.objects.all(), source='servis', write_only=True, required=False, allow_null=True
+    )
+
+    class Meta:
+        model = ServisOdeme
         fields = "__all__"
 
 

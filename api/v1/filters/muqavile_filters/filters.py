@@ -28,8 +28,8 @@ class OdemeTarixFilter(django_filters.FilterSet):
             'muqavile__vanleader__komanda__komanda_adi': ['exact', 'icontains'],
             'muqavile__vanleader__isci_status__status_adi': ['exact', 'icontains'],
 
-
             'muqavile__odenis_uslubu': ['exact'],
+            'muqavile__kreditor__kreditor__asa': ['exact'],
             'muqavile__muqavile_status': ['exact'],
             'muqavile__muqavile_tarixi': ['exact', 'gte', 'lte'],
             'muqavile__muqavile_umumi_mebleg': ['exact', 'gte', 'lte'],
@@ -65,6 +65,8 @@ class MuqavileFilter(django_filters.FilterSet):
             'musteri__tel4': ['exact', 'icontains'],
             'musteri__bolge__bolge_adi': ['exact', 'icontains'],
             'musteri__bolge': ['exact'],
+
+            'kreditor__kreditor__asa': ['exact'],
 
             'muqavile_tarixi': ['exact', 'gte', 'lte'],
 
@@ -159,5 +161,119 @@ class MuqavileHediyyeFilter(django_filters.FilterSet):
             'mehsul__mehsulun_adi': ['exact', 'icontains'],
             'mehsul__qiymet': ['exact', 'gte', 'lte'],
 
-            
+            'muqavile' : ['exact'],
+            'muqavile__shobe__shobe_adi': ['exact', 'icontains'],
+            'muqavile__ofis__ofis_adi': ['exact', 'icontains'],
+            'muqavile__shirket__shirket_adi': ['exact', 'icontains'],
+
+            'muqavile__vanleader__asa': ['exact', 'icontains'],
+            'muqavile__vanleader__komanda__komanda_adi': ['exact', 'icontains'],
+            'muqavile__vanleader__isci_status__status_adi': ['exact', 'icontains'],
+
+
+            'muqavile__odenis_uslubu': ['exact'],
+            'muqavile__muqavile_status': ['exact'],
+            'muqavile__muqavile_tarixi': ['exact', 'gte', 'lte'],
+            'muqavile__muqavile_umumi_mebleg': ['exact', 'gte', 'lte'],
+            'muqavile__mehsul_sayi': ['exact', 'gte', 'lte'],
+
+            'muqavile__musteri__asa': ['exact', 'icontains'],
+            'muqavile__musteri__unvan': ['exact', 'icontains'],
+            'muqavile__musteri__tel1': ['exact', 'icontains'],
+            'muqavile__musteri__tel2': ['exact', 'icontains'],
+            'muqavile__musteri__tel3': ['exact', 'icontains'],
+            'muqavile__musteri__tel4': ['exact', 'icontains'],
         }
+
+class AnbarFilter(django_filters.FilterSet):
+    class Meta:
+        model = Anbar
+        fields = {
+            'ad': ['exact', 'icontains'],
+            'ofis__ofis_adi': ['exact', 'icontains'],
+            'ofis__shirket__shirket_adi': ['exact', 'icontains'],
+        }
+
+class AnbarQeydlerFilter(django_filters.FilterSet):
+    class Meta:
+        model = AnbarQeydler
+        fields = {
+            'qeyd': ['exact', 'icontains'],
+            'anbar__ad': ['exact', 'icontains'],
+            'anbar__ofis__ofis_adi': ['exact', 'icontains'],
+        }
+
+
+class MehsullarFilter(django_filters.FilterSet):
+    class Meta:
+        model = Mehsullar
+        fields = {
+            'mehsulun_adi': ['exact', 'icontains'],
+            'qiymet': ['exact', 'gte', 'lte'],
+            'shirket__shirket_adi': ['exact', 'icontains'],
+            'is_hediyye': ['exact'],
+        }
+
+class ServisFilter(django_filters.FilterSet):
+    pass
+    # class Meta:
+    #     model = Servis
+    #     fields = {
+    #         'muqavile' : ['exact'],
+    #         'muqavile__shobe__shobe_adi': ['exact', 'icontains'],
+    #         'muqavile__ofis__ofis_adi': ['exact', 'icontains'],
+    #         'muqavile__shirket__shirket_adi': ['exact', 'icontains'],
+
+    #         'kreditor__kreditor__asa': ['exact'],
+
+    #         'muqavile__vanleader__asa': ['exact', 'icontains'],
+    #         'muqavile__vanleader__komanda__komanda_adi': ['exact', 'icontains'],
+    #         'muqavile__vanleader__isci_status__status_adi': ['exact', 'icontains'],
+
+    #         'muqavile__odenis_uslubu': ['exact'],
+    #         'muqavile__muqavile_status': ['exact'],
+    #         'muqavile__muqavile_tarixi': ['exact', 'gte', 'lte'],
+    #         'muqavile__muqavile_umumi_mebleg': ['exact', 'gte', 'lte'],
+    #         'muqavile__mehsul_sayi': ['exact', 'gte', 'lte'],
+
+    #         'muqavile__musteri__asa': ['exact', 'icontains'],
+    #         'muqavile__musteri__unvan': ['exact', 'icontains'],
+    #         'muqavile__musteri__tel1': ['exact', 'icontains'],
+    #         'muqavile__musteri__tel2': ['exact', 'icontains'],
+    #         'muqavile__musteri__tel3': ['exact', 'icontains'],
+    #         'muqavile__musteri__tel4': ['exact', 'icontains'],
+
+    #         'kartric1__mehsulun_adi': ['exact', 'icontains'],
+    #         'kartric1__qiymet': ['exact', 'gte', 'lte'],
+    #         'kartric1__shirket__shirket_adi': ['exact', 'icontains'],
+    #         'kartric1__is_hediyye': ['exact'],
+
+    #         'kartric2__mehsulun_adi': ['exact', 'icontains'],
+    #         'kartric2__qiymet': ['exact', 'gte', 'lte'],
+    #         'kartric2__shirket__shirket_adi': ['exact', 'icontains'],
+    #         'kartric2__is_hediyye': ['exact'],
+
+    #         'kartric3__mehsulun_adi': ['exact', 'icontains'],
+    #         'kartric3__qiymet': ['exact', 'gte', 'lte'],
+    #         'kartric3__shirket__shirket_adi': ['exact', 'icontains'],
+    #         'kartric3__is_hediyye': ['exact'],
+
+    #         'kartric4__mehsulun_adi': ['exact', 'icontains'],
+    #         'kartric4__qiymet': ['exact', 'gte', 'lte'],
+    #         'kartric4__shirket__shirket_adi': ['exact', 'icontains'],
+    #         'kartric4__is_hediyye': ['exact'],
+
+    #         'kartric5__mehsulun_adi': ['exact', 'icontains'],
+    #         'kartric5__qiymet': ['exact', 'gte', 'lte'],
+    #         'kartric5__shirket__shirket_adi': ['exact', 'icontains'],
+    #         'kartric5__is_hediyye': ['exact'],
+
+    #         'kartric6__mehsulun_adi': ['exact', 'icontains'],
+    #         'kartric6__qiymet': ['exact', 'gte', 'lte'],
+    #         'kartric6__shirket__shirket_adi': ['exact', 'icontains'],
+    #         'kartric6__is_hediyye': ['exact'],
+
+    #         'servis_tarix6ay': ['exact', 'gte', 'lte'],
+    #         'servis_tarix18ay': ['exact', 'gte', 'lte'],
+    #         'servis_tarix24ay': ['exact', 'gte', 'lte'],
+    #     }

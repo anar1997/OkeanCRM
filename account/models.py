@@ -1,3 +1,4 @@
+import django
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +28,7 @@ class User(AbstractUser):
 
     asa= models.CharField(max_length=200)
     dogum_tarixi= models.DateField(null=True, blank=True)
-    ishe_baslama_tarixi= models.DateField(auto_now_add = True, null=True, blank=True)
+    ishe_baslama_tarixi= models.DateField(default=django.utils.timezone.now, null=True, blank=True)
     last_login = models.DateTimeField(auto_now = True, null=True, blank=True)
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
@@ -35,7 +36,6 @@ class User(AbstractUser):
     shirket=models.ForeignKey("company.Shirket", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
     ofis=models.ForeignKey("company.Ofis", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
     shobe=models.ForeignKey("company.Shobe", on_delete=models.SET_NULL, related_name="ishci", null=True, blank=True)
-    # vezife = models.ForeignKey("company.Vezifeler", on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
     vezife = models.ManyToManyField("company.Vezifeler",related_name="user_vezife", blank=True)
     komanda = models.OneToOneField("company.Komanda", on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
     isci_status = models.ForeignKey(IsciStatus, on_delete=models.SET_NULL, null=True, blank=True)
@@ -96,6 +96,7 @@ class Musteri(models.Model):
 class MusteriQeydler(models.Model):
     qeyd=models.TextField()
     musteri=models.ForeignKey(Musteri,on_delete=models.CASCADE, related_name="musteri_qeydler")
+    tarix = models.DateField(auto_now_add=True, blank=True)
 
     class Meta:
         ordering = ("pk",)

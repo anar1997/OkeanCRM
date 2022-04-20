@@ -4,163 +4,202 @@ import pandas as pd
 
 import datetime
 from rest_framework.response import Response
+from company.models import MuqavileKreditor
+from maas.models import KreditorPrim, MaasGoruntuleme
 
 from mehsullar.models import (
     Muqavile, 
     Anbar, 
     Mehsullar,
-    Servis, 
+    Servis,
+    ServisOdeme, 
     Stok
 )
 
+import traceback
+
 from rest_framework.generics import get_object_or_404
 
-
 def servis_update(self, request, *args, **kwargs):
-    serializer = self.get_serializer(data=request.data)
-    # indi_u = f"{datetime.datetime.now().year}-{datetime.datetime.now().month}-{datetime.datetime.now().day}"
-    indi = datetime.date.today()
-    servis_tarix6ay = request.POST["servis_tarix6ay"]
-    servis_tarix18ay = request.POST["servis_tarix18ay"]
-    servis_tarix24ay = request.POST["servis_tarix24ay"]
-    kartric1_id = int(request.POST["kartric1_id"])
-    kartric2_id = int(request.POST["kartric2_id"])
-    kartric3_id = int(request.POST["kartric3_id"])
-    kartric4_id = int(request.POST["kartric4_id"])
-    kartric5_id = int(request.POST["kartric5_id"])
-    kartric6_id = int(request.POST["kartric6_id"])
-    muqavile_id = request.POST["muqavile_id"]
+    servis = self.get_object()
+    serializer = self.get_serializer(servis, data=request.data, partial=True)
+    
+    print(f"{servis=}")
 
-    month6 = datetime.date.today() + datetime.timedelta(days=180)
-    month18 = datetime.date.today() + datetime.timedelta(days=540)
-    month24 = datetime.date.today() + datetime.timedelta(days=720)
+    if serializer.is_valid():
+        muqavile = servis.muqavile
+        print(f"{muqavile=}")
+        servis_tarix = serializer.validated_data.get("servis_tarix")
+        print(f"{servis_tarix=}")
+        mehsullar = serializer.validated_data.get("mehsullar")
+        print(f"{mehsullar=}")
+        
+        kredit = serializer.validated_data.get("kredit")
+        print(f"{kredit=}")
 
-    print(f"month6 ==> {month6}")
-    print(f"month18 ==> {month18}")
-    print(f"month24 ==> {month24}")
-    print(f"{month6.year}-{month6.month}-{datetime.datetime.now().day}")
+        kredit_muddeti = serializer.validated_data.get("kredit_muddeti")
+        print(f"{kredit_muddeti=}")
 
-    print(f"indi --> {indi}")
+        ilkin_odenis = serializer.validated_data.get("ilkin_odenis")
+        print(f"{ilkin_odenis=}")
 
-    print(f"Tarix 6ay ==> {servis_tarix6ay}")
-    print(f"Tarix 18ay ==> {servis_tarix18ay}")
-    print(f"Tarix 24ay ==> {servis_tarix24ay}")
+        u_yerine_yetirildi = serializer.validated_data.get("yerine_yetirildi")
+        print(f"{u_yerine_yetirildi=}")
+        
+        yerine_yetirildi = servis.yerine_yetirildi
+        print(f"{yerine_yetirildi=}")
 
-    print(f"kartric1_id ==> {kartric1_id}")
-    print(f"kartric2_id ==> {kartric2_id}")
-    print(f"kartric3_id ==> {kartric3_id}")
-    print(f"kartric4_id ==> {kartric4_id}")
-    print(f"kartric5_id ==> {kartric5_id}")
-    print(f"kartric6_id ==> {kartric6_id}")
+        indi_d = datetime.date.today()
+        print(f"{indi_d=}")
+        indi = f"{indi_d.year}-{indi_d.month}-{1}"
+        
+        d = pd.to_datetime(f"{indi_d.year}-{indi_d.month}-{1}")
+        print(f"d ==> {d}")
 
-    try:
-        muqavile = get_object_or_404(Muqavile, pk=muqavile_id)
-        servis = get_object_or_404(Servis, muqavile=muqavile)
-        print(servis)
-        print(servis.servis_tarix6ay)
-        print(type(servis.servis_tarix6ay))
-        print(f"Muqavile ==> {muqavile}")
-        print(f"Muqavile ofis ==> {muqavile.vanleader.ofis}")
-        anbar = get_object_or_404(Anbar, ofis=muqavile.vanleader.ofis)
+        month6 = d + pd.offsets.MonthBegin(6)
+        print(f"month6 ==> {month6}")
+
+        month12 = d + pd.offsets.MonthBegin(12)
+        print(f"month12 ==> {month12}")
+
+        month18 = d + pd.offsets.MonthBegin(18)
+        print(f"month18 ==> {month18}")
+
+        month24 = d + pd.offsets.MonthBegin(24)
+        print(f"month24 ==> {month24}")
+
+        anbar = get_object_or_404(Anbar, ofis=muqavile.ofis)
         print(f"Muqavile anbar ==> {anbar}")
 
-        if (str(indi) != str(servis.servis_tarix6ay) and indi != str(servis.servis_tarix18ay) and indi != str(servis.servis_tarix24ay)):
-            return Response({"Servis müddətinə hələ var"}, status=status.HTTP_404_NOT_FOUND)
+        indi = datetime.datetime.today().strftime('%Y-%m-%d')
+        print(f"INDI ====> {indi} --- {type(indi)}")
+        inc_month = pd.date_range(indi, periods = int(kredit_muddeti)+1, freq='M')
+        print(f"inc_month ==> {inc_month} --- {type(inc_month)}")
 
-        if (str(servis.servis_tarix6ay) == str(indi)):
-            print(f"servis_tarix6ay == indi ===> {servis_tarix6ay == str(indi)}")
-            try:
-                mehsul_kartric1 = get_object_or_404(Mehsullar, pk=kartric1_id)
-                mehsul_kartric2 = get_object_or_404(Mehsullar, pk=kartric2_id)
-                mehsul_kartric3 = get_object_or_404(Mehsullar, pk=kartric3_id)
-                mehsul_kartric4 = get_object_or_404(Mehsullar, pk=kartric4_id)
+        if bool(kredit) == True:
+            servis_odemeler = ServisOdeme.objects.filter(servis=servis, odendi=False)
+            print(f"{servis_odemeler=}")
+            for s_o in servis_odemeler:
+                s_o.delete()
+            
+            odenilecek_yeni_mebleg = 0
+            if ilkin_odenis is not None:
+                if float(ilkin_odenis) > 0:
+                    odenilecek_yeni_mebleg = float(servis.servis_qiymeti) - float(ilkin_odenis)
 
-                print(f"mehsul_kartric1 ==> {mehsul_kartric1}")
-                print(f"mehsul_kartric2 ==> {mehsul_kartric2}")
-                print(f"mehsul_kartric3 ==> {mehsul_kartric3}")
-                print(f"mehsul_kartric4 ==> {mehsul_kartric4}")
+            for i in int(kredit_muddeti):
+                if(datetime.date.today().day < 29):
+                    servis_odeme = ServisOdeme.objects.create(
+                        servis = servis,
+                        odeme_tarix = f"{inc_month[i].year}-{inc_month[i].month}-{datetime.date.today().day}",
+                        servis_qiymeti = servis.servis_qiymeti,
+                        odenilecek_mebleg = odenilecek_yeni_mebleg / int(kredit_muddeti),
+                        qeyd = serializer.validated_data.get("qeyd")
+                    ).save()
+                elif(datetime.date.today().day == 31 or datetime.date.today().day == 30 or datetime.date.today().day == 29):
+                    if(inc_month[i].day <= datetime.date.today().day):
+                        servis_odeme = ServisOdeme.objects.create(
+                            servis = servis,
+                            odeme_tarix = f"{inc_month[i].year}-{inc_month[i].month}-{inc_month[i].day}",
+                            servis_qiymeti = servis.servis_qiymeti,
+                            odenilecek_mebleg = odenilecek_yeni_mebleg / int(kredit_muddeti),
+                            qeyd = serializer.validated_data.get("qeyd") 
+                        ).save()
 
-                print(f"servis_tarix6ay ==> {servis_tarix6ay}")
+        if bool(u_yerine_yetirildi) == True:
+            for i in servis.mehsullar.all():
+                print(f"{i=}")
                 try:
-                    stok1 = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul_kartric1)
-                    stok2 = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul_kartric2)
-                    stok3 = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul_kartric3)
-                    stok4 = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul_kartric4)
+                    stok = get_object_or_404(Stok, anbar=anbar, mehsul=i)
+                    print(f'stok --> {stok}')
+                    stok.say = stok.say - 1
+                    stok.save()
+                except Exception:
+                    traceback.print_exc()
+                    return Response({"detail":"Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
+                if i.kartric_novu == "KARTRIC6AY":
+                    serializer.save(yerine_yetirildi = True, servis_tarix = month6)
+                if i.kartric_novu == "KARTRIC12AY":
+                    serializer.save(yerine_yetirildi = True, servis_tarix = month12)
+                if i.kartric_novu == "KARTRIC18AY":
+                    serializer.save(yerine_yetirildi = True, servis_tarix = month18)
+                if i.kartric_novu == "KARTRIC24AY":
+                    serializer.save(yerine_yetirildi = True, servis_tarix = month24)
 
-                    print(f"Muqavile stok1 ==> {stok1}")
-                    print(f"Muqavile stok2 ==> {stok2}")
-                    print(f"Muqavile stok3 ==> {stok3}")
-                    print(f"Muqavile stok4 ==> {stok4}")
-                    print(serializer.is_valid())
+            servis_odemeleri = ServisOdeme.objects.filter(servis=servis)
+            print(f"{servis_odemeleri=}")
+            for s in servis_odemeleri:
+                s.odendi = True
+                s.save()
+        serializer.save()   
+        return Response({"detail":"Servis müvəffəqiyyətlə yeniləndi"}, status=status.HTTP_200_OK)
 
-                    stok1.say = stok1.say - 1
-                    stok2.say = stok2.say - 1
-                    stok3.say = stok3.say - 1
-                    stok4.say = stok4.say - 1
-                    stok1.save()
-                    stok2.save()
-                    stok3.save()
-                    stok4.save()
-                    if (stok1.say == 0):
-                        stok1.delete()
+def servis_odeme_update(self, request, *args, **kwargs):
+    servis_odeme = self.get_object()
+    print(f"{servis_odeme=}")
+    serializer = self.get_serializer(servis_odeme, data=request.data, partial=True)
 
-                    if (stok2.say == 0):
-                        stok2.delete()
+    if serializer.is_valid():
+        endrim = serializer.validated_data.get("endrim")
+        print(f"{endrim=}")
 
-                    if (stok3.say == 0):
-                        stok3.delete()
+        odendi = serializer.validated_data.get("odendi")
+        print(f"{odendi=}")
 
-                    if (stok4.say == 0):
-                        stok4.delete()
-                    muqavile.servis.update(servis_tarix6ay=f"{month6.year}-{month6.month}-{datetime.date.today().day}")
-                    super(ServisDetailAPIView, self).update(request, *args, **kwargs)
-                    return Response({"Servis müvəffəqiyyətlə yeniləndi"}, status=status.HTTP_200_OK)
-                except:
-                    return Response({"Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
-            except:
-                return Response({"Bu adla məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
-        if (str(servis.servis_tarix18ay) == str(indi)):
-            try:
-                mehsul_kartric5 = get_object_or_404(Mehsullar, pk=kartric5_id)
+        muqavile = servis_odeme.servis.muqavile
+        print(f"{muqavile=}")
 
-                print(f"mehsul_kartric5 ==> {mehsul_kartric5}")
-                try:
-                    stok5 = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul_kartric5)
+        muqavile_kreditor = MuqavileKreditor.objects.get(muqavile=muqavile)
+        print(f"{muqavile_kreditor=}")
 
-                    print(f"Muqavile stok5 ==> {stok5}")
+        kreditor = muqavile_kreditor.kreditor
+        print(f"{kreditor=}")
 
-                    stok5.say = stok5.say - 1
-                    stok5.save()
+        kreditor_prim_all = KreditorPrim.objects.all()
+        print(f"{kreditor_prim_all=}")
 
-                    if (stok5.say == 0):
-                        stok5.delete()
+        kreditor_prim = kreditor_prim_all[0]
+        print(f"{kreditor_prim=}")
 
-                    super(ServisDetailAPIView, self).update(request, *args, **kwargs)
-                    return Response({"Servis müvəffəqiyyətlə yeniləndi"}, status=status.HTTP_200_OK)
-                except:
-                    return Response({"Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
-            except:
-                return Response({"Bu adla məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
-        if (str(servis.servis_tarix24ay) == str(indi)):
-            try:
-                mehsul_kartric6 = get_object_or_404(Mehsullar, pk=kartric6_id)
+        prim_faizi = kreditor_prim.prim_faizi
+        print(f"{prim_faizi=}")
 
-                print(f"mehsul_kartric6 ==> {mehsul_kartric6}")
-                try:
-                    stok6 = get_object_or_404(Stok, anbar=anbar, mehsul=mehsul_kartric6)
+        indi = datetime.date.today()
+        print(f"Indi ==> {indi}")
 
-                    print(f"Muqavile stok6 ==> {stok6}")
+        bu_ay = f"{indi.year}-{indi.month}-{1}"
 
-                    stok6.say = stok6.say - 1
-                    stok6.save()
+        maas_goruntulenme_kreditor = MaasGoruntuleme.objects.get(isci=kreditor, tarix=bu_ay)
+        print(f"{maas_goruntulenme_kreditor=}")
 
-                    if (stok6.say == 0):
-                        stok6.delete()
-                    super(ServisDetailAPIView, self).update(request, *args, **kwargs)
-                    return Response({"Servis müvəffəqiyyətlə yeniləndi"}, status=status.HTTP_200_OK)
-                except:
-                    return Response({"Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
-            except:
-                return Response({"Bu adla məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
-    except:
-        return Response({"Belə bir müqavilə tapılmadı"}, status=status.HTTP_404_NOT_FOUND)
+
+        if endrim is not None:
+            if float(endrim) > 0:
+                if float(endrim) < float(servis_odeme.odenilecek_mebleg):
+                    servis_odeme.odenilecek_mebleg = float(servis_odeme.odenilecek_mebleg) - endrim
+                    servis_odeme.save()
+                else:
+                   return Response({"detail":"Endrim miqdarı ödəniləcək məbləğdən daha çox ola bilməz"}, status=status.HTTP_400_BAD_REQUEST) 
+
+                serializer.save()
+                return Response({"detail":"Endrim tətbiq olundu"}, status=status.HTTP_200_OK)
+        if odendi is not None:
+            if bool(odendi) == True:
+                servisler_qs = ServisOdeme.objects.filter(servis=servis_odeme.servis, odendi=False)
+                servisler = list(servisler_qs)
+                print(f"{servisler=}")
+                if servis_odeme == servisler[-1]:
+                    servis_odeme.servis.yerine_yetirildi = True
+                    servis_odeme.servis.save()
+                    servis_odeme.odendi = True
+                    servis_odeme.save()
+                    print(f"{servis_odeme.odenilecek_mebleg=}")
+                    kreditorun_servisden_alacagi_mebleg = (float(servis_odeme.odenilecek_mebleg) * int(prim_faizi)) / 100
+                    print(f"{kreditorun_servisden_alacagi_mebleg=}")
+
+                    maas_goruntulenme_kreditor.yekun_maas = maas_goruntulenme_kreditor.yekun_maas + kreditorun_servisden_alacagi_mebleg
+                    print(f"{maas_goruntulenme_kreditor.yekun_maas=}")
+                    maas_goruntulenme_kreditor.save()
+                return Response({"detail":"Servis məbləği ödəndi"}, status=status.HTTP_200_OK)
+        serializer.save()
+        return Response({"detail":"Servis Ödəmə müvəffəqiyyətlə yeniləndi"}, status=status.HTTP_200_OK)

@@ -276,3 +276,10 @@ class OfisKassaMexaric(models.Model):
         return f"{self.ofis_kassa} kassasından {self.mebleg} azn məxaric edildi"
 
 # -----------------------------------------------------
+
+class MuqavileKreditor(models.Model):
+    kreditor = models.ForeignKey('account.User', on_delete=models.CASCADE, related_name="muqavile_kreditor")
+    muqavile = models.ForeignKey('mehsullar.Muqavile', on_delete=models.CASCADE, related_name="kreditor")
+    
+    def __str__(self) -> str:
+        return f"{self.kreditor.asa} {self.muqavile}"

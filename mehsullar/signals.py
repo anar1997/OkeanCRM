@@ -1,33 +1,117 @@
-from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from mehsullar.models import Muqavile, Servis, OdemeTarix
+from mehsullar.models import Anbar, Mehsullar, Muqavile, Servis, OdemeTarix, ServisOdeme, Stok
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import datetime
-from dateutil.relativedelta import relativedelta
 import pandas as pd
+from django.db import transaction
 
 @receiver(post_save, sender=Muqavile)
 def create_services(sender, instance, created, **kwargs):
     if created:
         print(f"Created ==> {created}")
-        indi = datetime.datetime.today().strftime('%Y-%m-%d')
-        month6 = datetime.datetime.today()+ relativedelta(months=6)
-        month18 = datetime.datetime.today()+ relativedelta(months=18)
-        month24 = datetime.datetime.today()+ relativedelta(months=24)
-        print(f'muqavile --> {instance}')
-        print(f"indi --> {indi}")
-        print(instance.mehsul_sayi)
-        i = 0
-        while(i<instance.mehsul_sayi):
+        indi = datetime.date.today()
+        print(f"Celery indi ==> {indi}")
         
-            Servis.objects.create(
-                muqavile=instance,
-                servis_tarix6ay= month6.strftime('%Y-%m-%d'),
-                servis_tarix18ay= month18.strftime('%Y-%m-%d'),
-                servis_tarix24ay= month24.strftime('%Y-%m-%d'),
-            )
-            i+=1
+        d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+        print(f"d ==> {d}")
+
+        month6 = d + pd.offsets.MonthBegin(6)
+        print(f"month6 ==> {month6}")
+
+        month12 = d + pd.offsets.MonthBegin(12)
+        print(f"month12 ==> {month12}")
+
+        month18 = d + pd.offsets.MonthBegin(18)
+        print(f"month18 ==> {month18}")
+
+        month24 = d + pd.offsets.MonthBegin(24)
+        print(f"month24 ==> {month24}")
+
+        print(f'muqavile --> {instance}')
+
+        print(instance.mehsul_sayi)
+
+        print(f"Muqavile ofis ==> {instance.vanleader.ofis}")
+        anbar = get_object_or_404(Anbar, ofis=instance.ofis)
+        print(f"Muqavile anbar ==> {anbar}")
+        
+        kartric6ay = Mehsullar.objects.filter(kartric_novu="KARTRIC6AY")
+        kartric12ay = Mehsullar.objects.filter(kartric_novu="KARTRIC12AY")
+        kartric18ay = Mehsullar.objects.filter(kartric_novu="KARTRIC18AY")
+        kartric24ay = Mehsullar.objects.filter(kartric_novu="KARTRIC24AY")
+
+        print(f'kartric6ay --> {kartric6ay}')
+        print(f'kartric12ay --> {kartric12ay}')
+        print(f'kartric18ay --> {kartric18ay}')
+        print(f'kartric24ay --> {kartric24ay}')
+
+        q = 0
+        while(q<instance.mehsul_sayi):
+            for i in range(1):
+                servis_qiymeti = 0
+                for j in kartric6ay:
+                    print(f"----------------------------{j=}")
+                    servis_qiymeti += float(j.qiymet)
+                servis = Servis.objects.create(
+                    muqavile=instance,
+                    servis_tarix = month6,
+                    servis_qiymeti=servis_qiymeti
+                )
+                servis.mehsullar.set(kartric6ay)
+                servis.save()
+            for i in range(1):
+                servis_qiymeti = 0
+                for j in kartric12ay:
+                    print(f"----------------------------{j=}")
+                    servis_qiymeti += float(j.qiymet)
+                servis = Servis.objects.create(
+                    muqavile=instance,
+                    servis_tarix = month12,
+                    servis_qiymeti=servis_qiymeti
+                )
+                servis.mehsullar.set(kartric12ay)
+                servis.save()
+            for i in range(1):
+                servis_qiymeti = 0
+                for j in kartric18ay:
+                    print(f"----------------------------{j=}")
+                    servis_qiymeti += float(j.qiymet)
+                servis = Servis.objects.create(
+                    muqavile=instance,
+                    servis_tarix = month18,
+                    servis_qiymeti=servis_qiymeti
+                )
+                servis.mehsullar.set(kartric18ay)
+                servis.save()
+            for i in range(1):
+                servis_qiymeti = 0
+                for j in kartric24ay:
+                    print(f"----------------------------{j=}")
+                    servis_qiymeti += float(j.qiymet)
+                servis = Servis.objects.create(
+                    muqavile=instance,
+                    servis_tarix = month24,
+                    servis_qiymeti=servis_qiymeti
+                )
+                servis.mehsullar.set(kartric24ay)
+                servis.save()
+            q+=1
+
+@receiver(post_save, sender=Servis)
+def create_servis_odeme(sender, instance, created, **kwargs):
+    if created:
+        print(f"----------------------------{instance=}")
+        
+        servis_odeme = ServisOdeme.objects.create(
+            servis = instance,
+            servis_qiymeti=instance.servis_qiymeti,
+            odenilecek_mebleg=instance.servis_qiymeti
+        ).save()
+        print(f"----------------------------{servis_odeme=}")
+
+        print(f"{servis_odeme=}")
+
 
 @receiver(post_save, sender=Muqavile)
 def create_odeme_tarix(sender, instance, created, **kwargs):
@@ -55,10 +139,12 @@ def create_odeme_tarix(sender, instance, created, **kwargs):
             ilkin_odenis = instance.ilkin_odenis
             ilkin_odenis_qaliq = instance.ilkin_odenis_qaliq
 
-            if(ilkin_odenis != ""):
+            if(ilkin_odenis is not None):
+                print(f"{ilkin_odenis=}")
                 ilkin_odenis = float(ilkin_odenis)
             
-            if(ilkin_odenis_qaliq != ""):
+            if(ilkin_odenis_qaliq is not None):
+                print(f"{ilkin_odenis_qaliq=}")
                 ilkin_odenis_qaliq = float(ilkin_odenis_qaliq)
 
             print(f"Ilkin odenis ==> {ilkin_odenis}  --- {type(ilkin_odenis)}")
@@ -104,7 +190,6 @@ def create_odeme_tarix(sender, instance, created, **kwargs):
                                         tarix = f"{inc_month[i].year}-{inc_month[i].month}-{inc_month[i].day}",
                                         qiymet = son_aya_odenecek_mebleg
                                     )
-                            
                         else:
                             if(datetime.date.today().day < 29):
                                 OdemeTarix.objects.create(

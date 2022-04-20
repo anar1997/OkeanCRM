@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Anbar,Mehsullar, AnbarQeydler, Emeliyyat, Muqavile, OdemeTarix, Servis, Stok, MuqavileHediyye
+from .models import Anbar,Mehsullar, AnbarQeydler, Emeliyyat, Muqavile, OdemeTarix, Servis, ServisOdeme, Stok, MuqavileHediyye
 
 
 class OdemeTarixAdmin(admin.ModelAdmin):
@@ -23,5 +23,6 @@ admin.site.register(Emeliyyat)
 admin.site.register(Muqavile)
 admin.site.register(OdemeTarix, OdemeTarixAdmin)
 admin.site.register(Servis)
+admin.site.register(ServisOdeme)
 admin.site.register(Stok)
 admin.site.register(MuqavileHediyye)

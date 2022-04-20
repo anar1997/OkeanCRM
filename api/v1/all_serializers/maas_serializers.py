@@ -17,7 +17,8 @@ from maas.models import (
     VanLeaderPrim, 
     DealerPrim, 
     OfficeLeaderPrim,
-    CanvasserPrim
+    CanvasserPrim,
+    KreditorPrim
 )
 
 class MaasGoruntulemeSerializer(serializers.ModelSerializer):
@@ -148,4 +149,9 @@ class CanvasserPrimSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CanvasserPrim
+        fields = "__all__"
+
+class KreditorPrimSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KreditorPrim
         fields = "__all__"

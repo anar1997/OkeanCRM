@@ -37,7 +37,9 @@ def create_prim(sender, instance, created, **kwargs):
         if dealer is not None:
             dealer_status = dealer.isci_status
             print(f"{dealer_status=}")
-            dealer_vezife = dealer.vezife.vezife_adi
+            dealer_vezife_l = dealer.vezife.all()
+            for v in dealer_vezife_l:
+                dealer_vezife = v.vezife_adi
             print(f"{dealer_vezife=} -- {type(dealer_vezife)}")
         else:
             dealer_status = None
@@ -49,7 +51,9 @@ def create_prim(sender, instance, created, **kwargs):
         if canvesser is not None:
             canvesser_status = canvesser.isci_status
             print(f"{canvesser_status=}")
-            canvesser_vezife = canvesser.vezife.vezife_adi
+            canvesser_vezife_l = canvesser.vezife.all()
+            for i in canvesser_vezife_l:
+                canvesser_vezife = i.vezife_adi
             print(f"{canvesser_vezife=} -- {type(canvesser_vezife)}")
         else:
             canvesser_status = None
@@ -99,10 +103,11 @@ def create_prim(sender, instance, created, **kwargs):
             print(f"{vanleader_maas_goruntulenme_bu_ay.satis_sayi=}")
             print(f"{vanleader_maas_goruntulenme_bu_ay.satis_meblegi=}")
 
+            vanleader_maas_goruntulenme_bu_ay.save()
+
             vanleader_maas_goruntulenme_novbeti_ay.yekun_maas = float(vanleader_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(vanleader_prim.komandaya_gore_prim) * float(instance.mehsul_sayi))
             print(f"{vanleader_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
-            vanleader_maas_goruntulenme_bu_ay.save()
             vanleader_maas_goruntulenme_novbeti_ay.save()
             
         # --------------------------------------------------------
@@ -121,10 +126,12 @@ def create_prim(sender, instance, created, **kwargs):
             print(f"{dealer_maas_goruntulenme_bu_ay.satis_sayi=}")
             print(f"{dealer_maas_goruntulenme_bu_ay.satis_meblegi=}")
 
+            dealer_maas_goruntulenme_bu_ay.save()
+
+
             dealer_maas_goruntulenme_novbeti_ay.yekun_maas = float(dealer_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(dealer_prim.komandaya_gore_prim) * float(instance.mehsul_sayi))
             print(f"{dealer_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
-            dealer_maas_goruntulenme_bu_ay.save()
             dealer_maas_goruntulenme_novbeti_ay.save()
 
         # --------------------------------------------------------
@@ -142,6 +149,7 @@ def create_prim(sender, instance, created, **kwargs):
             canvesser_maas_goruntulenme_bu_ay.satis_meblegi = float(canvesser_maas_goruntulenme_bu_ay.satis_meblegi) +  (float(instance.mehsul.qiymet) * float(instance.mehsul_sayi))
             print(f"{canvesser_maas_goruntulenme_bu_ay.satis_sayi=}")
             print(f"{canvesser_maas_goruntulenme_bu_ay.satis_meblegi=}")
+            canvesser_maas_goruntulenme_bu_ay.save()
 
             satis_sayina_gore_prim = 0
             
@@ -152,10 +160,9 @@ def create_prim(sender, instance, created, **kwargs):
             elif (canvesser_maas_goruntulenme_bu_ay.satis_sayi >= 20):
                 satis_sayina_gore_prim = canvesser_prim.satis20p
 
-            canvesser_maas_goruntulenme_novbeti_ay.yekun_maas = float(canvesser_maas_goruntulenme_novbeti_ay.yekun_maas) + float(canvesser_prim.komandaya_gore_prim) + (float(satis_sayina_gore_prim)* float(instance.mehsul_sayi))
+            canvesser_maas_goruntulenme_novbeti_ay.yekun_maas = float(canvesser_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(canvesser_prim.komandaya_gore_prim) * float(instance.mehsul_sayi)) + float(satis_sayina_gore_prim)
             print(f"{canvesser_maas_goruntulenme_novbeti_ay.yekun_maas=}")
 
-            canvesser_maas_goruntulenme_bu_ay.save()
             canvesser_maas_goruntulenme_novbeti_ay.save()
 
         

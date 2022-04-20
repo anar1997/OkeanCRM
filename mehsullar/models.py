@@ -1,3 +1,4 @@
+import django
 from django.db import models
 
 
@@ -25,10 +26,31 @@ class AnbarQeydler(models.Model):
 
 
 class Mehsullar(models.Model):
+    KARTRIC6AY = 'KARTRIC6AY'
+    KARTRIC12AY = 'KARTRIC12AY'
+    KARTRIC18AY = 'KARTRIC18AY'
+    KARTRIC24AY = 'KARTRIC24AY'
+
+    KARTRIC_NOVU_CHOICES = [
+        (KARTRIC6AY, "KARTRIC6AY"),
+        (KARTRIC12AY, "KARTRIC12AY"),
+        (KARTRIC18AY, "KARTRIC18AY"),
+        (KARTRIC24AY, "KARTRIC24AY"),
+    ]
+    
     mehsulun_adi = models.CharField(max_length=300)
     qiymet = models.FloatField()
     shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_mehsul")
     is_hediyye = models.BooleanField(default=False)
+
+    kartric_novu =  models.CharField(
+        max_length=50,
+        choices=KARTRIC_NOVU_CHOICES,
+        default=None,
+        null=True,
+        blank=True
+    )
+
 
     class Meta:
         ordering = ("pk",)
@@ -46,7 +68,7 @@ class Stok(models.Model):
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return f"stok -> {self.anbar}"
+        return f"stok -> {self.anbar} - {self.mehsul} - {self.say}"
 
 
 class Emeliyyat(models.Model):
@@ -131,7 +153,7 @@ class Muqavile(models.Model):
     mehsul_sayi = models.PositiveIntegerField(default=1, blank=True)
     muqavile_umumi_mebleg = models.FloatField(default=0, blank=True)
     elektron_imza = models.ImageField(upload_to="media/muqavile", null=True, blank=True)
-    muqavile_tarixi = models.DateField(auto_now_add=True, null=True, blank=True)
+    muqavile_tarixi = models.DateField(default=django.utils.timezone.now, blank=True)
     shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     ofis = models.ForeignKey('company.Ofis', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
     shobe = models.ForeignKey('company.Shobe', on_delete=models.CASCADE, related_name="muqavile", null=True, blank=True)
@@ -349,21 +371,34 @@ class OdemeTarix(models.Model):
     def __str__(self) -> str:
         return f"{self.pk}. {self.tarix} - {self.muqavile} - {self.qiymet}"
 
-
 class Servis(models.Model):
-    muqavile = models.ForeignKey(Muqavile, related_name="servis", null=True, on_delete=models.CASCADE)
-    kartric1 = models.ForeignKey(Mehsullar, related_name="kartric1_servis", on_delete=models.CASCADE, null=True)
-    kartric2 = models.ForeignKey(Mehsullar, related_name="kartric2_servis", on_delete=models.CASCADE, null=True)
-    kartric3 = models.ForeignKey(Mehsullar, related_name="kartric3_servis", on_delete=models.CASCADE, null=True)
-    kartric4 = models.ForeignKey(Mehsullar, related_name="kartric4_servis", on_delete=models.CASCADE, null=True)
-    kartric5 = models.ForeignKey(Mehsullar, related_name="kartric5_servis", on_delete=models.CASCADE, null=True)
-    kartric6 = models.ForeignKey(Mehsullar, related_name="kartric6_servis", on_delete=models.CASCADE, null=True)
-    servis_tarix6ay = models.DateField(default=False, null=True, blank=True)
-    servis_tarix18ay = models.DateField(default=False, null=True, blank=True)
-    servis_tarix24ay = models.DateField(default=False, null=True, blank=True)
+    kredit = models.BooleanField(default=False, blank=True)
+    kredit_muddeti = models.IntegerField(default=0, blank=True)
+
+    muqavile = models.ForeignKey(Muqavile, related_name="servis_muqavile", null=True, on_delete=models.CASCADE)
+    mehsullar = models.ManyToManyField(Mehsullar, related_name="servis_mehsul")
+    servis_tarix = models.DateField(default=django.utils.timezone.now, blank=True)
+    yerine_yetirildi = models.BooleanField(default=False)
+    servis_qiymeti = models.FloatField(default=0, blank=True)
+    ilkin_odenis = models.FloatField(default=0, blank=True)
 
     class Meta:
         ordering = ("pk",)
 
     def __str__(self) -> str:
-        return f"servis-{self.muqavile}"
+        return f"{self.pk}.servis-{self.muqavile}"
+
+class ServisOdeme(models.Model):
+    servis = models.ForeignKey(Servis, related_name="servis_odeme", null=True, on_delete=models.CASCADE)
+    servis_qiymeti = models.FloatField(default=0, blank=True)
+    endrim = models.FloatField(default=0, blank=True)
+    odenilecek_mebleg = models.FloatField(default=0, blank=True)
+    qeyd = models.TextField(blank=True)
+    odendi = models.BooleanField(default=False)
+    odeme_tarix = models.DateField(default=django.utils.timezone.now, blank=True)
+
+    class Meta:
+        ordering = ("pk",)
+
+    def __str__(self) -> str:
+        return f"servis-{self.servis}-{self.odenilecek_mebleg}-{self.odendi}"

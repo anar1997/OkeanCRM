@@ -27,8 +27,10 @@ from company.models import (
 
     Komanda,
     Shobe,
-    Vezifeler
+    Vezifeler,
+    MuqavileKreditor
 )
+from mehsullar.models import Muqavile
 
 
 class ShirketSerializer(serializers.ModelSerializer):
@@ -331,4 +333,17 @@ class OfisKassaMexaricSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OfisKassaMexaric
+        fields = '__all__'
+
+class MuqavileKreditorSerializer(serializers.ModelSerializer):
+    muqavile = serializers.StringRelatedField()
+    muqavile_id = serializers.PrimaryKeyRelatedField(
+        queryset=Muqavile.objects.all(), source='muqavile', write_only=True
+    )
+    kreditor = serializers.StringRelatedField()
+    kreditor_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), source='kreditor', write_only=True
+    )
+    class Meta:
+        model = MuqavileKreditor
         fields = '__all__'

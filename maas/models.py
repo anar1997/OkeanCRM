@@ -1,6 +1,9 @@
 import django
 from django.db import models
 import datetime
+from account.models import User
+
+from mehsullar.models import Servis
 
 class AbstractPrim(models.Model):
     KREDIT = 'KREDİT'
@@ -58,6 +61,12 @@ class CanvasserPrim(AbstractPrim):
 
     def __str__(self) -> str:
         return f"{self.prim_status} - {self.ofise_gore_prim}"
+
+class KreditorPrim(models.Model):
+    prim_faizi = models.PositiveBigIntegerField(default=0, blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.prim_faizi}"
 
 # -----------------------------------------------------------------------------------------------------------------------------
 

@@ -58,6 +58,9 @@ urlpatterns=[
     path('dealer-prim/', maas_views.DealerPrimListCreateAPIView.as_view()),
     path('dealer-prim/<int:pk>', maas_views.DealerPrimDetailAPIView.as_view()),
 
+    path('kreditor-prim/', maas_views.KreditorPrimListCreateAPIView.as_view()),
+    path('kreditor-prim/<int:pk>', maas_views.KreditorPrimDetailAPIView.as_view()),
+
     # gunler views *****************************************
     path('holding-gunler/', gunler_views.HoldingGunlerListCreateAPIView.as_view()),
     path('holding-gunler/<int:pk>', gunler_views.HoldingGunlerDetailAPIView.as_view()),
@@ -96,6 +99,9 @@ urlpatterns=[
     path('isci-gelib-getme-vaxtlari/<int:pk>', gunler_views.IsciGelibGetmeVaxtlariDetailAPIView.as_view()),
 
     # company views *****************************************
+    path('muqavile-kreditor/', company_views.MuqavileKreditorListCreateAPIView.as_view()),
+    path('muqavile-kreditor/<int:pk>', company_views.MuqavileKreditorDetailAPIView.as_view()),
+    
     path('komanda/', company_views.KomandaListCreateAPIView.as_view(), name="komanda"),
     path('komanda/<int:pk>', company_views.KomandaDetailAPIView.as_view(), name="komanda_detail"),
 
@@ -177,6 +183,9 @@ urlpatterns=[
 
     path('servis/', muqavile_views.ServisListCreateAPIView.as_view(), name="servis"),
     path('servis/<int:pk>', muqavile_views.ServisDetailAPIView.as_view(), name="servis_detail"),
+
+    path('servis-odeme/', muqavile_views.ServisOdemeListCreateAPIView.as_view()),
+    path('servis-odeme/<int:pk>', muqavile_views.ServisOdemeDetailAPIView.as_view()),
 
     path('stok/', muqavile_views.StokListCreateAPIView.as_view(), name="stok"),
     path('stok/<int:pk>', muqavile_views.StokDetailAPIView.as_view(), name="stok_detail"),

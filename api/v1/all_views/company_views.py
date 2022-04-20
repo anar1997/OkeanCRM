@@ -1,9 +1,12 @@
 from rest_framework import status, generics
 from rest_framework.generics import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from rest_framework.response import Response
 
 from api.v1.all_serializers.company_serializers import (
+    MuqavileKreditorSerializer,
     OfisKassaMedaxilSerializer,
     OfisKassaMexaricSerializer,
     ShirketKassaMedaxilSerializer,
@@ -33,6 +36,7 @@ from company.models import (
     HoldingKassaMedaxil,
     HoldingKassaMexaric,
     HoldingdenShirketlereTransfer,
+    MuqavileKreditor,
     OfisKassaMedaxil,
     OfisKassaMexaric,
 
@@ -57,6 +61,26 @@ from api.v1.utils import (
     kassa_transfer_utils
 )
 
+from api.v1.filters.company_filters.filters import (
+    HoldingKassaMedaxilFilter,
+    HoldingKassaMexaricFilter,
+    HoldingdenShirketlereTransferFilter,
+    KomandaFilter,
+    OfisFilter,
+    OfisKassaFilter,
+    OfisKassaMedaxilFilter,
+    OfisKassaMexaricFilter,
+    OfisdenShirketeTransferFilter,
+    ShirketFilter,
+    ShirketKassaFilter,
+    ShirketKassaMedaxilFilter,
+    ShirketKassaMexaricFilter,
+    ShirketdenHoldingeTransferFilter,
+    ShirketdenOfislereTransferFilter,
+    ShobeFilter,
+    VezifeFilter
+)
+
 from api.v1.permissions.company_permissions import permissions as company_permissions
 
 
@@ -66,6 +90,8 @@ from api.v1.permissions.company_permissions import permissions as company_permis
 class KomandaListCreateAPIView(generics.ListCreateAPIView):
     queryset = Komanda.objects.all()
     serializer_class = KomandaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = KomandaFilter
     permission_classes = [company_permissions.KomandaPermissions]
 
     def create(self, request, *args, **kwargs):
@@ -80,6 +106,8 @@ class KomandaListCreateAPIView(generics.ListCreateAPIView):
 class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Komanda.objects.all()
     serializer_class = KomandaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = KomandaFilter
     permission_classes = [company_permissions.KomandaPermissions]
 
     def destroy(self, request, *args, **kwargs):
@@ -96,6 +124,8 @@ class KomandaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class OfisListCreateAPIView(generics.ListCreateAPIView):
     queryset = Ofis.objects.all()
     serializer_class = OfisSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisFilter
     permission_classes = [company_permissions.OfisPermissions]
 
 
@@ -103,6 +133,8 @@ class OfisListCreateAPIView(generics.ListCreateAPIView):
 class OfisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ofis.objects.all()
     serializer_class = OfisSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisFilter
     permission_classes = [company_permissions.OfisPermissions]
 
 
@@ -113,6 +145,8 @@ class OfisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class VezifelerListCreateAPIView(generics.ListCreateAPIView):
     queryset = Vezifeler.objects.all()
     serializer_class = VezifelerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = VezifeFilter
     permission_classes = [company_permissions.VezifelerPermissions]
 
 
@@ -120,6 +154,8 @@ class VezifelerListCreateAPIView(generics.ListCreateAPIView):
 class VezifelerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vezifeler.objects.all()
     serializer_class = VezifelerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = VezifeFilter
     permission_classes = [company_permissions.VezifelerPermissions]
 
 
@@ -128,6 +164,8 @@ class VezifelerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShirketListCreateAPIView(generics.ListCreateAPIView):
     queryset = Shirket.objects.all()
     serializer_class = ShirketSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketFilter
     permission_classes = [company_permissions.ShirketPermissions]
 
 
@@ -135,6 +173,8 @@ class ShirketListCreateAPIView(generics.ListCreateAPIView):
 class ShirketDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Shirket.objects.all()
     serializer_class = ShirketSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketFilter
     permission_classes = [company_permissions.ShirketPermissions]
 
 
@@ -145,6 +185,8 @@ class ShirketDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShobeListCreateAPIView(generics.ListCreateAPIView):
     queryset = Shobe.objects.all()
     serializer_class = ShobeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShobeFilter
     permission_classes = [company_permissions.ShobePermissions]
 
 
@@ -152,6 +194,8 @@ class ShobeListCreateAPIView(generics.ListCreateAPIView):
 class ShobeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Shobe.objects.all()
     serializer_class = ShobeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShobeFilter
     permission_classes = [company_permissions.ShobePermissions]
 
 
@@ -177,6 +221,8 @@ class HoldingDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class HoldingKassaListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingKassa.objects.all()
     serializer_class = HoldingKassaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingKassaMedaxilFilter
     permission_classes = [company_permissions.HoldingKassaPermissions]
 
 
@@ -184,6 +230,8 @@ class HoldingKassaListCreateAPIView(generics.ListCreateAPIView):
 class HoldingKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingKassa.objects.all()
     serializer_class = HoldingKassaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingKassaMedaxilFilter
     permission_classes = [company_permissions.HoldingKassaPermissions]
 
 
@@ -193,6 +241,8 @@ class HoldingKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShirketKassaListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketKassa.objects.all()
     serializer_class = ShirketKassaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketKassaFilter
     permission_classes = [company_permissions.ShirketKassaPermissions]
 
 
@@ -200,6 +250,8 @@ class ShirketKassaListCreateAPIView(generics.ListCreateAPIView):
 class ShirketKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketKassa.objects.all()
     serializer_class = ShirketKassaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketKassaFilter
     permission_classes = [company_permissions.ShirketKassaPermissions]
 
 
@@ -209,6 +261,8 @@ class ShirketKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class OfisKassaListCreateAPIView(generics.ListCreateAPIView):
     queryset = OfisKassa.objects.all()
     serializer_class = OfisKassaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisKassaFilter
     permission_classes = [company_permissions.OfisKassaPermissions]
 
 
@@ -216,6 +270,8 @@ class OfisKassaListCreateAPIView(generics.ListCreateAPIView):
 class OfisKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OfisKassa.objects.all()
     serializer_class = OfisKassaSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisKassaFilter
     permission_classes = [company_permissions.OfisKassaPermissions]
 
 
@@ -225,6 +281,8 @@ class OfisKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class HoldingdenShirketlereTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingdenShirketlereTransfer.objects.all()
     serializer_class = HoldingdenShirketlereTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingdenShirketlereTransferFilter
     permission_classes = [company_permissions.HoldingdenShirketlereTransferPermissions]
 
 
@@ -235,6 +293,8 @@ class HoldingdenShirketlereTransferListCreateAPIView(generics.ListCreateAPIView)
 class HoldingdenShirketlereTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = HoldingdenShirketlereTransfer.objects.all()
     serializer_class = HoldingdenShirketlereTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingdenShirketlereTransferFilter
     permission_classes = [company_permissions.HoldingdenShirketlereTransferPermissions]
 
 
@@ -244,6 +304,8 @@ class HoldingdenShirketlereTransferDetailAPIView(generics.RetrieveAPIView):
 class ShirketdenHoldingeTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketdenHoldingeTransfer.objects.all()
     serializer_class = ShirketdenHoldingeTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketdenHoldingeTransferFilter
     permission_classes = [company_permissions.ShirketdenHoldingeTransferPermissions]
 
 
@@ -254,6 +316,8 @@ class ShirketdenHoldingeTransferListCreateAPIView(generics.ListCreateAPIView):
 class ShirketdenHoldingeTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = ShirketdenHoldingeTransfer.objects.all()
     serializer_class = ShirketdenHoldingeTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketdenHoldingeTransferFilter
     permission_classes = [company_permissions.ShirketdenHoldingeTransferPermissions]
 
 
@@ -263,6 +327,8 @@ class ShirketdenHoldingeTransferDetailAPIView(generics.RetrieveAPIView):
 class OfisdenShirketeTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = OfisdenShirketeTransfer.objects.all()
     serializer_class = OfisdenShirketeTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisdenShirketeTransferFilter
     permission_classes = [company_permissions.OfisdenShirketeTransferPermissions]
 
 
@@ -273,6 +339,8 @@ class OfisdenShirketeTransferListCreateAPIView(generics.ListCreateAPIView):
 class OfisdenShirketeTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = OfisdenShirketeTransfer.objects.all()
     serializer_class = OfisdenShirketeTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisdenShirketeTransferFilter
     permission_classes = [company_permissions.OfisdenShirketeTransferPermissions]
 
 
@@ -282,6 +350,8 @@ class OfisdenShirketeTransferDetailAPIView(generics.RetrieveAPIView):
 class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketdenOfislereTransfer.objects.all()
     serializer_class = ShirketdenOfislereTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketdenOfislereTransferFilter
     permission_classes = [company_permissions.ShirketdenOfislereTransferPermissions]
 
 
@@ -292,6 +362,8 @@ class ShirketdenOfislereTransferListCreateAPIView(generics.ListCreateAPIView):
 class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveAPIView):
     queryset = ShirketdenOfislereTransfer.objects.all()
     serializer_class = ShirketdenOfislereTransferSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketdenOfislereTransferFilter
     permission_classes = [company_permissions.ShirketdenOfislereTransferPermissions]
 
 
@@ -301,6 +373,8 @@ class ShirketdenOfislereTransferDetailAPIView(generics.RetrieveAPIView):
 class HoldingKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingKassaMedaxil.objects.all()
     serializer_class = HoldingKassaMedaxilSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingKassaMedaxilFilter
     permission_classes = [company_permissions.HoldingKassaMedaxilPermissions]
 
 
@@ -311,6 +385,8 @@ class HoldingKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
 class HoldingKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = HoldingKassaMedaxil.objects.all()
     serializer_class = HoldingKassaMedaxilSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingKassaMedaxilFilter
     permission_classes = [company_permissions.HoldingKassaMedaxilPermissions]
 
 
@@ -320,6 +396,8 @@ class HoldingKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
 class HoldingKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingKassaMexaric.objects.all()
     serializer_class = HoldingKassaMexaricSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingKassaMexaricFilter
     permission_classes = [company_permissions.HoldingKassaMexaricPermissions]
 
 
@@ -330,6 +408,8 @@ class HoldingKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
 class HoldingKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = HoldingKassaMexaric.objects.all()
     serializer_class = HoldingKassaMexaricSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = HoldingKassaMexaricFilter
     permission_classes = [company_permissions.HoldingKassaMexaricPermissions]
 
 
@@ -339,6 +419,8 @@ class HoldingKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
 class ShirketKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketKassaMedaxil.objects.all()
     serializer_class = ShirketKassaMedaxilSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketKassaMedaxilFilter
     permission_classes = [company_permissions.ShirketKassaMedaxilPermissions]
 
 
@@ -349,6 +431,8 @@ class ShirketKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
 class ShirketKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = ShirketKassaMedaxil.objects.all()
     serializer_class = ShirketKassaMedaxilSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketKassaMedaxilFilter
     permission_classes = [company_permissions.ShirketKassaMedaxilPermissions]
 
 
@@ -358,6 +442,8 @@ class ShirketKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
 class ShirketKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketKassaMexaric.objects.all()
     serializer_class = ShirketKassaMexaricSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketKassaMexaricFilter
     permission_classes = [company_permissions.ShirketKassaMexaricPermissions]
 
 
@@ -368,6 +454,8 @@ class ShirketKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
 class ShirketKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = ShirketKassaMexaric.objects.all()
     serializer_class = ShirketKassaMexaricSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ShirketKassaMexaricFilter
     permission_classes = [company_permissions.ShirketKassaMexaricPermissions]
 
 
@@ -377,6 +465,8 @@ class ShirketKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
 class OfisKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
     queryset = OfisKassaMedaxil.objects.all()
     serializer_class = OfisKassaMedaxilSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisKassaMedaxilFilter
     permission_classes = [company_permissions.OfisKassaMedaxilPermissions]
 
 
@@ -387,6 +477,8 @@ class OfisKassaMedaxilListCreateAPIView(generics.ListCreateAPIView):
 class OfisKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = OfisKassaMedaxil.objects.all()
     serializer_class = OfisKassaMedaxilSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisKassaMedaxilFilter
     permission_classes = [company_permissions.OfisKassaMedaxilPermissions]
 
 
@@ -396,6 +488,8 @@ class OfisKassaMedaxilDetailAPIView(generics.RetrieveUpdateAPIView):
 class OfisKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
     queryset = OfisKassaMexaric.objects.all()
     serializer_class = OfisKassaMexaricSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisKassaMexaricFilter
     permission_classes = [company_permissions.OfisKassaMexaricPermissions]
 
 
@@ -406,5 +500,18 @@ class OfisKassaMexaricListCreateAPIView(generics.ListCreateAPIView):
 class OfisKassaMexaricDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = OfisKassaMexaric.objects.all()
     serializer_class = OfisKassaMexaricSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfisKassaMexaricFilter
     permission_classes = [company_permissions.OfisKassaMexaricPermissions]
 
+# **********************************
+
+class MuqavileKreditorListCreateAPIView(generics.ListCreateAPIView):
+    queryset = MuqavileKreditor.objects.all()
+    serializer_class = MuqavileKreditorSerializer
+    permission_classes = [company_permissions.MuqavileKreditorPermissions]
+
+class MuqavileKreditorDetailAPIView(generics.RetrieveUpdateAPIView):
+    queryset = MuqavileKreditor.objects.all()
+    serializer_class = MuqavileKreditorSerializer
+    permission_classes = [company_permissions.MuqavileKreditorPermissions]

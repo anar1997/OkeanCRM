@@ -31,6 +31,15 @@ from api.v1.utils import (
 
 from api.v1.permissions.account_permissions import permissions as account_permissions
 
+from django_filters.rest_framework import DjangoFilterBackend
+
+from api.v1.filters.account_filters.filters import (
+    BolgeFilter,
+    IsciStatusFilter,
+    MusteriFilter,
+    MusteriQeydlerFilter,
+    UserFilter
+)
 
 # ********************************** user get post put delete **********************************
 
@@ -56,12 +65,16 @@ class RegisterApi(generics.CreateAPIView):
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserFilter
     permission_classes = [account_permissions.UserPermissions]
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UserFilter
     permission_classes = [account_permissions.UserPermissions]
 
     def destroy(self, request, *args, **kwargs):
@@ -95,12 +108,16 @@ class Login(TokenObtainPairView):
 class MusteriListCreateAPIView(generics.ListCreateAPIView):
     queryset = Musteri.objects.all()
     serializer_class = MusteriSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MusteriFilter
     permission_classes = [account_permissions.MusteriPermissions]
 
 
 class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Musteri.objects.all()
     serializer_class = MusteriSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MusteriFilter
     permission_classes = [account_permissions.MusteriPermissions]
 
     def destroy(self, request, *args, **kwargs):
@@ -114,12 +131,16 @@ class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class MusteriQeydlerListCreateAPIView(generics.ListCreateAPIView):
     queryset = MusteriQeydler.objects.all()
     serializer_class = MusteriQeydlerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MusteriQeydlerFilter
     permission_classes = [account_permissions.MusteriQeydlerPermissions]
 
 
 class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MusteriQeydler.objects.all()
     serializer_class = MusteriQeydlerSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = MusteriQeydlerFilter
     permission_classes = [account_permissions.MusteriQeydlerPermissions]
 
 # ********************************** bolge put delete post get **********************************
@@ -127,12 +148,16 @@ class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class BolgeListCreateAPIView(generics.ListCreateAPIView):
     queryset = Bolge.objects.all()
     serializer_class = BolgeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BolgeFilter
     permission_classes = [account_permissions.BolgePermissions]
 
 
 class BolgeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Bolge.objects.all()
     serializer_class = BolgeSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = BolgeFilter
     permission_classes = [account_permissions.BolgePermissions]
 
 
@@ -155,10 +180,14 @@ class IsciSatisSayiDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class IsciStatusListCreateAPIView(generics.ListCreateAPIView):
     queryset = IsciStatus.objects.all()
     serializer_class = IsciStatusSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = IsciStatusFilter
     permission_classes = [account_permissions.IsciStatusPermissions]
 
 
 class IsciStatusDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = IsciStatus.objects.all()
     serializer_class = IsciStatusSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = IsciStatusFilter
     permission_classes = [account_permissions.IsciStatusPermissions]

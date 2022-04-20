@@ -353,7 +353,7 @@ def avans_create(self, request, *args, **kwargs):
         yarim_ay_emek_haqqi = serializer.validated_data.get("yarim_ay_emek_haqqi")
         print(f"{yarim_ay_emek_haqqi=}")
         if yarim_ay_emek_haqqi is not None:
-            mebleg = float(maas_goruntuleme.yekun_maas) % int(yarim_ay_emek_haqqi)
+            mebleg = (float(maas_goruntuleme.yekun_maas) * int(yarim_ay_emek_haqqi)) / 100
 
         maas_goruntuleme.mebleg = mebleg
         maas_goruntuleme.yekun_maas = maas_goruntuleme.yekun_maas - float(mebleg)
