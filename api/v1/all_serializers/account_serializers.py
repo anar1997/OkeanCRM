@@ -53,15 +53,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
-                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'shobe', 'maas_uslubu', 'elektron_imza', 'password')
+                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'user_permissions', 'shobe', 'maas_uslubu', 'elektron_imza', 'password')
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
     def create(self, validated_data):
-        user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'], password=validated_data['password'],
-                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], 
-                                        tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], 
+        user = User.objects.create_user(username=validated_data['username'], password=validated_data['password'],
+                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'],
+                                        tel1=validated_data['tel1'], tel2=validated_data['tel2'],
                                         shirket=validated_data['shirket'], ofis=validated_data['ofis'], 
                                         komanda=validated_data['komanda'], shobe=validated_data['shobe'], isci_status=validated_data['isci_status'],
                                         maas_uslubu=validated_data['maas_uslubu'], elektron_imza=validated_data['elektron_imza']
@@ -69,6 +69,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         vezifeler=validated_data['vezife']
         for vezife in vezifeler: 
             user.vezife.add(vezife)
+        
+        user_permissions=validated_data['user_permissions']
+        for user_permission in user_permissions: 
+            user.user_permissions.add(user_permission)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
