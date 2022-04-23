@@ -26,6 +26,19 @@ from company.models import (
     Vezifeler
 )
 
+from django.contrib.auth.models import Permission, Group
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = "__all__"
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = "__all__"
+
+
 class IsciStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = IsciStatus
@@ -49,10 +62,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'], password=validated_data['password'],
                                         asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], 
                                         tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], 
-                                        shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], 
+                                        shirket=validated_data['shirket'], ofis=validated_data['ofis'], 
                                         komanda=validated_data['komanda'], shobe=validated_data['shobe'], isci_status=validated_data['isci_status'],
                                         maas_uslubu=validated_data['maas_uslubu'], elektron_imza=validated_data['elektron_imza']
                                     )
+        vezifeler=validated_data['vezife']
+        for vezife in vezifeler: 
+            user.vezife.add(vezife)
         return user
 
 class UserSerializer(serializers.ModelSerializer):

@@ -81,7 +81,7 @@ def muqavile_create(self, request, *args, **kwargs):
     vanleader_id = request.data.get("vanleader_id")
     print(f"vanleader_id ==> {vanleader_id}")
 
-    if (vanleader_id == "") or (vanleader_id == None):
+    if (vanleader_id == None):
         user = self.request.user
     else:
         user = get_object_or_404(User, pk=vanleader_id)
@@ -92,7 +92,7 @@ def muqavile_create(self, request, *args, **kwargs):
     print(f"canvesser_id ==> {canvesser_id}")
 
     musteri_id = request.data.get("musteri_id")
-    if musteri_id == "":
+    if musteri_id == None:
         return Response({"detail": "Müştəri qeyd olunmayıb"}, status=status.HTTP_400_BAD_REQUEST)
     musteri = get_object_or_404(Musteri, pk=musteri_id)
     print(f"musteri ==> {musteri}")
@@ -100,21 +100,21 @@ def muqavile_create(self, request, *args, **kwargs):
     dealer = None
     canvesser = None
 
-    if (dealer_id != ""):
+    if (dealer_id is not None):
         try:
             dealer = get_object_or_404(User, pk=dealer_id)
             print(f"dealer ==> {dealer}")
-            if (canvesser_id == ""):
+            if (canvesser_id == None):
                 canvesser = dealer
                 print(f"canvesser ==> {canvesser}")
         except:
             return Response({"detail": "Dealer tapılmadı"}, status=status.HTTP_400_BAD_REQUEST)
 
-    if (canvesser_id != ""):
+    if (canvesser_id is not None):
         try:
             canvesser = get_object_or_404(User, pk=canvesser_id)
             print(f"canvesser ==> {canvesser}")
-            if (dealer_id == ""):
+            if (dealer_id == None):
                 dealer = canvesser
                 print(f"dealer ==> {dealer}")
         except:
@@ -127,16 +127,16 @@ def muqavile_create(self, request, *args, **kwargs):
     indiki_tarix_san = datetime.datetime.timestamp(indiki_tarix)
     print(f"indiki_tarix_san ===> {indiki_tarix_san}")
 
-    if (request.POST.get("ilkin_odenis_tarixi") != ""):
-        ilkin_odenis_tarixi = request.POST.get("ilkin_odenis_tarixi")
+    if (request.data.get("ilkin_odenis_tarixi") is not None):
+        ilkin_odenis_tarixi = request.data.get("ilkin_odenis_tarixi")
         ilkin_odenis_tarixi_date = datetime.datetime.strptime(
             ilkin_odenis_tarixi, "%Y-%m-%d")
         ilkin_odenis_tarixi_san = datetime.datetime.timestamp(
             ilkin_odenis_tarixi_date)
         print(f"ilkin_odenis_tarixi_san ===> {ilkin_odenis_tarixi_san}")
 
-    if (request.POST.get("ilkin_odenis_qaliq_tarixi") != ""):
-        ilkin_odenis_qaliq_tarixi = request.POST.get(
+    if (request.data.get("ilkin_odenis_qaliq_tarixi") is not None):
+        ilkin_odenis_qaliq_tarixi = request.data.get(
             "ilkin_odenis_qaliq_tarixi")
         ilkin_odenis_qaliq_tarixi_date = datetime.datetime.strptime(
             ilkin_odenis_qaliq_tarixi, "%Y-%m-%d")
@@ -145,16 +145,16 @@ def muqavile_create(self, request, *args, **kwargs):
         print(
             f"ilkin_odenis_qaliq_tarixi_san ===> {ilkin_odenis_qaliq_tarixi_san}")
 
-    if (request.POST.get("negd_odenis_1_tarix") != ""):
-        negd_odenis_1_tarix = request.POST.get("negd_odenis_1_tarix")
+    if (request.data.get("negd_odenis_1_tarix") is not None):
+        negd_odenis_1_tarix = request.data.get("negd_odenis_1_tarix")
         negd_odenis_1_tarix_date = datetime.datetime.strptime(
             negd_odenis_1_tarix, "%Y-%m-%d")
         negd_odenis_1_tarix_san = datetime.datetime.timestamp(
             negd_odenis_1_tarix_date)
         print(f"negd_odenis_1_tarix_san ===> {negd_odenis_1_tarix_san}")
 
-    if (request.POST.get("negd_odenis_2_tarix") != ""):
-        negd_odenis_2_tarix = request.POST.get("negd_odenis_2_tarix")
+    if (request.data.get("negd_odenis_2_tarix") is not None):
+        negd_odenis_2_tarix = request.data.get("negd_odenis_2_tarix")
         negd_odenis_2_tarix_date = datetime.datetime.strptime(
             negd_odenis_2_tarix, "%Y-%m-%d")
         negd_odenis_2_tarix_san = datetime.datetime.timestamp(
@@ -162,7 +162,7 @@ def muqavile_create(self, request, *args, **kwargs):
         print(f"negd_odenis_2_tarix_san ===> {negd_odenis_2_tarix_san}")
 
     mehsul_id_str = request.data.get("mehsul_id")
-    if (mehsul_id_str == ""):
+    if (mehsul_id_str == None):
         print("Mehsul daxil edilmeyib")
         return Response({"detail": "Müqavilə imzalamaq üçün mütləq məhsul daxil edilməlidir."},
                         status=status.HTTP_400_BAD_REQUEST)
@@ -174,7 +174,7 @@ def muqavile_create(self, request, *args, **kwargs):
     print(f"mehsul ==> {mehsul}")
 
     mehsul_sayi = request.data.get("mehsul_sayi")
-    if (mehsul_sayi == ""):
+    if (mehsul_sayi == None):
         mehsul_sayi = 1
     print(f"mehsul_sayi ==> {mehsul_sayi}")
 
@@ -192,7 +192,7 @@ def muqavile_create(self, request, *args, **kwargs):
         muqavile_umumi_mebleg = mehsul_qiymeti * mehsul_sayi
         return muqavile_umumi_mebleg
 
-    if (mehsul_sayi == ""):
+    if (mehsul_sayi == None):
         mehsul_sayi = 1
 
     muqavile_umumi_mebleg = umumi_mebleg(mehsul.qiymet, int(mehsul_sayi))
@@ -208,17 +208,17 @@ def muqavile_create(self, request, *args, **kwargs):
 
     kredit_muddeti = request.data.get("kredit_muddeti")
 
-    if (user.ofis == None) or (user.ofis == ""):
+    if (user.ofis == None):
         ofis = Ofis.objects.get(pk=ofis_id)
     else:
         ofis = user.ofis
-
-    if (user.shirket == None) or (user.shirket == ""):
+    print(f"************************************** {ofis=}")
+    if (user.shirket == None):
         shirket = mehsul.shirket
     else:
         shirket = user.shirket
 
-    if (shobe_id != ""):
+    if (shobe_id is not None):
         shobe = Shobe.objects.get(pk=shobe_id)
     else:
         shobe = user.shobe
@@ -227,6 +227,7 @@ def muqavile_create(self, request, *args, **kwargs):
         anbar = get_object_or_404(Anbar, ofis=ofis)
         print(f"{anbar=}")
     except:
+        traceback.print_exc()
         return Response({"detail": "Anbar tapılmadı"}, status=status.HTTP_400_BAD_REQUEST)
 
     print(f"anbar ==> {anbar}")
@@ -250,12 +251,12 @@ def muqavile_create(self, request, *args, **kwargs):
 
         print(serializer.is_valid())
         if (serializer.is_valid()):
-            if (mehsul_sayi == "") or (mehsul_sayi == None):
+            if (mehsul_sayi == None):
                 mehsul_sayi = 1
             print("Burdayam")
             # Kredit
             if (odenis_uslubu == "KREDİT"):
-                if (kredit_muddeti == ""):
+                if (kredit_muddeti == None):
                     # Kredit muddeti daxil edilmezse
                     print("Burdayam1")
                     return Response({"detail": "Ödəmə statusu kreditdir amma kredit müddəti daxil edilməyib"},
@@ -272,18 +273,18 @@ def muqavile_create(self, request, *args, **kwargs):
                 elif (int(kredit_muddeti) > 0):
                     # Kredit muddeti 0-dan boyuk olarsa
 
-                    if ((ilkin_odenis != "") and (request.POST.get("ilkin_odenis_tarixi") == "")):
+                    if ((ilkin_odenis is not None) and (request.data.get("ilkin_odenis_tarixi") == None)):
                         return Response(
                             {"detail": "İlkin ödəniş məbləği qeyd olunub amma ilkin ödəniş tarixi qeyd olunmayıb"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-                    if ((ilkin_odenis_qaliq != "") and (request.POST.get("ilkin_odenis_qaliq_tarixi") == "")):
+                    if ((ilkin_odenis_qaliq is not None) and (request.data.get("ilkin_odenis_qaliq_tarixi") == None)):
                         return Response({
                             "detail": "Qalıq İlkin ödəniş məbləği qeyd olunub amma qalıq ilkin ödəniş tarixi qeyd olunmayıb"},
                             status=status.HTTP_400_BAD_REQUEST)
 
                     print("Burdayam4")
-                    if (ilkin_odenis == "" and ilkin_odenis_qaliq == ""):
+                    if (ilkin_odenis == None and ilkin_odenis_qaliq == None):
                         # Ilkin odenis daxil edilmezse
                         print("Burdayam5")
                         stok_mehsul_ciximi(stok, int(mehsul_sayi))
@@ -296,7 +297,7 @@ def muqavile_create(self, request, *args, **kwargs):
                                         shobe=shobe, muqavile_umumi_mebleg=muqavile_umumi_mebleg)
                         return Response({"detail": "Müqavilə müvəffəqiyyətlə imzalandı"},
                                         status=status.HTTP_201_CREATED)
-                    elif (ilkin_odenis != "" and ilkin_odenis_qaliq == ""):
+                    elif (ilkin_odenis is not None and ilkin_odenis_qaliq == None):
                         # Umumi ilkin odenis meblegi daxil edilerse ve qaliq ilkin odenis meblegi daxil edilmezse
                         print("Burdayam7")
                         if (indiki_tarix_san == ilkin_odenis_tarixi_san):
@@ -334,8 +335,8 @@ def muqavile_create(self, request, *args, **kwargs):
                         return Response({"detail": "Müqavilə müvəffəqiyyətlə imzalandı"},
                                         status=status.HTTP_201_CREATED)
 
-                    elif ((ilkin_odenis == "" and ilkin_odenis_qaliq != "") or (
-                            float(ilkin_odenis) == 0 and ilkin_odenis_qaliq != "")):
+                    elif ((ilkin_odenis == None and ilkin_odenis_qaliq is not None) or (
+                            float(ilkin_odenis) == 0 and ilkin_odenis_qaliq is not None)):
                         return Response({"detail": "İlkin ödəniş daxil edilmən qalıq ilkin ödəniş daxil edilə bilməz"},
                                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -344,7 +345,7 @@ def muqavile_create(self, request, *args, **kwargs):
                         # Umumi ilkin odenis meblegi 0 olarsa
                         return Response({"detail": "İlkin ödəniş 0 azn daxil edilə bilməz"},
                                         status=status.HTTP_400_BAD_REQUEST)
-                    elif (ilkin_odenis_qaliq != ""):
+                    elif (ilkin_odenis_qaliq is not None):
                         print("Burdayam 19")
                         if ((indiki_tarix_san == ilkin_odenis_tarixi_san) and (
                                 indiki_tarix_san < ilkin_odenis_qaliq_tarixi_san)):
@@ -439,15 +440,15 @@ def muqavile_create(self, request, *args, **kwargs):
                                         status=status.HTTP_400_BAD_REQUEST)
 
             # Negd odenis
-            elif (odenis_uslubu == "NƏĞD" and request.data.get("negd_odenis_1") == "" and request.data.get(
-                    "negd_odenis_2") == ""):
-                if (kredit_muddeti != ""):
+            elif (odenis_uslubu == "NƏĞD" and request.data.get("negd_odenis_1") == None and request.data.get(
+                    "negd_odenis_2") == None):
+                if (kredit_muddeti is not None):
                     return Response({"detail": "Kredit müddəti ancaq status kredit olan müqavilələr üçündür"},
                                     status=status.HTTP_400_BAD_REQUEST)
-                if (ilkin_odenis != "" or ilkin_odenis_qaliq != ""):
+                if (ilkin_odenis is not None or ilkin_odenis_qaliq is not None):
                     return Response({"detail": "İlkin ödəniş ancaq status kredit olan müqavilələr üçündür"},
                                     status=status.HTTP_400_BAD_REQUEST)
-                if (mehsul_sayi == ""):
+                if (mehsul_sayi == None):
                     mehsul_sayi = 1
 
                 stok_mehsul_ciximi(stok, int(mehsul_sayi))
@@ -466,12 +467,12 @@ def muqavile_create(self, request, *args, **kwargs):
                 return Response({"detail": "Müqavilə müvəffəqiyyətlə imzalandı"}, status=status.HTTP_201_CREATED)
 
             # 2 defeye negd odenis
-            elif (request.data.get("negd_odenis_1") != "" and request.data.get("negd_odenis_2") != ""):
+            elif (request.data.get("negd_odenis_1") is not None and request.data.get("negd_odenis_2") is not None):
                 if (float(request.data.get("negd_odenis_1")) < muqavile_umumi_mebleg):
-                    if (mehsul_sayi == ""):
+                    if (mehsul_sayi == None):
                         mehsul_sayi = 1
                     print("Burdayam")
-                    if (kredit_muddeti != ""):
+                    if (kredit_muddeti is not None):
                         print("Burdayam 16")
                         return Response({"detail": "Kredit müddəti ancaq status kredit olan müqavilələr üçündür"},
                                         status=status.HTTP_400_BAD_REQUEST)
@@ -487,7 +488,7 @@ def muqavile_create(self, request, *args, **kwargs):
                     print(
                         f"muqavile_umumi_mebleg ==> {muqavile_umumi_mebleg} --- {type(muqavile_umumi_mebleg)}")
 
-                    if (negd_odenis_1 == "" or negd_odenis_2 == "" or negd_odenis_1 == "0" or negd_odenis_2 == "0"):
+                    if (negd_odenis_1 == None or negd_odenis_2 == None or negd_odenis_1 == "0" or negd_odenis_2 == "0"):
                         print("In1")
                         return Response(
                             {"detail": "2 dəfəyə nəğd ödəniş statusunda hər 2 nəğd ödəniş qeyd olunmalıdır"},
@@ -557,14 +558,14 @@ def muqavile_create(self, request, *args, **kwargs):
                         return Response({"detail": "Ödəmək istədiyiniz məbləğlər məhsulun qiymətinə bərabər deyil"},
                                         status=status.HTTP_400_BAD_REQUEST)
 
-            elif (request.data.get("negd_odenis_1") != "" and request.data.get("negd_odenis_2") == ""):
+            elif (request.data.get("negd_odenis_1") is not None and request.data.get("negd_odenis_2") == None):
                 return Response({"detail": "Nəğd ödəniş 2 daxil edilməyib"}, status=status.HTTP_400_BAD_REQUEST)
 
             elif (odenis_uslubu == "İKİ DƏFƏYƏ NƏĞD"):
-                if (mehsul_sayi == ""):
+                if (mehsul_sayi == None):
                     mehsul_sayi = 1
                 print("Burdayam")
-                if (kredit_muddeti != ""):
+                if (kredit_muddeti is not None):
                     print("Burdayam 16")
                     return Response({"detail": "Kredit müddəti ancaq status kredit olan müqavilələr üçündür"},
                                     status=status.HTTP_400_BAD_REQUEST)
@@ -580,7 +581,7 @@ def muqavile_create(self, request, *args, **kwargs):
                 print(
                     f"muqavile_umumi_mebleg ==> {muqavile_umumi_mebleg} --- {type(muqavile_umumi_mebleg)}")
 
-                if (negd_odenis_1 == "" or negd_odenis_2 == "" or negd_odenis_1 == "0" or negd_odenis_2 == "0"):
+                if (negd_odenis_1 == None or negd_odenis_2 == None or negd_odenis_1 == "0" or negd_odenis_2 == "0"):
                     print("In1")
                     return Response({"detail": "2 dəfəyə nəğd ödəniş statusunda hər 2 nəğd ödəniş qeyd olunmalıdır"},
                                     status=status.HTTP_400_BAD_REQUEST)
@@ -750,7 +751,7 @@ def muqavile_patch(self, request, *args, **kwargs):
                 muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
             print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler}")
 
-            odemek_istediyi_mebleg = float(request.POST.get("yeni_qrafik_mebleg"))
+            odemek_istediyi_mebleg = float(request.data.get("yeni_qrafik_mebleg"))
             print(f"odemek_istediyi_mebleg ==> {odemek_istediyi_mebleg}")
 
             odenen_mebleg = 0
@@ -1213,7 +1214,7 @@ def muqavile_update(self, request, *args, **kwargs):
                 muqavile=muqavile, odenme_status="ÖDƏNMƏYƏN")
             print(f"odenmeyen_odemetarixler ==> {odenmeyen_odemetarixler}")
 
-            odemek_istediyi_mebleg = float(request.POST.get("yeni_qrafik_mebleg"))
+            odemek_istediyi_mebleg = float(request.data.get("yeni_qrafik_mebleg"))
             print(f"odemek_istediyi_mebleg ==> {odemek_istediyi_mebleg}")
 
             odenen_mebleg = 0

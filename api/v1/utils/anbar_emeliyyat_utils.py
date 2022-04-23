@@ -35,13 +35,13 @@ def emeliyyat_create(self, request, *args, **kwargs):
         print(f"Stok1 ==> {stok1}")
         print(f"stok1.say ==> {stok1.say}")
         if (say > stok1.say):
-            return Response({"Göndərən anbarda yetəri qədər məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Göndərən anbarda yetəri qədər məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
         try:
             stok2 = get_object_or_404(Stok, anbar=qebul_eden, mehsul=gonderilen_mehsul)
             print(f"stok2 ==> {stok2}")
             if (stok1 == stok2):
                 print("307 ISE DUSDU")
-                return Response({"Göndərən və göndərilən anbar eynidir!"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"detail": "Göndərən və göndərilən anbar eynidir!"}, status=status.HTTP_404_NOT_FOUND)
             stok1.say = stok1.say - say
             stok1.save()
             print(f"stok1.say ==> {stok1.say}")
@@ -59,12 +59,12 @@ def emeliyyat_create(self, request, *args, **kwargs):
             print("3 calisdi **********")
             if (serializer.is_valid()):
                 serializer.save(gonderen=gonderen_anbar)
-            return Response({"Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
         except:
             stok2 = Stok.objects.create(anbar=qebul_eden, mehsul=gonderilen_mehsul, say=say)
             if (stok1 == stok2):
                 print("BURA DAAAA ISE DUSDU")
-                return Response({"Göndərən və göndərilən anbar eynidir!"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"detail": "Göndərən və göndərilən anbar eynidir!"}, status=status.HTTP_404_NOT_FOUND)
             stok2.save()
             stok1.say = stok1.say - say
             stok1.save()
@@ -72,7 +72,7 @@ def emeliyyat_create(self, request, *args, **kwargs):
             print("4 calisdi **********")
             if (serializer.is_valid()):
                 serializer.save(gonderen=gonderen_anbar)
-            return Response({"Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     except:
         print("5 calisdi **********")
-        return Response({"Göndərən anbarda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "Göndərən anbarda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)

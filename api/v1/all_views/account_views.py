@@ -1,5 +1,5 @@
 from django.contrib.auth import user_logged_in
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 
 from rest_framework.response import Response
 from rest_framework import generics
@@ -11,7 +11,9 @@ from api.v1.all_serializers.account_serializers import (
     MusteriSerializer,
     MusteriQeydlerSerializer,
     IsciSatisSayiSerializer,
-    IsciStatusSerializer
+    IsciStatusSerializer,
+    PermissionSerializer,
+    GroupSerializer
 )
 
 from account.models import (
@@ -22,6 +24,8 @@ from account.models import (
     Musteri,
     IsciStatus
 )
+
+from django.contrib.auth.models import Permission, Group
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -41,6 +45,22 @@ from api.v1.filters.account_filters.filters import (
     UserFilter
 )
 
+# ********************************** permission model get post put delete **********************************
+class PermissionListApi(generics.ListAPIView):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    permission_classes = [account_permissions.PermissionModelPermissions]
+
+# ********************************** permission group model get post put delete **********************************
+class GroupListCreateApi(generics.ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [account_permissions.GroupPermissions]
+
+class GroupDetailApi(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [account_permissions.GroupPermissions]
 # ********************************** user get post put delete **********************************
 
 
@@ -59,7 +79,7 @@ class RegisterApi(generics.CreateAPIView):
                     serializer.save(isci_status=standart_status)
             else:
                 serializer.save()
-            return Response({"detail": "İşçi qeydiyyatdan keçirildi"}, status=status.HTTP_201_CREATED)
+        return Response({"detail": "İşçi qeydiyyatdan keçirildi"}, status=status.HTTP_201_CREATED)
 
 
 class UserList(generics.ListAPIView):

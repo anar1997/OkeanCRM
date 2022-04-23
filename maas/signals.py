@@ -84,7 +84,7 @@ def create_prim(sender, instance, created, **kwargs):
                 print(f"{officeLeader_maas_goruntulenme_bu_ay.satis_meblegi=}")
                 officeLeader_maas_goruntulenme_bu_ay.save()
 
-                officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas = float(officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(ofisleader_prim.komandaya_gore_prim) * float(instance.mehsul_sayi))
+                officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas = float(officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas) + (float(ofisleader_prim.ofise_gore_prim) * float(instance.mehsul_sayi))
                 print(f"{officeLeader_maas_goruntulenme_novbeti_ay.yekun_maas=}")
                 officeLeader_maas_goruntulenme_novbeti_ay.save()
 

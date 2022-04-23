@@ -11,6 +11,10 @@ urlpatterns=[
     path('users/', account_views.UserList.as_view()),
     path('users/<int:pk>', account_views.UserDetail.as_view()),
     path('register/', account_views.RegisterApi.as_view()),
+    path('permission-list/', account_views.PermissionListApi.as_view()),
+
+    path('permission-group/', account_views.GroupListCreateApi.as_view()),
+    path('permission-group/<int:pk>', account_views.GroupDetailApi.as_view()),
 
     path("login/", account_views.Login.as_view()),
     path("token-refresh/", token_refresh),

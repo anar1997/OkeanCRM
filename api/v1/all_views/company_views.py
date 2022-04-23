@@ -62,6 +62,7 @@ from api.v1.utils import (
 )
 
 from api.v1.filters.company_filters.filters import (
+    HoldingKassaFilter,
     HoldingKassaMedaxilFilter,
     HoldingKassaMexaricFilter,
     HoldingdenShirketlereTransferFilter,
@@ -222,7 +223,7 @@ class HoldingKassaListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingKassa.objects.all()
     serializer_class = HoldingKassaSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = HoldingKassaMedaxilFilter
+    filterset_class = HoldingKassaFilter
     permission_classes = [company_permissions.HoldingKassaPermissions]
 
 
@@ -231,7 +232,7 @@ class HoldingKassaDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingKassa.objects.all()
     serializer_class = HoldingKassaSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = HoldingKassaMedaxilFilter
+    filterset_class = HoldingKassaFilter
     permission_classes = [company_permissions.HoldingKassaPermissions]
 
 

@@ -1,6 +1,4 @@
-import logging, logging.config
-import sys
-import  jwt
+import jwt
 from django.conf import settings
 
 

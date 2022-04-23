@@ -31,3 +31,13 @@ class IsciSatisSayiPermissions(permissions.IsAdminUser):
     def has_permission(self, request, view):
         perm_util = PermissionUtil(user=request.user, request=request, object_name="iscisatissayi", view=view)
         return perm_util.add_user_permission_to_list()
+
+class PermissionModelPermissions(permissions.IsAdminUser):
+    def has_permission(self, request, view):
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="permission", view=view)
+        return perm_util.add_user_permission_to_list()
+
+class GroupPermissions(permissions.IsAdminUser):
+    def has_permission(self, request, view):
+        perm_util = PermissionUtil(user=request.user, request=request, object_name="group", view=view)
+        return perm_util.add_user_permission_to_list()
