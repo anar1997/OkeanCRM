@@ -45,13 +45,14 @@ class User(AbstractUser):
         choices=MAAS_USLUBU_CHOICES,
         default=FIX
     )
-    maas = models.FloatField(default=0, blank=True)
+    maas = models.FloatField(default=0, null=True, blank=True)
     qeyd = models.TextField(null=True, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
 
     class Meta:
         ordering = ("pk",)  

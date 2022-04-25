@@ -25,6 +25,7 @@ from company.models import (
     Shobe,
     Vezifeler
 )
+from django.contrib.auth.password_validation import validate_password
 
 from django.contrib.auth.models import Permission, Group
 
@@ -50,25 +51,52 @@ class BolgeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
-                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'shobe', 'maas_uslubu', 'elektron_imza', 'password')
+        fields = ('id', 'username', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
+                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'user_permissions','maas','qeyd', 'shobe', 'maas_uslubu', 'elektron_imza', 'password', 'password2',)
         extra_kwargs = {
             'password': {'write_only': True},
         }
 
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+
+        return attrs
+
     def create(self, validated_data):
-        user = User.objects.create_user(username=validated_data['username'], email=validated_data['email'], password=validated_data['password'],
-                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], 
-                                        tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], 
+        user = User.objects.create(username=validated_data['username'],
+                                        asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'],
+                                        tel1=validated_data['tel1'], tel2=validated_data['tel2'],
                                         shirket=validated_data['shirket'], ofis=validated_data['ofis'], 
-                                        komanda=validated_data['komanda'], shobe=validated_data['shobe'], isci_status=validated_data['isci_status'],
-                                        maas_uslubu=validated_data['maas_uslubu'], elektron_imza=validated_data['elektron_imza']
+                                        komanda=validated_data['komanda'], shobe=validated_data['shobe'],
+                                        maas_uslubu=validated_data['maas_uslubu'],
+                                        qeyd=validated_data['qeyd'], elektron_imza=validated_data['elektron_imza']
                                     )
+        user.set_password(validated_data['password'])
         vezifeler=validated_data['vezife']
+        print("isci_status=",validated_data['isci_status'])
+        standart_status = IsciStatus.objects.get(status_adi="STANDART")
+        if validated_data['isci_status'] == None:
+            user.isci_status = standart_status
+        else:
+            user.isci_status=validated_data['isci_status']
+        if validated_data['maas'] == None:
+            user.maas = 0
+        elif validated_data['maas'] is not None:
+            user.maas = validated_data['maas']
+
         for vezife in vezifeler: 
             user.vezife.add(vezife)
+        
+        user_permissions=validated_data['user_permissions']
+        for user_permission in user_permissions: 
+            user.user_permissions.add(user_permission)
+        user.save()
         return user
 
 class UserSerializer(serializers.ModelSerializer):

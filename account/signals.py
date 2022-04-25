@@ -1,59 +1,38 @@
-# from rest_framework.exceptions import ValidationError
-# from django.shortcuts import get_object_or_404
-# from mehsullar.models import Muqavile
-# from account.models import IsciSatisSayi
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
-# import datetime
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from maas.models import MaasGoruntuleme
+from mehsullar.models import Muqavile
+from account.models import IsciSatisSayi, User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+import datetime
+import pandas as pd
 
-
-# @receiver(post_save, sender=Muqavile)
-# def create_isci_satis_sayi(sender, instance, created, **kwargs):
-#     if created:
-#         print(f"Created isci satis sayi ==> {created}")
-#         vanleader = instance.vanleader
-#         dealer = instance.dealer
-#         print(f"vanleader ==> {vanleader}")
-#         print(f"dealer ==> {dealer}")
-
-#         mehsul_sayi = instance.mehsul_sayi
-#         print(f"mehsul_sayi ==> {mehsul_sayi}")
-
-#         muqavile_tarixi = instance.muqavile_tarixi
-#         print(f"muqavile_tarixi ==> {muqavile_tarixi} -- {type(muqavile_tarixi)}")
+@receiver(post_save, sender=User)
+def create_isci_maas_goruntulenme(sender, instance, created, **kwargs):
+    if created:
+        user = instance
+        print(f"Celery users ==> {user}")
+        indi = datetime.date.today()
+        print(f"Celery indi ==> {indi}")
         
-#         year = muqavile_tarixi.year
-#         month = muqavile_tarixi.month
-#         print(f"year ==> {year} -- {type(year)}")
-#         print(f"month ==> {month} -- {type(month)}")
+        d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+        print(f"d ==> {d}")
 
-#         tarix = datetime.date(year=year, month=month, day=1)
-#         print(f"tarix ==> {tarix} -- {type(tarix)}")
+        next_m = d + pd.offsets.MonthBegin(1)
+        print(f"next_m ==> {next_m}")
 
-#         vanleader_satis_sayi_model = IsciSatisSayi.objects.filter(tarix=tarix, isci = vanleader)
-#         dealer_satis_sayi_model = IsciSatisSayi.objects.filter(tarix=tarix, isci = dealer)
-
-#         print(f"vanleader_satis_sayi_model ==> {vanleader_satis_sayi_model} -- {len(vanleader_satis_sayi_model)}")
-#         print(f"dealer_satis_sayi_model ==> {dealer_satis_sayi_model} -- {len(dealer_satis_sayi_model)}")
         
-        
-#         if(len(vanleader_satis_sayi_model) == 0):
-#             vanleader_satis_sayi = IsciSatisSayi.objects.create(tarix=tarix, isci = vanleader, satis_sayi = mehsul_sayi)
-#             vanleader_satis_sayi.save()
-#             print(f"vanleader_satis_sayi -- {vanleader_satis_sayi}")
-#         elif(len(vanleader_satis_sayi_model) != 0):
-#             vanleader_satis_sayi = vanleader_satis_sayi_model[0]
-#             print(f"vanleader_satis_sayi -- {vanleader_satis_sayi}")
-#             vanleader_satis_sayi.satis_sayi = float(vanleader_satis_sayi.satis_sayi) + float(mehsul_sayi)
-#             vanleader_satis_sayi.save()
-
-
-#         if(len(dealer_satis_sayi_model) == 0):
-#             dealer_satis_sayi = IsciSatisSayi.objects.create(tarix=tarix, isci = dealer, satis_sayi = mehsul_sayi)
-#             dealer_satis_sayi.save()
-#             print(f"dealer_satis_sayi -- {dealer_satis_sayi}")
-#         elif(len(dealer_satis_sayi_model) != 0):
-#             dealer_satis_sayi = dealer_satis_sayi_model[0]
-#             print(f"dealer_satis_sayi -- {dealer_satis_sayi}")
-#             dealer_satis_sayi.satis_sayi = float(dealer_satis_sayi.satis_sayi) + float(mehsul_sayi)
-#             dealer_satis_sayi.save()
+        isci_maas = MaasGoruntuleme.objects.filter(
+            isci=user, 
+            tarix__year = next_m.year,
+            tarix__month = next_m.month
+        )
+        print(f"Celery isci_maas ==> {isci_maas}")
+        if len(isci_maas) == 0:
+            if user.maas_uslubu == "FİX":
+                MaasGoruntuleme.objects.create(isci=user, tarix=f"{indi.year}-{indi.month}-{1}", yekun_maas=user.maas).save()
+                MaasGoruntuleme.objects.create(isci=user, tarix=f"{next_m.year}-{next_m.month}-{1}", yekun_maas=user.maas).save()
+            else:    
+                MaasGoruntuleme.objects.create(isci=user, tarix=f"{indi.year}-{indi.month}-{1}").save()
+                MaasGoruntuleme.objects.create(isci=user, tarix=f"{next_m.year}-{next_m.month}-{1}").save()

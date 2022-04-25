@@ -72,14 +72,14 @@ class EmeliyyatSerializer(serializers.ModelSerializer):
     gonderilen_mehsul = MehsullarSerializer(read_only=True)
 
     gonderen_id = serializers.PrimaryKeyRelatedField(
-        queryset=Anbar.objects.all(), source="gonderen", write_only=True
+        queryset=Anbar.objects.all(), source="gonderen", write_only=True, required= True
     )
     qebul_eden_id = serializers.PrimaryKeyRelatedField(
-        queryset=Anbar.objects.all(), source="qebul_eden", write_only=True
+        queryset=Anbar.objects.all(), source="qebul_eden", write_only=True, required= True
     )
 
     gonderilen_mehsul_id = serializers.PrimaryKeyRelatedField(
-        queryset=Mehsullar.objects.all(), source="gonderilen_mehsul", write_only=True
+        queryset=Mehsullar.objects.all(), source="gonderilen_mehsul", write_only=True, required= True
     )
 
     class Meta:

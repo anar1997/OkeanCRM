@@ -8,30 +8,33 @@ from mehsullar.models import (
 )
 from rest_framework.generics import get_object_or_404
 
-
 def emeliyyat_create(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
-    gonderen = int(request.POST["gonderen_id"])
-    print(f"Gonderen id ==> {gonderen}")
-    gonderen_anbar = get_object_or_404(Anbar, pk=gonderen)
-    print(f"Gonderen anbar ==> {gonderen_anbar}")
-    qebul_eden_id = int(request.POST["qebul_eden_id"])
-    print(f"qebul_eden id ==> {qebul_eden_id}")
-    qebul_eden = get_object_or_404(Anbar, pk=qebul_eden_id)
-    print(f"qebul_eden anbar ==> {qebul_eden}")
+    # try:
+    if serializer.is_valid():
+        gonderen = request.data.get("gonderen_id")
+        print(f"Gonderen id ==> {gonderen}")
+        gonderen_anbar = get_object_or_404(Anbar, pk=gonderen)
+        print(f"Gonderen anbar ==> {gonderen_anbar}")
+        qebul_eden_id = request.data.get("qebul_eden_id")
+        print(f"qebul_eden id ==> {qebul_eden_id}")
+        qebul_eden = get_object_or_404(Anbar, pk=qebul_eden_id)
+        print(f"qebul_eden anbar ==> {qebul_eden}")
 
-    gonderilen_mehsul_id = int(request.POST["gonderilen_mehsul_id"])
-    print(f"Gonderilen mehsul id ==> {gonderilen_mehsul_id}")
-    gonderilen_mehsul = get_object_or_404(Mehsullar, pk=gonderilen_mehsul_id)
-    print(f"Gonderilen mehsul ==> {gonderilen_mehsul}")
-    say = int(request.POST["mehsulun_sayi"])
-    print(f"say ==> {say}")
+        gonderilen_mehsul_id = request.data.get("gonderilen_mehsul_id")
+        print(f"Gonderilen mehsul id ==> {gonderilen_mehsul_id}")
+        gonderilen_mehsul = get_object_or_404(Mehsullar, pk=gonderilen_mehsul_id)
+        print(f"Gonderilen mehsul ==> {gonderilen_mehsul}")
+        say = request.data.get("mehsulun_sayi")
+        print(f"say ==> {say}")
 
-    qeyd = request.POST["qeyd"]
-    print(f"qeyd ==> {qeyd}")
+        qeyd = request.data.get("qeyd")
+        print(f"qeyd ==> {qeyd}")
 
-    try:
+
         stok1 = get_object_or_404(Stok, anbar=gonderen_anbar, mehsul=gonderilen_mehsul)
+        if stok1 == None:
+            return Response({"detail": "Göndərən anbarda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
         print(f"Stok1 ==> {stok1}")
         print(f"stok1.say ==> {stok1.say}")
         if (say > stok1.say):
@@ -72,7 +75,6 @@ def emeliyyat_create(self, request, *args, **kwargs):
             print("4 calisdi **********")
             if (serializer.is_valid()):
                 serializer.save(gonderen=gonderen_anbar)
-            return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
-    except:
-        print("5 calisdi **********")
-        return Response({"detail": "Göndərən anbarda məhsul yoxdur"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"detail": "Məlumatları doğru daxil edin"}, status=status.HTTP_404_NOT_FOUND)

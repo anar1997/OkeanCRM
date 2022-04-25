@@ -1,3 +1,4 @@
+from urllib import response
 from django.contrib.auth import user_logged_in
 from rest_framework import status, generics, permissions
 
@@ -45,6 +46,8 @@ from api.v1.filters.account_filters.filters import (
     UserFilter
 )
 
+import traceback
+
 # ********************************** permission model get post put delete **********************************
 class PermissionListApi(generics.ListAPIView):
     queryset = Permission.objects.all()
@@ -71,15 +74,10 @@ class RegisterApi(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if(serializer.is_valid()):
-            isci_status = serializer.validated_data.get('isci_status')
-            standart_status = IsciStatus.objects.get(status_adi="STANDART")
-            print("isci_status=",isci_status)
-            if isci_status == "" or isci_status == None:
-                if standart_status is not None:
-                    serializer.save(isci_status=standart_status)
-            else:
-                serializer.save()
-        return Response({"detail": "İşçi qeydiyyatdan keçirildi"}, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response({"detail": "İşçi qeydiyyatdan keçirildi"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"detail": "Məlumatları doğru daxil edin"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserList(generics.ListAPIView):
