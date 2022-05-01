@@ -1,3 +1,4 @@
+from numpy import delete
 from api.v1.all_serializers.gunler_serializers import (
     HoldingGunlerSerializer, 
     IsciGunlerSerializer, 
@@ -28,6 +29,9 @@ from gunler.models import (
     HoldingIstisnaIsci,
     VezifeIstisnaIsci
 )
+
+import pandas as pd
+import datetime
 
 from api.v1.utils import gunler_utils
 
@@ -62,6 +66,9 @@ class HoldingIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         return gunler_utils.holding_istisna_isci_gunler_update(self, request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.holding_istisna_isci_gunler_delete(self, request, *args, **kwargs)
+
 # ********************************** Shirket Gunler get post put delete **********************************
 class ShirketGunlerListCreateAPIView(generics.ListAPIView):
     queryset = ShirketGunler.objects.all()
@@ -88,6 +95,9 @@ class ShirketIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.shirket_istisna_isci_gunler_update(self, request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.shirket_istisna_isci_gunler_delete(self, request, *args, **kwargs)
 
 # ********************************** Ofis Gunler get post put delete **********************************
 class OfisGunlerListCreateAPIView(generics.ListAPIView):
@@ -116,6 +126,9 @@ class OfisIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         return gunler_utils.ofis_istisna_isci_gunler_update(self, request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.ofis_istisna_isci_gunler_delete(self, request, *args, **kwargs)
+
 # ********************************** Shobe Gunler get post put delete **********************************
 class ShobeGunlerListCreateAPIView(generics.ListAPIView):
     queryset = ShobeGunler.objects.all()
@@ -142,6 +155,9 @@ class ShobeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.shobe_istisna_isci_gunler_update(self, request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.shobe_istisna_isci_gunler_delete(self, request, *args, **kwargs)
 
 # ********************************** Komanda Gunler get post put delete **********************************
 class KomandaGunlerListCreateAPIView(generics.ListAPIView):
@@ -170,6 +186,9 @@ class KomandaIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         return gunler_utils.komanda_istisna_isci_gunler_update(self, request, *args, **kwargs)
 
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.komanda_istisna_isci_gunler_delete(self, request, *args, **kwargs)
+
 # ********************************** Vezife Gunler get post put delete **********************************
 class VezifeGunlerListCreateAPIView(generics.ListAPIView):
     queryset = VezifeGunler.objects.all()
@@ -195,6 +214,9 @@ class VezifeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.vezife_istisna_isci_gunler_update(self, request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return gunler_utils.vezife_istisna_isci_gunler_delete(self, request, *args, **kwargs)
     
 # ********************************** Isci Gunler get post put delete **********************************
 class IsciGunlerListCreateAPIView(generics.ListAPIView):

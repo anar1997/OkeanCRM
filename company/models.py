@@ -1,6 +1,4 @@
 from django.db import models
-import account
-
 
 # Create your models here.
 class Holding(models.Model):

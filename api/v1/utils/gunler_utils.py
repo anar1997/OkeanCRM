@@ -1,5 +1,6 @@
-from datetime import datetime
+import datetime
 from django.shortcuts import get_object_or_404
+import pandas as pd
 from rest_framework import status
 from rest_framework.response import Response
 from account.models import User
@@ -103,6 +104,9 @@ def instisna_isci_create(serializer, company, company_name, obj_gunler):
     tarix = obj_gunler.tarix
     print(f"tarix==>{tarix}----{type(tarix)}")
 
+    obj_gunler_tetil_gunleri = obj_gunler.tetil_gunleri
+    print(f"{obj_gunler_tetil_gunleri=}")
+
     date_list = []
     k_date_list = []
     
@@ -118,12 +122,24 @@ def instisna_isci_create(serializer, company, company_name, obj_gunler):
     istisna_isciler = serializer.validated_data.get("istisna_isciler")
     print(f"istisna_isciler==>{istisna_isciler}----{type(istisna_isciler)} -- {len(istisna_isciler)}")
 
+    indi = datetime.date.today()
+    print(f"indi ==> {indi}")
+
+    d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+    print(f"d ==> {d}")
+
+    next_m = d + pd.offsets.MonthBegin(1)
+    print(f"next_m ==> {next_m}")
+
+    days_in_mont = pd.Period(f"{next_m.year}-{next_m.month}-{1}").days_in_month
+    print(f"days_in_mont ==> {days_in_mont}")
+
     for isci in istisna_isciler:
         isci_gunler = IsciGunler.objects.get(isci=isci, tarix=tarix)
         print(f"{isci_gunler=} --- {type(isci_gunler)=}")
         print(f"{isci_gunler.tetil_gunleri} -- {type(isci_gunler.tetil_gunleri)=}")
         if isci_gunler.tetil_gunleri is not None:
-            isci_gunler_tetil_gunleri = isci_gunler.tetil_gunleri.rstrip("]").lstrip("[").split(",")
+            isci_gunler_tetil_gunleri = obj_gunler_tetil_gunleri.rstrip("]").lstrip("[").split(",")
             print(f"{isci_gunler_tetil_gunleri=}----{type(isci_gunler_tetil_gunleri)=} -- {len(isci_gunler_tetil_gunleri)=}")
             for i in isci_gunler_tetil_gunleri:
                 new_el = i.strip().strip("'").strip('"')
@@ -133,10 +149,11 @@ def instisna_isci_create(serializer, company, company_name, obj_gunler):
             for i in date_list:
                 print(f"{i=}")
                 if i in k_date_list:
+                    print(f"silinen i - {i}")
                     k_date_list.remove(i)
         isci_gunler.tetil_gunleri = k_date_list
-        isci_gunler.is_gunleri_count = isci_gunler.is_gunleri_count + len(date_list)
-        isci_gunler.qeyri_is_gunu_count = isci_gunler.qeyri_is_gunu_count - len(date_list)
+        isci_gunler.is_gunleri_count = float(days_in_mont) - len(date_list)
+        isci_gunler.qeyri_is_gunu_count = len(date_list)
         isci_gunler.save()
 
     serializer.save(tetil_gunleri=date_list, istisna_isciler=istisna_isciler)
@@ -147,9 +164,12 @@ def istisna_isci_update(serializer, company, company_name, obj_gunler, obj_istis
     tarix = obj_gunler.tarix
     print(f"tarix==>{tarix}----{type(tarix)}")
 
+    obj_gunler_tetil_gunleri = obj_gunler.tetil_gunleri
+    print(f"{obj_gunler_tetil_gunleri=}")
+
     date_list = []
     k_date_list = []
-    u_date_list = []
+    q_date_list = []
 
     k_tetil_gunleri = obj_istisna_isci.tetil_gunleri
     print(f"{k_tetil_gunleri=} -- {type(k_tetil_gunleri)}")
@@ -159,6 +179,18 @@ def istisna_isci_update(serializer, company, company_name, obj_gunler, obj_istis
         new_el = i.strip().strip("'").strip('"')
         k_date_list.append(new_el)
     print(f"{k_date_list=}----{type(k_date_list)=}")
+
+    indi = datetime.date.today()
+    print(f"indi ==> {indi}")
+
+    d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+    print(f"d ==> {d}")
+
+    next_m = d + pd.offsets.MonthBegin(1)
+    print(f"next_m ==> {next_m}")
+
+    days_in_mont = pd.Period(f"{next_m.year}-{next_m.month}-{1}").days_in_month
+    print(f"days_in_mont ==> {days_in_mont}")
 
     tetil_gunleri = serializer.validated_data.get("tetil_gunleri")
     if tetil_gunleri == None:
@@ -174,17 +206,6 @@ def istisna_isci_update(serializer, company, company_name, obj_gunler, obj_istis
             date_list.append(new_el)
 
     print(f"date_list==>{date_list}----{type(date_list)}")
-
-    for i in date_list:
-        u_date_list.append(i)
-
-    for j in k_date_list:
-        if j in u_date_list:
-            continue
-        else:
-            u_date_list.append(j)
-
-    print(f"{u_date_list=}----{type(u_date_list)=}")
 
     u_istisna_isciler = []
 
@@ -217,23 +238,29 @@ def istisna_isci_update(serializer, company, company_name, obj_gunler, obj_istis
         for isci in u_istisna_isciler:
             isci_gunler = IsciGunler.objects.get(isci=isci, tarix=tarix)
             print(f"{isci_gunler=} --- {type(isci_gunler)=}")
-            print(f"{isci_gunler.tetil_gunleri} -- {type(isci_gunler.tetil_gunleri)=}")
             if isci_gunler.tetil_gunleri is not None:
-                isci_gunler_tetil_gunleri = isci_gunler.tetil_gunleri.rstrip("]").lstrip("[").split(",")
+                isci_gunler_tetil_gunleri = obj_gunler_tetil_gunleri.rstrip("]").lstrip("[").split(",")
                 print(f"{isci_gunler_tetil_gunleri=}----{type(isci_gunler_tetil_gunleri)=} -- {len(isci_gunler_tetil_gunleri)=}")
                 for i in isci_gunler_tetil_gunleri:
                     new_el = i.strip().strip("'").strip('"')
-                    k_date_list.append(new_el)
-                print(f"{k_date_list=}----{type(k_date_list)=}")
+                    q_date_list.append(new_el)
+                print(f"{q_date_list=}----{type(q_date_list)=}")
 
-                for i in date_list:
-                    print(f"{i=}")
-                    if i in k_date_list:
-                        u_date_list.remove(i)
-            isci_gunler.tetil_gunleri = u_date_list
-            isci_gunler.is_gunleri_count = isci_gunler.is_gunleri_count + len(date_list)
-            isci_gunler.qeyri_is_gunu_count = isci_gunler.qeyri_is_gunu_count - len(date_list)
-            isci_gunler.save()
+                if len(date_list) == len(q_date_list):
+                    isci_gunler.tetil_gunleri = list(q_date_list)
+                    isci_gunler.is_gunleri_count = float(days_in_mont)
+                    isci_gunler.qeyri_is_gunu_count = 0
+                    isci_gunler.save()
+                else:
+                    for i in date_list:
+                        print(f"{i=}")
+                        if i in q_date_list:
+                            print(f"silinen i - {i}")
+                            q_date_list.remove(i)
+                        isci_gunler.tetil_gunleri = list(q_date_list)
+                        isci_gunler.is_gunleri_count = float(days_in_mont) - len(date_list)
+                        isci_gunler.qeyri_is_gunu_count = len(date_list)
+                        isci_gunler.save()
     elif(
         (serializer.validated_data.get("istisna_isciler") != None) 
         and 
@@ -244,69 +271,85 @@ def istisna_isci_update(serializer, company, company_name, obj_gunler, obj_istis
             print(f"{isci_gunler=} --- {type(isci_gunler)=}")
             print(f"{isci_gunler.tetil_gunleri} -- {type(isci_gunler.tetil_gunleri)=}")
             if isci_gunler.tetil_gunleri is not None:
-                isci_gunler_tetil_gunleri = isci_gunler.tetil_gunleri.rstrip("]").lstrip("[").split(",")
+                isci_gunler_tetil_gunleri = obj_gunler_tetil_gunleri.rstrip("]").lstrip("[").split(",")
                 print(f"{isci_gunler_tetil_gunleri=}----{type(isci_gunler_tetil_gunleri)=} -- {len(isci_gunler_tetil_gunleri)=}")
                 for i in isci_gunler_tetil_gunleri:
                     new_el = i.strip().strip("'").strip('"')
-                    k_date_list.append(new_el)
-                print(f"{k_date_list=}----{type(k_date_list)=}")
+                    q_date_list.append(new_el)
+                print(f"{q_date_list=}----{type(q_date_list)=}")
 
                 for i in date_list:
                     print(f"{i=}")
-                    if i in u_date_list:
-                        u_date_list.remove(i)
-            isci_gunler.tetil_gunleri = u_date_list
-            isci_gunler.is_gunleri_count = isci_gunler.is_gunleri_count + len(date_list)
-            isci_gunler.qeyri_is_gunu_count = isci_gunler.qeyri_is_gunu_count - len(date_list)
+                    if i in q_date_list:
+                        print(f"silinen i - {i}")
+                        q_date_list.remove(i)
+            isci_gunler.tetil_gunleri = list(q_date_list)
+            isci_gunler.is_gunleri_count = float(days_in_mont) - len(date_list)
+            isci_gunler.qeyri_is_gunu_count = len(date_list)
             isci_gunler.save()
     elif(
         (serializer.validated_data.get("istisna_isciler") != None) 
         and 
         (serializer.validated_data.get("tetil_gunleri") != None)
     ):
-        for isci in istisna_isciler:
-            isci_gunler = IsciGunler.objects.get(isci=isci, tarix=tarix)
-            print(f"{isci_gunler=} --- {type(isci_gunler)=}")
-            print(f"{isci_gunler.tetil_gunleri} -- {type(isci_gunler.tetil_gunleri)=}")
-            if isci_gunler.tetil_gunleri is not None:
-                isci_gunler_tetil_gunleri = isci_gunler.tetil_gunleri.rstrip("]").lstrip("[").split(",")
-                print(f"{isci_gunler_tetil_gunleri=}----{type(isci_gunler_tetil_gunleri)=} -- {len(isci_gunler_tetil_gunleri)=}")
-                for i in isci_gunler_tetil_gunleri:
-                    new_el = i.strip().strip("'").strip('"')
-                    k_date_list.append(new_el)
-                print(f"{k_date_list=}----{type(k_date_list)=}")
-
-                for i in date_list:
-                    print(f"{i=}")
-                    if i in k_date_list:
-                        k_date_list.remove(i)
-            isci_gunler.tetil_gunleri = u_date_list
-            isci_gunler.is_gunleri_count = isci_gunler.is_gunleri_count + len(u_date_list)
-            isci_gunler.qeyri_is_gunu_count = isci_gunler.qeyri_is_gunu_count - len(u_date_list)
-            isci_gunler.save()
-
         for isci in u_istisna_isciler:
             isci_gunler = IsciGunler.objects.get(isci=isci, tarix=tarix)
             print(f"{isci_gunler=} --- {type(isci_gunler)=}")
-            print(f"{isci_gunler.tetil_gunleri} -- {type(isci_gunler.tetil_gunleri)=}")
             if isci_gunler.tetil_gunleri is not None:
-                isci_gunler_tetil_gunleri = isci_gunler.tetil_gunleri.rstrip("]").lstrip("[").split(",")
+                isci_gunler_tetil_gunleri = obj_gunler_tetil_gunleri.rstrip("]").lstrip("[").split(",")
                 print(f"{isci_gunler_tetil_gunleri=}----{type(isci_gunler_tetil_gunleri)=} -- {len(isci_gunler_tetil_gunleri)=}")
                 for i in isci_gunler_tetil_gunleri:
                     new_el = i.strip().strip("'").strip('"')
-                    k_date_list.append(new_el)
-                print(f"{k_date_list=}----{type(k_date_list)=}")
+                    q_date_list.append(new_el)
+                print(f"{q_date_list=}----{type(q_date_list)=}")
 
-                for i in date_list:
-                    print(f"{i=}")
-                    if i in k_date_list:
-                        k_date_list.remove(i)
-            isci_gunler.tetil_gunleri = u_date_list
-            isci_gunler.is_gunleri_count = isci_gunler.is_gunleri_count + len(date_list)
-            isci_gunler.qeyri_is_gunu_count = isci_gunler.qeyri_is_gunu_count - len(date_list)
+                if len(date_list) == len(q_date_list):
+                    isci_gunler.tetil_gunleri = list(q_date_list)
+                    isci_gunler.is_gunleri_count = float(days_in_mont)
+                    isci_gunler.qeyri_is_gunu_count = 0
+                    isci_gunler.save()
+                else:
+                    for i in date_list:
+                        print(f"{i=}")
+                        if i in q_date_list:
+                            print(f"silinen i - {i}")
+                            q_date_list.remove(i)
+                        isci_gunler.tetil_gunleri = list(q_date_list)
+                        isci_gunler.is_gunleri_count = float(days_in_mont) - len(date_list)
+                        isci_gunler.qeyri_is_gunu_count = len(date_list)
+                        isci_gunler.save()
+
+    # serializer.save(tetil_gunleri=date_list, istisna_isciler=u_istisna_isciler)
+    serializer.save()
+
+def istisna_isci_delete(obj_gunler, obj_istisna_isci):
+    istisna_isciler = obj_istisna_isci.istisna_isciler.all()
+    print(f"{istisna_isciler=}")
+
+    tarix = obj_gunler.tarix
+    print(f"tarix==>{tarix}----{type(tarix)}")
+
+    indi = datetime.date.today()
+    print(f"indi ==> {indi}")
+
+    d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+    print(f"d ==> {d}")
+
+    next_m = d + pd.offsets.MonthBegin(1)
+    print(f"next_m ==> {next_m}")
+
+    days_in_mont = pd.Period(f"{next_m.year}-{next_m.month}-{1}").days_in_month
+    print(f"days_in_mont ==> {days_in_mont}")
+
+    for isci in istisna_isciler:
+        isci_gunler = IsciGunler.objects.get(isci=isci, tarix=tarix)
+        print(f"{isci_gunler=} --- {type(isci_gunler)=}")
+        if isci_gunler.tetil_gunleri is not None: 
+            isci_gunler.tetil_gunleri = None
+            isci_gunler.is_gunleri_count = float(days_in_mont)
+            isci_gunler.qeyri_is_gunu_count = 0
             isci_gunler.save()
 
-    serializer.save(tetil_gunleri=u_date_list, istisna_isciler=u_istisna_isciler)
 
 def isci_tetil_gunleri_calc(serializer, obj):
     date_list = []
@@ -358,9 +401,9 @@ def gunler_update(serializer, company, company_name, obj_gunler):
 
     tarix = obj_gunler.tarix
     print(f"tarix==>{tarix}----{type(tarix)}")
-
-    holding = obj_gunler.holding
-    print(f"{holding=}")
+    
+    # holding = obj_gunler.company
+    # print(f"{holding=}")
 
     is_gunleri_count = obj_gunler.is_gunleri_count
     print(f"{is_gunleri_count=}")
@@ -470,6 +513,19 @@ def holding_istisna_isci_gunler_update(self, request, *args, **kwargs):
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
+def holding_istisna_isci_gunler_delete(self, request, *args, **kwargs):
+    holding_istisna_isci_obj = self.get_object()
+    print(f"{holding_istisna_isci_obj=}")
+    try:
+        istisna_isci_delete(
+            obj_gunler=holding_istisna_isci_obj.holding_gunler, 
+            obj_istisna_isci=holding_istisna_isci_obj
+        )
+        holding_istisna_isci_obj.delete()
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
+
 # ------------------------------------------------------------------------------------------------
 
 def ofis_gunler_update(self, request, *args, **kwargs):
@@ -503,6 +559,19 @@ def ofis_istisna_isci_gunler_update(self, request, *args, **kwargs):
         istisna_isci_update(serializer=serializer, company="ofis", company_name=ofis_istisna_isci_obj.ofis_gunler.ofis, obj_gunler=ofis_istisna_isci_obj.ofis_gunler, obj_istisna_isci=ofis_istisna_isci_obj)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
+
+def ofis_istisna_isci_gunler_delete(self, request, *args, **kwargs):
+    ofis_istisna_isci_obj = self.get_object()
+    print(f"{ofis_istisna_isci_obj=}")
+    try:
+        istisna_isci_delete(
+            obj_gunler=ofis_istisna_isci_obj.holding_gunler, 
+            obj_istisna_isci=ofis_istisna_isci_obj
+        )
+        ofis_istisna_isci_obj.delete()
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ------------------------------------------------------------------------------------------------
 
@@ -538,6 +607,18 @@ def shirket_istisna_isci_gunler_update(self, request, *args, **kwargs):
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
+def shirket_istisna_isci_gunler_delete(self, request, *args, **kwargs):
+    shirket_istisna_isci_obj = self.get_object()
+    print(f"{shirket_istisna_isci_obj=}")
+    try:
+        istisna_isci_delete(
+            obj_gunler=shirket_istisna_isci_obj.holding_gunler, 
+            obj_istisna_isci=shirket_istisna_isci_obj
+        )
+        shirket_istisna_isci_obj.delete()
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ------------------------------------------------------------------------------------------------
 
@@ -572,6 +653,19 @@ def shobe_istisna_isci_gunler_update(self, request, *args, **kwargs):
         istisna_isci_update(serializer=serializer, company="shobe", company_name=shobe_istisna_isci_obj.shobe_gunler.shobe, obj_gunler=shobe_istisna_isci_obj.shobe_gunler, obj_istisna_isci=shobe_istisna_isci_obj)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
+
+def shobe_istisna_isci_gunler_delete(self, request, *args, **kwargs):
+    shobe_istisna_isci_obj = self.get_object()
+    print(f"{shobe_istisna_isci_obj=}")
+    try:
+        istisna_isci_delete(
+            obj_gunler=shobe_istisna_isci_obj.holding_gunler, 
+            obj_istisna_isci=shobe_istisna_isci_obj
+        )
+        shobe_istisna_isci_obj.delete()
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 # ------------------------------------------------------------------------------------------------
 
 def komanda_gunler_update(self, request, *args, **kwargs):
@@ -605,6 +699,19 @@ def komanda_istisna_isci_gunler_update(self, request, *args, **kwargs):
         istisna_isci_update(serializer=serializer, company="komanda", company_name=komanda_istisna_isci_obj.komanda_gunler.komanda, obj_gunler=komanda_istisna_isci_obj.komanda_gunler, obj_istisna_isci=komanda_istisna_isci_obj)
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
+
+def komanda_istisna_isci_gunler_delete(self, request, *args, **kwargs):
+    komanda_istisna_isci_obj = self.get_object()
+    print(f"{komanda_istisna_isci_obj=}")
+    try:
+        istisna_isci_delete(
+            obj_gunler=komanda_istisna_isci_obj.holding_gunler, 
+            obj_istisna_isci=komanda_istisna_isci_obj
+        )
+        komanda_istisna_isci_obj.delete()
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 
 # ------------------------------------------------------------------------------------------------
 
@@ -640,6 +747,18 @@ def vezife_istisna_isci_gunler_update(self, request, *args, **kwargs):
         return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
     return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
     
+def vezife_istisna_isci_gunler_delete(self, request, *args, **kwargs):
+    vezife_istisna_isci_obj = self.get_object()
+    print(f"{vezife_istisna_isci_obj=}")
+    try:
+        istisna_isci_delete(
+            obj_gunler=vezife_istisna_isci_obj.holding_gunler, 
+            obj_istisna_isci=vezife_istisna_isci_obj
+        )
+        vezife_istisna_isci_obj.delete()
+        return Response({"detail": "Əməliyyat uğurla yerinə yetirildi"}, status=status.HTTP_200_OK)
+    except:
+        return Response({"detail": "Xəta!"}, status=status.HTTP_400_BAD_REQUEST)
 # ------------------------------------------------------------------------------------------------
 
 def user_gunler_update(self, request, *args, **kwargs):

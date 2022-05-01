@@ -2,15 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-import mehsullar
-from company.models import (
-    Shirket,
-    Ofis,
-    Komanda,
-    Shobe,
-    Vezifeler
-)
-
 from .managers import CustomUserManager
 
 
@@ -31,11 +22,11 @@ class User(AbstractUser):
     tel1=models.CharField(max_length=200)
     tel2=models.CharField(max_length=200)
     sv_image=models.ImageField(upload_to="media/%Y/%m/%d/", null=True, blank=True)
-    shirket=models.ForeignKey(Shirket, on_delete=models.SET_NULL, null=True, related_name="ishci")
-    ofis=models.ForeignKey(Ofis, on_delete=models.SET_NULL, null=True, related_name="ishci")
-    shobe=models.ForeignKey(Shobe, on_delete=models.SET_NULL, null=True, related_name="ishci")
-    vezife = models.ForeignKey(Vezifeler, on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
-    komanda = models.OneToOneField(Komanda, on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
+    shirket=models.ForeignKey("company.Shirket", on_delete=models.SET_NULL, null=True, related_name="ishci")
+    ofis=models.ForeignKey("company.Ofis", on_delete=models.SET_NULL, null=True, related_name="ishci")
+    shobe=models.ForeignKey("company.Shobe", on_delete=models.SET_NULL, null=True, related_name="ishci")
+    vezife = models.ForeignKey("company.Vezifeler", on_delete=models.SET_NULL, related_name="user_vezife", null=True, blank=True)
+    komanda = models.OneToOneField("company.Komanda", on_delete=models.SET_NULL, related_name="user_komanda", null=True, blank=True)
     isci_status = models.ForeignKey(IsciStatus, on_delete=models.SET_NULL, null=True, blank=True)
 
     USERNAME_FIELD = 'username'

@@ -1,6 +1,4 @@
 from django.db import models
-import account
-import company
 
 
 class Anbar(models.Model):

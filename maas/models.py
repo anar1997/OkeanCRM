@@ -1,8 +1,5 @@
 from datetime import datetime
 from django.db import models
-import account
-import mehsullar
-import company
 
 class AbstractPrim(models.Model):
     KREDIT = 'KREDİT'
