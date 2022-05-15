@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from account.models import IsciSatisSayi, User, Musteri
 from api.v1.all_serializers.muqavile_serializers import MuqavileSerializer
-from company.models import OfisKassa, OfisKassaMedaxil, OfisKassaMexaric
+from company.models import Ofis, OfisKassa, OfisKassaMedaxil, OfisKassaMexaric, Shirket, Shobe
 from mehsullar.models import (
     Anbar,
     Mehsullar,
@@ -14,7 +14,7 @@ from mehsullar.models import (
 from rest_framework.generics import get_object_or_404
 import pandas as pd
 import datetime
-
+import traceback
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -70,8 +70,16 @@ def k_mexaric(company_kassa, daxil_edilecek_mebleg, vanleader, qeyd):
 
 def muqavile_create(self, request, *args, **kwargs):
     serializer = self.get_serializer(data=request.data)
-    user = self.request.user
+    user = None
     print(f"login olan user ==> {user}")
+
+    vanleader_id = request.data.get("vanleader_id")
+    print(f"vanleader_id ==> {vanleader_id}")
+
+    if (vanleader_id == "") or (vanleader_id == None):
+        user = self.request.user
+    else:
+        user = get_object_or_404(User, pk=vanleader_id)
 
     dealer_id = request.data.get("dealer_id")
     print(f"dealer_id ==> {dealer_id}")
@@ -87,9 +95,9 @@ def muqavile_create(self, request, *args, **kwargs):
     dealer = None
     canvesser = None
 
-    if (dealer_id == "" and canvesser_id == ""):
-        return Response({"detail": "Dealer və Canvesserdən ən az biri qeyd olunmalıdır"},
-                        status=status.HTTP_400_BAD_REQUEST)
+    # if (dealer_id == "" and canvesser_id == ""):
+    #     return Response({"detail": "Dealer və Canvesserdən ən az biri qeyd olunmalıdır"},
+    #                     status=status.HTTP_400_BAD_REQUEST)
 
     if (dealer_id != ""):
         try:
@@ -165,6 +173,8 @@ def muqavile_create(self, request, *args, **kwargs):
     print(f"mehsul ==> {mehsul}")
 
     mehsul_sayi = request.data.get("mehsul_sayi")
+    if (mehsul_sayi == None) or (mehsul_sayi == ""):
+        mehsul_sayi = 1
     print(f"mehsul_sayi ==> {mehsul_sayi}")
 
     odenis_uslubu = request.data.get("odenis_uslubu")
@@ -177,9 +187,6 @@ def muqavile_create(self, request, *args, **kwargs):
     print(
         f"ilkin_odenis_qaliq ==> {ilkin_odenis_qaliq} --- {type(ilkin_odenis_qaliq)}")
 
-    print(
-        f"user.is_superuser ==> {user.is_superuser} --- {type(user.is_superuser)}")
-
     def umumi_mebleg(mehsul_qiymeti, mehsul_sayi):
         muqavile_umumi_mebleg = mehsul_qiymeti * mehsul_sayi
         return muqavile_umumi_mebleg
@@ -189,17 +196,40 @@ def muqavile_create(self, request, *args, **kwargs):
 
     muqavile_umumi_mebleg = umumi_mebleg(mehsul.qiymet, int(mehsul_sayi))
 
+    ofis_id = request.data.get("ofis_id") 
+    print(f"{ofis_id}")
+
+    shirket_id = request.data.get("shirket_id") 
+    print(f"{shirket_id}")
+
+    shobe_id = request.data.get("shobe_id") 
+    print(f"{shobe_id}")
+
+    kredit_muddeti = request.data.get("kredit_muddeti")
+
+    if (user.ofis == None) or (user.ofis == ""):
+        ofis = Ofis.objects.get(pk=ofis_id)
+    else:
+        ofis = user.ofis
+
+    if (user.shirket == None) or (user.shirket == ""):
+        shirket = mehsul.shirket
+    else:
+        shirket = user.shirket
+
+    if (shobe_id != ""):
+        shobe = Shobe.objects.get(pk=shobe_id)
+    else:
+        shobe = user.shobe
+
     try:
-        anbar = get_object_or_404(Anbar, ofis=user.ofis)
+        anbar = get_object_or_404(Anbar, ofis=ofis)
+        print(f"{anbar=}")
     except:
         return Response({"detail": "Anbar tapılmadı"}, status=status.HTTP_400_BAD_REQUEST)
 
-    shirket = user.shirket
-    ofis = user.ofis
-    shobe = user.shobe
-    kredit_muddeti = request.data.get("kredit_muddeti")
     print(f"anbar ==> {anbar}")
-    print(f"ofis ==> {user.ofis}")
+    print(f"ofis ==> {ofis}")
 
     ofis_kassa = get_object_or_404(OfisKassa, ofis=ofis)
     print(f"ofis_kassa ==> {ofis_kassa}")
@@ -615,8 +645,10 @@ def muqavile_create(self, request, *args, **kwargs):
                                     status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({"detail": "Məlumatları doğru daxil edin"}, status=status.HTTP_400_BAD_REQUEST)
-    except:
-        return Response({"detail": "Anbarın stokunda məhsul yoxdur"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        traceback.print_exc()
+        return Response({"detail": "Xəta baş verdi, məlumatları doğru daxil etdiyinizdən əmin olun"}, status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 def muqavile_patch(self, request, *args, **kwargs):

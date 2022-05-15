@@ -39,15 +39,18 @@ from rest_framework import status, generics
 from rest_framework.generics import get_object_or_404
 
 from rest_framework.response import Response
+from api.v1.permissions.gunler_permissions import permissions as gunler_permissions
 
 # ********************************** Holding Gunler get post put delete **********************************
 class HoldingGunlerListCreateAPIView(generics.ListAPIView):
     queryset = HoldingGunler.objects.all()
     serializer_class = HoldingGunlerSerializer
+    permission_classes = [gunler_permissions.HoldingGunlerPermissions]
 
 class HoldingGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingGunler.objects.all()
     serializer_class = HoldingGunlerSerializer
+    permission_classes = [gunler_permissions.HoldingGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.holding_gunler_update(self, request, *args, **kwargs)
@@ -55,6 +58,7 @@ class HoldingGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class HoldingIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = HoldingIstisnaIsci.objects.all()
     serializer_class = HoldingIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.HoldingIstisnaIsciPermissions]
 
     def create(self, request, *args, **kwargs):
         return gunler_utils.holding_istisna_isci_gunler_create(self, request, *args, **kwargs)
@@ -62,6 +66,7 @@ class HoldingIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
 class HoldingIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = HoldingIstisnaIsci.objects.all()
     serializer_class = HoldingIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.HoldingIstisnaIsciPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.holding_istisna_isci_gunler_update(self, request, *args, **kwargs)
@@ -73,11 +78,13 @@ class HoldingIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShirketGunlerListCreateAPIView(generics.ListAPIView):
     queryset = ShirketGunler.objects.all()
     serializer_class = ShirketGunlerSerializer
+    permission_classes = [gunler_permissions.ShirketGunlerPermissions]
 
 
 class ShirketGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketGunler.objects.all()
     serializer_class = ShirketGunlerSerializer
+    permission_classes = [gunler_permissions.ShirketGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.shirket_gunler_update(self, request, *args, **kwargs)
@@ -85,6 +92,7 @@ class ShirketGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShirketIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShirketIstisnaIsci.objects.all()
     serializer_class = ShirketIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.ShirketIstisnaIsciPermissions]
 
     def create(self, request, *args, **kwargs):
         return gunler_utils.shirket_istisna_isci_gunler_create(self, request, *args, **kwargs)
@@ -92,6 +100,7 @@ class ShirketIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
 class ShirketIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShirketIstisnaIsci.objects.all()
     serializer_class = ShirketIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.ShirketIstisnaIsciPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.shirket_istisna_isci_gunler_update(self, request, *args, **kwargs)
@@ -103,11 +112,13 @@ class ShirketIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class OfisGunlerListCreateAPIView(generics.ListAPIView):
     queryset = OfisGunler.objects.all()
     serializer_class = OfisGunlerSerializer
+    permission_classes = [gunler_permissions.OfisGunlerPermissions]
 
 
 class OfisGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OfisGunler.objects.all()
     serializer_class = OfisGunlerSerializer
+    permission_classes = [gunler_permissions.OfisGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.ofis_gunler_update(self, request, *args, **kwargs)
@@ -115,6 +126,7 @@ class OfisGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class OfisIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = OfisIstisnaIsci.objects.all()
     serializer_class = OfisIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.OfisIstisnaIsciPermissions]
 
     def create(self, request, *args, **kwargs):
         return gunler_utils.ofis_istisna_isci_gunler_create(self, request, *args, **kwargs)
@@ -122,6 +134,7 @@ class OfisIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
 class OfisIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OfisIstisnaIsci.objects.all()
     serializer_class = OfisIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.OfisIstisnaIsciPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.ofis_istisna_isci_gunler_update(self, request, *args, **kwargs)
@@ -133,11 +146,13 @@ class OfisIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShobeGunlerListCreateAPIView(generics.ListAPIView):
     queryset = ShobeGunler.objects.all()
     serializer_class = ShobeGunlerSerializer
+    permission_classes = [gunler_permissions.ShobeGunlerPermissions]
 
 
 class ShobeGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShobeGunler.objects.all()
     serializer_class = ShobeGunlerSerializer
+    permission_classes = [gunler_permissions.ShobeGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.shobe_gunler_update(self, request, *args, **kwargs)
@@ -145,6 +160,7 @@ class ShobeGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ShobeIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = ShobeIstisnaIsci.objects.all()
     serializer_class = ShobeIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.ShobeIstisnaIsciPermissions]
 
     def create(self, request, *args, **kwargs):
         return gunler_utils.shobe_istisna_isci_gunler_create(self, request, *args, **kwargs)
@@ -152,6 +168,7 @@ class ShobeIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
 class ShobeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ShobeIstisnaIsci.objects.all()
     serializer_class = ShobeIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.ShobeIstisnaIsciPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.shobe_istisna_isci_gunler_update(self, request, *args, **kwargs)
@@ -163,11 +180,13 @@ class ShobeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class KomandaGunlerListCreateAPIView(generics.ListAPIView):
     queryset = KomandaGunler.objects.all()
     serializer_class = KomandaGunlerSerializer
+    permission_classes = [gunler_permissions.KomandaGunlerPermissions]
 
 
 class KomandaGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = KomandaGunler.objects.all()
     serializer_class = KomandaGunlerSerializer
+    permission_classes = [gunler_permissions.KomandaGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.komanda_gunler_update(self, request, *args, **kwargs)
@@ -175,6 +194,7 @@ class KomandaGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class KomandaIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = KomandaIstisnaIsci.objects.all()
     serializer_class = KomandaIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.KomandaIstisnaIsciPermissions]
 
     def create(self, request, *args, **kwargs):
         return gunler_utils.komanda_istisna_isci_gunler_create(self, request, *args, **kwargs)
@@ -182,6 +202,7 @@ class KomandaIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
 class KomandaIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = KomandaIstisnaIsci.objects.all()
     serializer_class = KomandaIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.KomandaIstisnaIsciPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.komanda_istisna_isci_gunler_update(self, request, *args, **kwargs)
@@ -193,10 +214,12 @@ class KomandaIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class VezifeGunlerListCreateAPIView(generics.ListAPIView):
     queryset = VezifeGunler.objects.all()
     serializer_class = VezifeGunlerSerializer
+    permission_classes = [gunler_permissions.VezifeGunlerPermissions]
 
 class VezifeGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = VezifeGunler.objects.all()
     serializer_class = VezifeGunlerSerializer
+    permission_classes = [gunler_permissions.VezifeGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.vezife_gunler_update(self, request, *args, **kwargs)
@@ -204,6 +227,7 @@ class VezifeGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class VezifeIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
     queryset = VezifeIstisnaIsci.objects.all()
     serializer_class = VezifeIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.VezifeIstisnaIsciPermissions]
 
     def create(self, request, *args, **kwargs):
         return gunler_utils.vezife_istisna_isci_gunler_create(self, request, *args, **kwargs)
@@ -211,6 +235,7 @@ class VezifeIstisnaIsciListCreateAPIView(generics.ListCreateAPIView):
 class VezifeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = VezifeIstisnaIsci.objects.all()
     serializer_class = VezifeIstisnaIsciSerializer
+    permission_classes = [gunler_permissions.VezifeIstisnaIsciPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.vezife_istisna_isci_gunler_update(self, request, *args, **kwargs)
@@ -222,11 +247,13 @@ class VezifeIstisnaIsciDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class IsciGunlerListCreateAPIView(generics.ListAPIView):
     queryset = IsciGunler.objects.all()
     serializer_class = IsciGunlerSerializer
+    permission_classes = [gunler_permissions.IsciGunlerPermissions]
 
 
 class IsciGunlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = IsciGunler.objects.all()
     serializer_class = IsciGunlerSerializer
+    permission_classes = [gunler_permissions.IsciGunlerPermissions]
 
     def update(self, request, *args, **kwargs):
         return gunler_utils.user_gunler_update(self, request, *args, **kwargs)

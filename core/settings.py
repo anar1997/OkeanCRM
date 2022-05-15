@@ -35,8 +35,6 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django_crontab',
-    'clearcache',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -296,5 +294,9 @@ CELERYBEAT_SCHEDULE = {
     "work_day_creater_vezife_task15": {
         "task": "work_day_creater_vezife_task15",
         "schedule": crontab(0, 0, '*', day_of_month="15"),
+    },
+    "isci_fix_maas_auto_elave_et": {
+        "task": "isci_fix_maas_auto_elave_et",
+        "schedule": crontab(0, 0, '*', day_of_month="1"),
     },
 }

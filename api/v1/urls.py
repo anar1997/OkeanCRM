@@ -43,6 +43,18 @@ urlpatterns=[
     path('kesinti/', maas_views.KesintiListCreateAPIView.as_view(), name="kesinti"),
     path('kesinti/<int:pk>', maas_views.KesintiDetailAPIView.as_view(), name="kesinti_detail"),
 
+    path('office-leader-prim/', maas_views.OfficeLeaderPrimListCreateAPIView.as_view()),
+    path('office-leader-prim/<int:pk>', maas_views.OfficeLeaderPrimDetailAPIView.as_view()),
+    
+    path('vanleader-prim/', maas_views.VanLeaderPrimListCreateAPIView.as_view()),
+    path('vanleader-prim/<int:pk>', maas_views.VanLeaderPrimDetailAPIView.as_view()),
+
+    path('canvasser-prim/', maas_views.CanvasserPrimListCreateAPIView.as_view()),
+    path('canvasser-prim/<int:pk>', maas_views.CanvasserPrimDetailAPIView.as_view()),
+
+    path('dealer-prim/', maas_views.DealerPrimListCreateAPIView.as_view()),
+    path('dealer-prim/<int:pk>', maas_views.DealerPrimDetailAPIView.as_view()),
+
     # gunler views *****************************************
     path('holding-gunler/', gunler_views.HoldingGunlerListCreateAPIView.as_view()),
     path('holding-gunler/<int:pk>', gunler_views.HoldingGunlerDetailAPIView.as_view()),

@@ -28,6 +28,7 @@ class Mehsullar(models.Model):
     mehsulun_adi = models.CharField(max_length=300)
     qiymet = models.FloatField()
     shirket = models.ForeignKey('company.Shirket', on_delete=models.CASCADE, null=True, related_name="shirket_mehsul")
+    is_hediyye = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("pk",)

@@ -40,7 +40,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'asa', 'dogum_tarixi', 'tel1', 'tel2',
-                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'shobe', 'password')
+                  'sv_image', 'shirket', 'isci_status', 'ofis', 'vezife', 'komanda', 'shobe', 'maas_uslubu', 'password')
         extra_kwargs = {
             'password': {'write_only': True},
         }
@@ -50,7 +50,9 @@ class RegisterSerializer(serializers.ModelSerializer):
                                         asa=validated_data['asa'], dogum_tarixi=validated_data['dogum_tarixi'], 
                                         tel1=validated_data['tel1'], tel2=validated_data['tel2'], sv_image=validated_data['sv_image'], 
                                         shirket=validated_data['shirket'], ofis=validated_data['ofis'], vezife=validated_data['vezife'], 
-                                        komanda=validated_data['komanda'], shobe=validated_data['shobe'], isci_status=validated_data['isci_status'])
+                                        komanda=validated_data['komanda'], shobe=validated_data['shobe'], isci_status=validated_data['isci_status'],
+                                        maas_uslubu=validated_data['maas_uslubu']
+                                    )
         return user
 
 class UserSerializer(serializers.ModelSerializer):

@@ -29,6 +29,7 @@ from api.v1.utils import (
     utils
 )
 
+from api.v1.permissions.account_permissions import permissions as account_permissions
 
 
 # ********************************** user get post put delete **********************************
@@ -37,6 +38,7 @@ from api.v1.utils import (
 class RegisterApi(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [account_permissions.UserPermissions]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -55,11 +57,13 @@ class RegisterApi(generics.CreateAPIView):
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [account_permissions.UserPermissions]
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [account_permissions.UserPermissions]
 
     def patch(self, request, *args, **kwargs):
         isci=self.get_object()
@@ -98,11 +102,13 @@ class Login(TokenObtainPairView):
 class MusteriListCreateAPIView(generics.ListCreateAPIView):
     queryset = Musteri.objects.all()
     serializer_class = MusteriSerializer
+    permission_classes = [account_permissions.MusteriPermissions]
 
 
 class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Musteri.objects.all()
     serializer_class = MusteriSerializer
+    permission_classes = [account_permissions.MusteriPermissions]
 
 
 # ********************************** musteriqeydlerin put delete post get **********************************
@@ -110,22 +116,26 @@ class MusteriDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class MusteriQeydlerListCreateAPIView(generics.ListCreateAPIView):
     queryset = MusteriQeydler.objects.all()
     serializer_class = MusteriQeydlerSerializer
+    permission_classes = [account_permissions.MusteriQeydlerPermissions]
 
 
 class MusteriQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MusteriQeydler.objects.all()
     serializer_class = MusteriQeydlerSerializer
+    permission_classes = [account_permissions.MusteriQeydlerPermissions]
 
 # ********************************** bolge put delete post get **********************************
 
 class BolgeListCreateAPIView(generics.ListCreateAPIView):
     queryset = Bolge.objects.all()
     serializer_class = BolgeSerializer
+    permission_classes = [account_permissions.BolgePermissions]
 
 
 class BolgeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Bolge.objects.all()
     serializer_class = BolgeSerializer
+    permission_classes = [account_permissions.BolgePermissions]
 
 
 # ********************************** isci satis sayi put delete post get **********************************
@@ -133,11 +143,13 @@ class BolgeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class IsciSatisSayiListCreateAPIView(generics.ListCreateAPIView):
     queryset = IsciSatisSayi.objects.all()
     serializer_class = IsciSatisSayiSerializer
+    permission_classes = [account_permissions.IsciSatisSayiPermissions]
 
 
 class IsciSatisSayiDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = IsciSatisSayi.objects.all()
     serializer_class = IsciSatisSayiSerializer
+    permission_classes = [account_permissions.IsciSatisSayiPermissions]
 
 
 # ********************************** status put delete post get **********************************
@@ -145,8 +157,10 @@ class IsciSatisSayiDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class IsciStatusListCreateAPIView(generics.ListCreateAPIView):
     queryset = IsciStatus.objects.all()
     serializer_class = IsciStatusSerializer
+    permission_classes = [account_permissions.IsciStatusPermissions]
 
 
 class IsciStatusDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = IsciStatus.objects.all()
     serializer_class = IsciStatusSerializer
+    permission_classes = [account_permissions.IsciStatusPermissions]

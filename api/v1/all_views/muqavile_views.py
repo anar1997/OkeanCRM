@@ -42,13 +42,15 @@ from api.v1.utils import (
 
 from django_filters.rest_framework import DjangoFilterBackend
 
-from api.v1.filters import (
+from api.v1.filters.muqavile_filters.filters import (
     OdemeTarixFilter,
     MuqavileFilter,
     StokFilter,
 )
 
 from rest_framework.generics import get_object_or_404
+
+from api.v1.permissions.muqavile_permissions import permissions as muqavile_permissions
 
 # ********************************** muqavile get post put delete **********************************
 
@@ -57,7 +59,7 @@ class MuqavileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = MuqavileSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MuqavileFilter
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [muqavile_permissions.MuqavilePermissions]
 
     def create(self, request, *args, **kwargs):
         return muqavile_utils.muqavile_create(self, request, *args, **kwargs)
@@ -68,6 +70,7 @@ class MuqavileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = MuqavileSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = MuqavileFilter
+    permission_classes = [muqavile_permissions.MuqavilePermissions]
 
     def patch(self, request, *args, **kwargs):
         return muqavile_utils.muqavile_patch(self, request, *args, **kwargs)
@@ -84,6 +87,7 @@ class OdemeTarixListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = OdemeTarixSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = OdemeTarixFilter
+    permission_classes = [muqavile_permissions.OdemeTarixleriPermissions]
 
 class OdemeTarixDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = OdemeTarix.objects.all()
@@ -91,6 +95,7 @@ class OdemeTarixDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['muqavile']
     filterset_class = OdemeTarixFilter
+    permission_classes = [muqavile_permissions.OdemeTarixleriPermissions]
 
 
     # PATCH SORGUSU
@@ -108,11 +113,13 @@ class OdemeTarixDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class AnbarListCreateAPIView(generics.ListCreateAPIView):
     queryset = Anbar.objects.all()
     serializer_class = AnbarSerializer
+    permission_classes = [muqavile_permissions.AnbarPermissions]
 
 
 class AnbarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Anbar.objects.all()
     serializer_class = AnbarSerializer
+    permission_classes = [muqavile_permissions.AnbarPermissions]
 
 
 # ********************************** mehsullar put get post delete **********************************
@@ -121,11 +128,13 @@ class AnbarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class MehsullarListCreateAPIView(generics.ListCreateAPIView):
     queryset = Mehsullar.objects.all()
     serializer_class = MehsullarSerializer
+    permission_classes = [muqavile_permissions.MehsullarPermissions]
 
 
 class MehsullarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Mehsullar.objects.all()
     serializer_class = MehsullarSerializer
+    permission_classes = [muqavile_permissions.MehsullarPermissions]
 
 
 # ********************************** anbar put delete post get **********************************
@@ -134,11 +143,13 @@ class MehsullarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class AnbarQeydlerListCreateAPIView(generics.ListCreateAPIView):
     queryset = AnbarQeydler.objects.all()
     serializer_class = AnbarQeydlerSerializer
+    permission_classes = [muqavile_permissions.AnbarQeydlerPermissions]
 
 
 class AnbarQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = AnbarQeydler.objects.all()
     serializer_class = AnbarQeydlerSerializer
+    permission_classes = [muqavile_permissions.AnbarQeydlerPermissions]
 
 # ********************************** emeliyyat put delete post get **********************************
 
@@ -146,6 +157,7 @@ class AnbarQeydlerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
     queryset = Emeliyyat.objects.all()
     serializer_class = EmeliyyatSerializer
+    permission_classes = [muqavile_permissions.EmeliyyatPermissions]
 
     def create(self, request, *args, **kwargs):
         return anbar_emeliyyat_utils.emeliyyat_create(self, request, *args, **kwargs)
@@ -153,6 +165,7 @@ class EmeliyyatListCreateAPIView(generics.ListCreateAPIView):
 class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Emeliyyat.objects.all()
     serializer_class = EmeliyyatSerializer
+    permission_classes = [muqavile_permissions.EmeliyyatPermissions]
 
 
 # ********************************** hediyye put delete post get **********************************
@@ -161,6 +174,7 @@ class EmeliyyatDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class MuqavileHediyyeListCreateAPIView(generics.ListCreateAPIView):
     queryset = MuqavileHediyye.objects.all()
     serializer_class = MuqavileHediyyeSerializer
+    permission_classes = [muqavile_permissions.MuqavileHediyyePermissions]
 
     def create(self, request, *args, **kwargs):
         return muqavile_hediyye_utils.muqavile_hediyye_create(self, request, *args, **kwargs)
@@ -169,6 +183,7 @@ class MuqavileHediyyeListCreateAPIView(generics.ListCreateAPIView):
 class MuqavileHediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MuqavileHediyye.objects.all()
     serializer_class = MuqavileHediyyeSerializer
+    permission_classes = [muqavile_permissions.MuqavileHediyyePermissions]
 
 
 # ********************************** servis put delete post get **********************************
@@ -176,6 +191,7 @@ class MuqavileHediyyeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class ServisListCreateAPIView(generics.ListCreateAPIView):
     queryset = Servis.objects.all()
     serializer_class = ServisSerializer
+    permission_classes = [muqavile_permissions.ServisPermissions]
 
     def perform_create(self, serializer):
         month6 = datetime.datetime.now() + datetime.timedelta(days=180)
@@ -192,6 +208,7 @@ class ServisListCreateAPIView(generics.ListCreateAPIView):
 class ServisDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Servis.objects.all()
     serializer_class = ServisSerializer
+    permission_classes = [muqavile_permissions.ServisPermissions]
 
     def update(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -349,6 +366,7 @@ class StokListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = StokSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = StokFilter
+    permission_classes = [muqavile_permissions.StokPermissions]
 
 
 class StokDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -356,6 +374,7 @@ class StokDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = StokSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = StokFilter
+    permission_classes = [muqavile_permissions.StokPermissions]
 
     def update(self, request, *args, **kwargs):
         return stok_utils.stok_update(self, request, *args, **kwargs)
