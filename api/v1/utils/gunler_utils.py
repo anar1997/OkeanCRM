@@ -1,4 +1,5 @@
 import datetime
+from functools import partial
 from django.shortcuts import get_object_or_404
 import pandas as pd
 from rest_framework import status
@@ -356,21 +357,48 @@ def isci_tetil_gunleri_calc(serializer, obj):
     odenisli_icaze_date_list = []
     odenissiz_icaze_date_list = []
 
+    isci = obj.isci
+    print(f"{isci=}")
+
+    indi = datetime.date.today()
+    print(f"indi ==> {indi}")
+
+    d = pd.to_datetime(f"{indi.year}-{indi.month}-{1}")
+    print(f"d ==> {d}")
+
+    next_m = d + pd.offsets.MonthBegin(1)
+    print(f"next_m ==> {next_m}")
+
+    days_in_mont = pd.Period(f"{next_m.year}-{next_m.month}-{1}").days_in_month
+    print(f"days_in_mont ==> {days_in_mont}")
+
     tetil_gunleri = serializer.validated_data.get("tetil_gunleri")
     print(f"tetil_gunleri==>{tetil_gunleri}----{type(tetil_gunleri)}")
-    tetil_gunleri_l = tetil_gunleri.rstrip("]").lstrip("[").split(",")
-    print(f"tetil_gunleri_l==>{tetil_gunleri_l}----{type(tetil_gunleri_l)} -- {len(tetil_gunleri_l)}")
+    if tetil_gunleri is not None:
+        tetil_gunleri_l = tetil_gunleri.rstrip("]").lstrip("[").split(",")
+        print(f"tetil_gunleri_l==>{tetil_gunleri_l}----{type(tetil_gunleri_l)} -- {len(tetil_gunleri_l)}") 
+    else:
+        tetil_gunleri_l = []
+        
     for i in tetil_gunleri_l:
-        new_el = i.strip().strip("'").strip('"')
-        date_list.append(new_el)
+            new_el = i.strip().strip("'").strip('"')
+            date_list.append(new_el)
 
     icaze_gunleri_odenisli = serializer.validated_data.get("icaze_gunleri_odenisli")
     icaze_gunleri_odenissiz = serializer.validated_data.get("icaze_gunleri_odenissiz")
     print(f"icaze_gunleri_odenisli==>{icaze_gunleri_odenisli}----{type(icaze_gunleri_odenisli)}")
     print(f"icaze_gunleri_odenissiz==>{icaze_gunleri_odenissiz}----{type(icaze_gunleri_odenissiz)}")
 
-    icaze_gunleri_odenisli_l = icaze_gunleri_odenisli.rstrip("]").lstrip("[").split(",")
-    icaze_gunleri_odenissiz_l = icaze_gunleri_odenissiz.rstrip("]").lstrip("[").split(",")
+    if icaze_gunleri_odenisli is not None:
+        icaze_gunleri_odenisli_l = icaze_gunleri_odenisli.rstrip("]").lstrip("[").split(",")
+    else:
+        icaze_gunleri_odenisli_l = []
+
+    if icaze_gunleri_odenissiz is not None:
+        icaze_gunleri_odenissiz_l = icaze_gunleri_odenissiz.rstrip("]").lstrip("[").split(",")
+    else:
+        icaze_gunleri_odenissiz_l = []
+
     print(f"icaze_gunleri_odenisli_l==>{icaze_gunleri_odenisli_l}----{len(icaze_gunleri_odenisli_l)}")
     print(f"icaze_gunleri_odenissiz_l==>{icaze_gunleri_odenissiz_l}----{len(icaze_gunleri_odenissiz_l)}")
 
@@ -391,9 +419,10 @@ def isci_tetil_gunleri_calc(serializer, obj):
     qeyri_is_gunu_count = float(len(date_list)) + float(len(odenisli_icaze_date_list)) + float(len(odenissiz_icaze_date_list))
     print(f"qeyri_is_gunu_count==>{qeyri_is_gunu_count}----{type(qeyri_is_gunu_count)}")
 
-    is_gunleri_count = serializer.validated_data.get("is_gunleri_count")
-    is_gunleri_count = float(is_gunleri_count) - abs((float(k_qeyri_is_gunleri) - float(qeyri_is_gunu_count)))
-    serializer.save(tetil_gunleri=date_list, is_gunleri_count=is_gunleri_count, qeyri_is_gunu_count=qeyri_is_gunu_count)
+    is_gunleri_count = float(days_in_mont)
+    is_gunleri_count = float(is_gunleri_count) - float(qeyri_is_gunu_count)
+    # serializer.save(tetil_gunleri=date_list, is_gunleri_count=is_gunleri_count, qeyri_is_gunu_count=qeyri_is_gunu_count)
+    serializer.save( is_gunleri_count=is_gunleri_count, qeyri_is_gunu_count=qeyri_is_gunu_count)
     return True
 
 def gunler_update(serializer, company, company_name, obj_gunler):
@@ -401,9 +430,6 @@ def gunler_update(serializer, company, company_name, obj_gunler):
 
     tarix = obj_gunler.tarix
     print(f"tarix==>{tarix}----{type(tarix)}")
-    
-    # holding = obj_gunler.company
-    # print(f"{holding=}")
 
     is_gunleri_count = obj_gunler.is_gunleri_count
     print(f"{is_gunleri_count=}")
@@ -763,7 +789,7 @@ def vezife_istisna_isci_gunler_delete(self, request, *args, **kwargs):
 
 def user_gunler_update(self, request, *args, **kwargs):
     user_gunler = self.get_object()
-    serializer = IsciGunlerSerializer(user_gunler, data=request.data)
+    serializer = IsciGunlerSerializer(user_gunler, data=request.data, partial=True)
     print(f"user_gunler==>{user_gunler}")
     if serializer.is_valid():
         isci_tetil_gunleri_calc(serializer, user_gunler)
@@ -772,7 +798,7 @@ def user_gunler_update(self, request, *args, **kwargs):
 
 def user_gunler_patch(self, request, *args, **kwargs):
     user_gunler = self.get_object()
-    serializer = IsciGunlerSerializer(user_gunler, data=request.data)
+    serializer = IsciGunlerSerializer(user_gunler, data=request.data, partial=True)
     print(f"user_gunler==>{user_gunler}")
     if serializer.is_valid():
         isci_tetil_gunleri_calc(serializer, user_gunler)
